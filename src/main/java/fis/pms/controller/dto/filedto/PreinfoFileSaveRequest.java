@@ -1,6 +1,5 @@
-package fis.pms.controller.file.dto;
+package fis.pms.controller.dto.filedto;
 
-import fis.pms.controller.dto.ExcelUpdateDTO;
 import fis.pms.domain.F_location;
 import fis.pms.domain.fileEnum.*;
 import lombok.AllArgsConstructor;

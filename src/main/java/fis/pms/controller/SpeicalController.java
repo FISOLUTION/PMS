@@ -1,4 +1,4 @@
-package fis.pms.controller.special;
+package fis.pms.controller;
 
 public class SpeicalController {
 }

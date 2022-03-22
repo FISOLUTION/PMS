@@ -1,7 +1,7 @@
 package fis.pms.service;
 
-import fis.pms.controller.login.dto.LoginRequest;
-import fis.pms.controller.login.dto.LoginResponse;
+import fis.pms.controller.dto.logindto.LoginRequest;
+import fis.pms.controller.dto.logindto.LoginResponse;
 import fis.pms.domain.Worker;
 import fis.pms.repository.WorkerRepository;
 import lombok.RequiredArgsConstructor;

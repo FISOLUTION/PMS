@@ -1,4 +1,4 @@
-package fis.pms.controller.file.dto;
+package fis.pms.controller.dto.filedto;
 
 import fis.pms.domain.F_location;
 import fis.pms.domain.fileEnum.F_construct;

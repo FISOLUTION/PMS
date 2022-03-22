@@ -1,4 +1,4 @@
-package fis.pms.controller.volume;
+package fis.pms.controller;
 
 public class VolumeController {
 }

@@ -1,4 +1,4 @@
-package fis.pms.controller.login.dto;
+package fis.pms.controller.dto.logindto;
 
 import lombok.Data;
 

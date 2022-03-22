@@ -1,4 +1,4 @@
-package fis.pms.controller.login;
+package fis.pms.controller;
 
 public class LoginController {
 }
