@@ -7,7 +7,7 @@ import fis.pms.controller.dto.QCasesInfo;
 import fis.pms.domain.Cases;
 import fis.pms.domain.Files;
 import fis.pms.domain.QCases;
-import fis.pms.domain.QFiles;
+import fis.pms.repository.querymethod.CasesQueryMethod;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

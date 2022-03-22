@@ -1,4 +1,4 @@
-package fis.pms.repository;
+package fis.pms.repository.querymethod;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import fis.pms.domain.Office;
