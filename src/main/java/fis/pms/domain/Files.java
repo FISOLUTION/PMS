@@ -1,12 +1,9 @@
 package fis.pms.domain;
 
 import fis.pms.controller.dto.IndexSaveLabelRequest;
-import fis.pms.controller.dto.filedto.PreinfoFileSaveRequest;
+import fis.pms.controller.dto.filedto.PreInfoFileRequest;
 import fis.pms.domain.fileEnum.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -23,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicInsert //원보라 : 디폴트값은 ddl만 적용됨 insert 문에도 디폴트 적용하기 위함
+@Builder
 public class Files {
     private Files(String f_labelcode, Office office, String b_num, String f_name, String f_pyear, F_kperiod f_kperiod, F_kplace f_kplace, F_construct f_db, F_construct f_scan, F_type f_type, F_location f_location, String f_typenum) {
         this.f_labelcode = f_labelcode;
@@ -50,12 +48,6 @@ public class Files {
     //@NotBlank //적용되는지 확인하자
     @Column(length = 6)
     private String f_labelcode;    //철번호(레이블번호)
-
-//0824 원보라 수정(box 이블 제거)
-//    //@NotBlank
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "b_id")
-//    private Box box;
 
     //@NotBlank
     @ManyToOne(fetch = FetchType.LAZY)
@@ -274,8 +266,8 @@ public class Files {
 //    private Timestamp mod_date;
 
     //=======================생성 메서드(210827원보라)==========================//
-    public static Files createFiles(PreinfoFileSaveRequest preinfoFileSaveRequest, Office office) {
-        Files files = new Files(preinfoFileSaveRequest.getF_labelcode(), office, preinfoFileSaveRequest.getB_num(), preinfoFileSaveRequest.getF_name(), preinfoFileSaveRequest.getF_pyear(), preinfoFileSaveRequest.getF_kperiod(), preinfoFileSaveRequest.getF_kplace(), preinfoFileSaveRequest.getF_db(), preinfoFileSaveRequest.getF_scan(), preinfoFileSaveRequest.getF_type(), preinfoFileSaveRequest.getF_location(), preinfoFileSaveRequest.getF_typenum());
+    public static Files createFiles(PreInfoFileRequest preInfoFileRequest, Office office) {
+        Files files = new Files(preInfoFileRequest.getF_labelcode(), office, preInfoFileRequest.getB_num(), preInfoFileRequest.getF_name(), preInfoFileRequest.getF_pyear(), preInfoFileRequest.getF_kperiod(), preInfoFileRequest.getF_kplace(), preInfoFileRequest.getF_db(), preInfoFileRequest.getF_scan(), preInfoFileRequest.getF_type(), preInfoFileRequest.getF_location(), preInfoFileRequest.getF_typenum());
         return files;
     }
 

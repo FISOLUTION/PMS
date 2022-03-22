@@ -1,6 +1,7 @@
 package fis.pms.controller.dto.filedto;
 
 import fis.pms.domain.F_location;
+import fis.pms.domain.Files;
 import fis.pms.domain.fileEnum.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,21 +17,18 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PreinfoFileSaveRequest {
+public class PreInfoFileRequest {
     private String o_code;      // 기관코드
-
     @Length(max = 6)
     private String f_labelcode; // 레이블
     private String o_name;      // 기관이름
     private String f_name;      // 철이름
     private Long f_id;
-
     @Length(max = 4)
     private String f_pyear;     // 생산년도
     private F_kperiod f_kperiod;     // 보존기간
     private F_construct f_db;        // 구축여부
     private F_construct f_scan;      // 스캔여부
-
     @Length(max = 3)
     private String b_num;       // 박스번호
     private F_location f_location;  // 위치(서가, 층, 열, 번)
@@ -38,7 +36,14 @@ public class PreinfoFileSaveRequest {
     private F_type f_type;      // 문서종류
     private String f_typenum;   // 분류번호
 
-    public PreinfoFileSaveRequest(ExcelUpdateDTO excelUpdateDTO) {
+    public Files createFiles(){
+        return new Files.FilesBuilder().build()
+                .setOffice();
+    }
+
+
+
+    public PreInfoFileRequest(ExcelUpdateDTO excelUpdateDTO) {
         F_kperiodConverter f_kperiodConverter = new F_kperiodConverter();
         F_constructConverter f_constructConverter = new F_constructConverter();
         F_kplaceConverter f_kplaceConverter = new F_kplaceConverter();
