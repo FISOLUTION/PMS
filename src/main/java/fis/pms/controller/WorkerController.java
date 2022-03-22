@@ -1,4 +1,4 @@
-package fis.pms.controller.worker;
+package fis.pms.controller;
 
 public class WorkerController {
 }

@@ -1,4 +1,4 @@
-package fis.pms.controller.dto;
+package fis.pms.controller.dto.filedto;
 
 import fis.pms.domain.Files;
 import fis.pms.domain.Office;

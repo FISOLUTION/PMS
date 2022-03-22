@@ -1,7 +1,7 @@
 package fis.pms.domain;
 
 import fis.pms.controller.dto.IndexSaveLabelRequest;
-import fis.pms.controller.file.dto.PreinfoFileSaveRequest;
+import fis.pms.controller.dto.filedto.PreinfoFileSaveRequest;
 import fis.pms.domain.fileEnum.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

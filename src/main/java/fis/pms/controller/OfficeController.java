@@ -1,4 +1,4 @@
-package fis.pms.controller.office;
+package fis.pms.controller;
 
 public class OfficeController {
 }

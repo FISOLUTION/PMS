@@ -1,4 +1,4 @@
-package fis.pms.controller.file.dto;
+package fis.pms.controller.dto.filedto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
