@@ -1,6 +1,7 @@
 package fis.pms.domain;
 
 import fis.pms.domain.fileEnum.F_process;
+import fis.pms.domain.fileEnum.F_processConverter;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,7 @@ public class WorkList {
     @ManyToOne(fetch = FetchType.LAZY)
     private Worker worker;
 
+    @Convert(converter= F_processConverter.class)
     private F_process f_process;
 
     private LocalDate date;

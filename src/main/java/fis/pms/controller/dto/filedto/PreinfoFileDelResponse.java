@@ -18,5 +18,4 @@ import java.util.List;
 @NoArgsConstructor
 public class PreinfoFileDelResponse {
     private List<Long> f_id = new ArrayList<>();          // 저장된 철 id 반환	//성공
-    private String err_code;    //실패
 }

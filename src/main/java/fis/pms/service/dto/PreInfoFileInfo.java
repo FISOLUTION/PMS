@@ -1,29 +1,31 @@
-package fis.pms.controller.dto.filedto;
+package fis.pms.service.dto;
 
+import fis.pms.controller.dto.filedto.ExcelUpdateDTO;
 import fis.pms.domain.F_location;
 import fis.pms.domain.Files;
+import fis.pms.domain.Office;
 import fis.pms.domain.fileEnum.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-/*
- * 작성자: 원보라
- * 작성날짜: 2021/08/24
- * 작성내용: PreinfoFileSaveRequest
+/**
+ * @author hyeonseung-gu
+ * @implNote FileService.preInfo() 를 이용하기 위해서 필요한 객체 입니다
+ * Controller request 요청으로 사용 가능합니다
  */
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PreInfoFileRequest {
+public class PreInfoFileInfo {
     private String o_code;      // 기관코드
+    private String o_name;
     @Length(max = 6)
     private String f_labelcode; // 레이블
-    private String o_name;      // 기관이름
     private String f_name;      // 철이름
-    private Long f_id;
     @Length(max = 4)
     private String f_pyear;     // 생산년도
     private F_kperiod f_kperiod;     // 보존기간
@@ -36,11 +38,22 @@ public class PreInfoFileRequest {
     private F_type f_type;      // 문서종류
     private String f_typenum;   // 분류번호
 
-    public Files createFiles(){
-        return new Files.FilesBuilder().build()
-                .setOffice();
+    public Files createFiles(Office office){
+        return Files.builder()
+                        .office(office)
+                        .f_labelcode(f_labelcode)
+                        .f_name(f_name)
+                        .f_pyear(f_pyear)
+                        .f_kperiod(f_kperiod)
+                        .f_db(f_db)
+                        .f_scan(f_scan)
+                        .b_num(b_num)
+                        .f_location(f_location)
+                        .f_kplace(f_kplace)
+                        .f_type(f_type)
+                        .f_typenum(f_typenum)
+                        .build();
     }
-
 
 
     public PreInfoFileRequest(ExcelUpdateDTO excelUpdateDTO) {
