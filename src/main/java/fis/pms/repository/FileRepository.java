@@ -130,13 +130,12 @@ public class FileRepository extends FileQueryMethods {
                 .fetch();
     }
 
-    /*
-     * 작성자: 원보라
-     * 작성날짜: 2021/08/26
-     * 작성내용: findByLabelRange
-     */
+    /**
+    *   작성날짜: 2022/03/23 12:13 PM
+    *   작성자: 이승범
+    *   작성내용:
+    */
     public List<Files> findByLabelRange(String first_label, String last_label) {
-        // JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         return jpaQueryFactory
                 .selectFrom(files)
                 .where(first_labelGoe(first_label),
