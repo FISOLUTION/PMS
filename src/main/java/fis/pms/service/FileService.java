@@ -45,4 +45,13 @@ public class FileService {
     public List<Files> searchFilesByDate(String sdate, String edate){
         return fileRepository.findByDateRange(sdate, edate);
     }
+
+    /**
+    *   작성날짜: 2022/03/23 1:26 PM
+    *   작성자: 이승범
+    *   작성내용: 반출된 철 박스 범위 검색
+    */
+    public List<Files> searchFilesByBox(String sbox, String ebox){
+        return fileRepository.findByBoxRange(sbox, ebox);
+    }
 }

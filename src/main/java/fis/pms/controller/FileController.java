@@ -55,7 +55,7 @@ public class FileController {
     */
     @GetMapping("/export/search/date")
     public ExportSearchResponse searchFilesByDate(@RequestParam(value = "sdate", required = false) String sdate,
-                                              @RequestParam(value = "edate", required = false) String edate) {
+                                                  @RequestParam(value = "edate", required = false) String edate) {
 
        return new ExportSearchResponse(fileService.searchFilesByDate(sdate, edate).stream()
                .map(file -> new ExportSearchResponse.ExportSearchInfo(file.getF_id(), file.getOffice().getO_code(),
@@ -65,6 +65,22 @@ public class FileController {
                .collect(Collectors.toList()));
     }
 
+    /**
+    *   작성날짜: 2022/03/23 1:20 PM
+    *   작성자: 이승범
+    *   작성내용: 반출된 철 박스 범위 검색
+    */
+    @GetMapping("/export/search/box")
+    public ExportSearchResponse searchFilesByBox(@RequestParam(value = "sbox", required = false) String sbox,
+                                             @RequestParam(value = "ebox", required = false) String ebox) {
+
+        return new ExportSearchResponse(fileService.searchFilesByBox(sbox, ebox).stream()
+                .map(file-> new ExportSearchResponse.ExportSearchInfo(file.getF_id(), file.getOffice().getO_code(),
+                        file.getF_labelcode(), file.getOffice().getO_name(), file.getF_name(), file.getF_pyear(),
+                        file.getF_kperiod(), file.getF_db(), file.getF_scan(), file.getB_num(), file.getF_location(),
+                        file.getF_kplace(), file.getF_type(), file.getF_typenum()))
+                .collect(Collectors.toList()));
+    }
 
 }
 
