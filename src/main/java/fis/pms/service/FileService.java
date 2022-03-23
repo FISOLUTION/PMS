@@ -31,9 +31,18 @@ public class FileService {
     /**
     *   작성날짜: 2022/03/23 12:13 PM
     *   작성자: 이승범
-    *   작성내용: 레이블 범위로 철 정보를 가져오기
+    *   작성내용: 반출된 철 레이블 범위 검색
     */
     public List<Files> searchFileByLabelCode(String slabel, String elabel){
         return fileRepository.findByLabelRange(slabel, elabel);
+    }
+
+    /**
+    *   작성날짜: 2022/03/23 1:06 PM
+    *   작성자: 이승범
+    *   작성내용: 반출된 철 날짜 범위 검색
+    */
+    public List<Files> searchFilesByDate(String sdate, String edate){
+        return fileRepository.findByDateRange(sdate, edate);
     }
 }
