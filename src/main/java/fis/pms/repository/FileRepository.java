@@ -133,7 +133,7 @@ public class FileRepository extends FileQueryMethods {
     /**
     *   작성날짜: 2022/03/23 12:13 PM
     *   작성자: 이승범
-    *   작성내용:
+    *   작성내용: 레이블코드를 이용한 동적쿼리
     */
     public List<Files> findByLabelRange(String first_label, String last_label) {
         return jpaQueryFactory
@@ -144,11 +144,11 @@ public class FileRepository extends FileQueryMethods {
                 .fetch();
     }
 
-    /*
-     * 작성자: 원보라
-     * 작성날짜: 2021/08/27
-     * 작성내용: FindExportByDate
-     */
+    /**
+    *   작성날짜: 2022/03/23 5:28 PM
+    *   작성자: 이승범
+    *   작성내용: 날짜별 동적쿼리
+    */
     public List<Files> findByDateRange(String first_f_exportdate, String last_f_exportdate) {
         //JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         return jpaQueryFactory
@@ -160,11 +160,11 @@ public class FileRepository extends FileQueryMethods {
                 .fetch();
     }
 
-    /*
-     * 작성자: 원보라
-     * 작성날짜: 2021/08/27
-     * 작성내용: findByBoxRange
-     */
+    /**
+    *   작성날짜: 2022/03/23 5:29 PM
+    *   작성자: 이승범
+    *   작성내용: 박스번호 별 동적쿼리
+    */
     public List<Files> findByBoxRange(String first_b_num, String last_b_num) {
         return jpaQueryFactory
                 .selectFrom(files)
@@ -173,6 +173,12 @@ public class FileRepository extends FileQueryMethods {
                         last_b_numLoe(last_b_num),
                         files.f_exportdate.ne("none"))
                 .fetch();
+    }
+
+    public Files findOneWithOffice(Long fileId) {
+        return em.createQuery("select f from Files f join fetch f.office where f.f_id=:fileId", Files.class)
+                .setParameter("fileId", fileId)
+                .getSingleResult();
     }
 
     /*
