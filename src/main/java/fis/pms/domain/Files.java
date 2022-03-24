@@ -1,12 +1,9 @@
 package fis.pms.domain;
 
 import fis.pms.controller.dto.IndexSaveLabelRequest;
-import fis.pms.controller.dto.filedto.PreinfoFileSaveRequest;
+import fis.pms.controller.dto.PreInfoFileUpdateInfo;
 import fis.pms.domain.fileEnum.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -21,10 +18,12 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @DynamicInsert //원보라 : 디폴트값은 ddl만 적용됨 insert 문에도 디폴트 적용하기 위함
+@NoArgsConstructor
+@Builder
 public class Files {
-    private Files(String f_labelcode, Office office, String b_num, String f_name, String f_pyear, F_kperiod f_kperiod, F_kplace f_kplace, F_construct f_db, F_construct f_scan, F_type f_type, F_location f_location, String f_typenum) {
+
+    public Files(String f_labelcode, Office office, String b_num, String f_name, String f_pyear, F_kperiod f_kperiod, F_kplace f_kplace, F_construct f_db, F_construct f_scan, F_type f_type, F_location f_location, String f_typenum) {
         this.f_labelcode = f_labelcode;
         this.office = office;
         this.b_num = b_num;
@@ -50,12 +49,6 @@ public class Files {
     //@NotBlank //적용되는지 확인하자
     @Column(length = 6)
     private String f_labelcode;    //철번호(레이블번호)
-
-//0824 원보라 수정(box 이블 제거)
-//    //@NotBlank
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "b_id")
-//    private Box box;
 
     //@NotBlank
     @ManyToOne(fetch = FetchType.LAZY)
@@ -262,20 +255,9 @@ public class Files {
     private String f_typenum;   //분류번호 (뭔지 모름)
     //업로드 완료여부 미완료 0 완료 timestamp
 
-
-//    @Column(columnDefinition="DATETIME(0) default CURRENT_TIMESTAMP")
-//    private OffsetDateTime dateTime;
-
-//    // 엔티티가 생성되는 시점의 날짜 데이터를 기록하는 설정
-//    @CreationTimestamp
-//    private Timestamp reg_date;
-//    // 엔티티가 업데이트되는 시점의 날짜 데이터를 기록하는 설정
-//    @UpdateTimestamp
-//    private Timestamp mod_date;
-
     //=======================생성 메서드(210827원보라)==========================//
-    public static Files createFiles(PreinfoFileSaveRequest preinfoFileSaveRequest, Office office) {
-        Files files = new Files(preinfoFileSaveRequest.getF_labelcode(), office, preinfoFileSaveRequest.getB_num(), preinfoFileSaveRequest.getF_name(), preinfoFileSaveRequest.getF_pyear(), preinfoFileSaveRequest.getF_kperiod(), preinfoFileSaveRequest.getF_kplace(), preinfoFileSaveRequest.getF_db(), preinfoFileSaveRequest.getF_scan(), preinfoFileSaveRequest.getF_type(), preinfoFileSaveRequest.getF_location(), preinfoFileSaveRequest.getF_typenum());
+    public static Files createFiles(PreInfoFileRequest preInfoFileRequest, Office office) {
+        Files files = new Files(preInfoFileRequest.getF_labelcode(), office, preInfoFileRequest.getB_num(), preInfoFileRequest.getF_name(), preInfoFileRequest.getF_pyear(), preInfoFileRequest.getF_kperiod(), preInfoFileRequest.getF_kplace(), preInfoFileRequest.getF_db(), preInfoFileRequest.getF_scan(), preInfoFileRequest.getF_type(), preInfoFileRequest.getF_location(), preInfoFileRequest.getF_typenum());
         return files;
     }
 
@@ -288,19 +270,19 @@ public class Files {
 
 
     //=======================수정 메서드==========================//
-    public void updateFileinfo(Office office, String f_labelcode, String f_name, String f_pyear, F_kperiod f_kperiod, F_construct f_db, F_construct f_scan, String b_num, F_location f_location, F_kplace f_kplace, F_type f_type, String f_typenum){
-        this.office=office;                 // 기관
-        this.f_labelcode=f_labelcode;       // 레이블
-        this.f_name=f_name;                 // 철이름
-        this.f_pyear=f_pyear;               // 생산년도
-        this.f_kperiod=f_kperiod;           // 보존기간
-        this.f_db=f_db;                     // 구축여부
-        this.f_scan=f_scan;                 // 스캔여부
-        this.b_num=b_num;                   // 박스번호
-        this.f_location=f_location;         // 위치(서가, 층, 열, 번)
-        this.f_kplace=f_kplace;             // 보존장소
-        this.f_type=f_type;                 // 문서종류
-        this.f_typenum=f_typenum;           // 분류번호
+    public void preInfoUpdate(Office office, PreInfoFileUpdateInfo dto){
+        this.office= office;                 // 기관
+        this.f_labelcode = dto.getF_labelcode();       // 레이블
+        this.f_name=dto.getF_name();                 // 철이름
+        this.f_pyear=dto.getF_pyear();               // 생산년도
+        this.f_kperiod=dto.getF_kperiod();           // 보존기간
+        this.f_db=dto.getF_db();                     // 구축여부
+        this.f_scan=dto.getF_scan();                 // 스캔여부
+        this.b_num=dto.getB_num();                   // 박스번호
+        this.f_location=dto.getF_location();         // 위치(서가, 층, 열, 번)
+        this.f_kplace=dto.getF_kplace();             // 보존장소
+        this.f_type=dto.getF_type();                 // 문서종류
+        this.f_typenum=dto.getF_typenum();           // 분류번호
     }
 
     public void updateFileExport(String b_num, F_construct f_db, F_construct f_scan, String f_exportdate){
@@ -389,54 +371,6 @@ public class Files {
 
     public void updatePageSave() {
         this.f_pageSaved = "1";
-    }
-
-    @Override
-    public String toString() {
-        return "Files{" +
-                "f_id=" + f_id +
-                ", f_labelcode='" + f_labelcode + '\'' +
-                ", b_num='" + b_num + '\'' +
-                ", f_process=" + f_process +
-                ", f_volumecount='" + f_volumecount + '\'' +
-                ", f_volumeamount='" + f_volumeamount + '\'' +
-                ", f_name='" + f_name + '\'' +
-                ", f_pyear='" + f_pyear + '\'' +
-                ", f_kperiod=" + f_kperiod +
-                ", f_kmethod=" + f_kmethod +
-                ", f_kplace=" + f_kplace +
-                ", f_syear='" + f_syear + '\'' +
-                ", f_eyear='" + f_eyear + '\'' +
-                ", f_db=" + f_db +
-                ", f_scan=" + f_scan +
-                ", f_unitcode='" + f_unitcode + '\'' +
-                ", f_type=" + f_type +
-                ", f_newold=" + f_newold +
-                ", f_modify=" + f_modify +
-                ", f_regnum='" + f_regnum + '\'' +
-                ", f_page='" + f_page + '\'' +
-                ", f_efilenum='" + f_efilenum + '\'' +
-                ", f_inheritance=" + f_inheritance +
-                ", f_exportdate='" + f_exportdate + '\'' +
-                ", f_complete='" + f_complete + '\'' +
-                ", f_check='" + f_check + '\'' +
-                ", f_upload='" + f_upload + '\'' +
-                ", f_volumeSaved='" + f_volumeSaved + '\'' +
-                ", f_pageSaved='" + f_pageSaved + '\'' +
-                ", f_smallfunc='" + f_smallfunc + '\'' +
-                ", f_subname='" + f_subname + '\'' +
-                ", f_placeenddate='" + f_placeenddate + '\'' +
-                ", f_placereason='" + f_placereason + '\'' +
-                ", f_manager='" + f_manager + '\'' +
-                ", f_oldfileclassifynum='" + f_oldfileclassifynum + '\'' +
-                ", f_inheroffice='" + f_inheroffice + '\'' +
-                ", f_inherunitcode='" + f_inherunitcode + '\'' +
-                ", f_inherpyear='" + f_inherpyear + '\'' +
-                ", f_inherlabelcode='" + f_inherlabelcode + '\'' +
-                ", f_summary='" + f_summary + '\'' +
-                ", f_location='" + f_location + '\'' +
-                ", f_typenum='" + f_typenum + '\'' +
-                '}';
     }
 
     // 2022-02-28 이미지 개수 파악을 위한 메서드

@@ -1,5 +1,6 @@
 package fis.pms.domain;
 
+import fis.pms.exception.OfficeException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,5 +49,10 @@ public class Office {
         this.o_code = o_code;
         this.o_name = o_name;
         this.o_del = o_del;
+    }
+
+    public boolean checkName(String name) {
+        if(!o_name.equals(name)) return false;
+        else return true;
     }
 }

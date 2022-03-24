@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 import static fis.pms.domain.QFiles.files;
 import static fis.pms.domain.QOffice.office;
@@ -28,12 +29,13 @@ public class FileRepository extends FileQueryMethods {
     private final EntityManager em;
     private final JPAQueryFactory jpaQueryFactory;
 
-    public void save(Files files) {
+    public Long save(Files files) {
         em.persist(files);
+        return files.getF_id();
     }
 
-    public Files findOne(Long id) {
-        return em.find(Files.class, id);
+    public Optional<Files> findOne(Long id) {
+        return Optional.ofNullable(em.find(Files.class, id));
     }
 
     public Long remove(Files files) {
@@ -108,12 +110,11 @@ public class FileRepository extends FileQueryMethods {
 //                .getResultList();
 //    }
 
-    public List<Files> findByLabel(String f_labelcode) {
-        return jpaQueryFactory
+    public Optional<Files> findByLabel(String f_labelcode) {
+        return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(files)
                 .where(files.f_labelcode.eq(f_labelcode))
-                .fetch();
-
+                .fetchOne());
     }
 
     /*
