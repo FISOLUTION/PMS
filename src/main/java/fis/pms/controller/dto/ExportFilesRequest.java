@@ -3,6 +3,7 @@ package fis.pms.controller.dto;
 import fis.pms.service.dto.ExportInfo;
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -15,5 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExportFilesRequest {
+    @NotNull
     private List<ExportInfo> exportInfoList;
 }

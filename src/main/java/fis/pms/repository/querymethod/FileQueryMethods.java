@@ -1,11 +1,14 @@
 package fis.pms.repository.querymethod;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.DatePath;
 import fis.pms.domain.Office;
-import fis.pms.domain.QFiles;
 import fis.pms.domain.fileEnum.F_process;
 
+import java.time.LocalDate;
+
 import static fis.pms.domain.QFiles.*;
+import static fis.pms.domain.QWorkList.workList;
 
 public class FileQueryMethods {
 
@@ -46,18 +49,18 @@ public class FileQueryMethods {
         return files.b_num.loe(last_b_num);
     }
 
-    protected BooleanExpression first_DateGoe(String first_f_exportdate) {
-        if (first_f_exportdate == null) {
+    protected BooleanExpression first_DateGoe(DatePath<LocalDate> date) {
+        if (date == null) {
             return null;
         }
-        return files.f_exportdate.goe(first_f_exportdate);
+        return workList.date.goe(date);
     }
 
-    protected BooleanExpression last_DateLoe(String last_f_exportdate) {
-        if (last_f_exportdate == null) {
+    protected BooleanExpression last_DateLoe(DatePath<LocalDate> date) {
+        if (date == null) {
             return null;
         }
-        return files.f_exportdate.loe(last_f_exportdate);
+        return workList.date.loe(date);
     }
 
     protected BooleanExpression first_labelGoe(String first_label) {

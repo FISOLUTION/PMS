@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ExportInfo {
     private Long f_id;              // 철아이디
-    private String f_exportdate;    // 반출날짜
+    private String exportDate;      // 반출날짜
     private F_construct f_db;       // 구축여부
     private F_construct f_scan;     // 스캔여부
     private String b_num;           // 박스번호

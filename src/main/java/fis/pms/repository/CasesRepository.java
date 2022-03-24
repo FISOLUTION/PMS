@@ -36,8 +36,9 @@ public class CasesRepository extends CasesQueryMethod {
 
     QCases qCases = cases;
 
-    public void save(Cases cases) {
+    public Long save(Cases cases) {
         em.persist(cases);
+        return cases.getId();
     }
 
     public Cases findOne(Long id) {

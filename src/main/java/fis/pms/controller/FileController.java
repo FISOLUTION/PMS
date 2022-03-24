@@ -7,6 +7,7 @@ import fis.pms.controller.dto.ExportSearchResponse;
 import fis.pms.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class FileController {
     *    작성내용: 철 리스트 반출 등록
     */
     @PatchMapping("/file/export")
-    public ExportFilesResponse exportFiles(@RequestBody ExportFilesRequest exportFilesRequest) {
+    public ExportFilesResponse exportFiles(@Validated @RequestBody ExportFilesRequest exportFilesRequest) {
         List<Long> collect = exportFilesRequest.getExportInfoList().stream()
                 .map(fileService::exportFile)
                 .collect(Collectors.toList());

@@ -190,9 +190,9 @@ public class Files {
     @Column(columnDefinition = "varchar(1) default '0'")
     private F_inheritance f_inheritance;   //인수인계구분 (0.없음 1.인수 2.인계)
 
-    //@NotBlank
-    @Column(columnDefinition = "varchar(20) default 'none'")
-    private String f_exportdate;    //반출날짜
+//    //@NotBlank
+//    @Column(columnDefinition = "varchar(20) default 'none'")
+//    private String f_exportdate;    //반출날짜
 
 
     //@NotBlank
@@ -308,8 +308,7 @@ public class Files {
         this.b_num = exportInfo.getB_num();                   // 박스번호
         this.f_db = exportInfo.getF_db();                     // 구축여부
         this.f_scan = exportInfo.getF_scan();                 // 스캔여부
-        this.f_exportdate = exportInfo.getF_exportdate();     // 반출날짜
-        this.f_process = F_process.EXPORT;
+        this.f_process = F_process.EXPORT;                    // 철 작업 상황
     }
 
     /*
@@ -418,7 +417,6 @@ public class Files {
                 ", f_page='" + f_page + '\'' +
                 ", f_efilenum='" + f_efilenum + '\'' +
                 ", f_inheritance=" + f_inheritance +
-                ", f_exportdate='" + f_exportdate + '\'' +
                 ", f_complete='" + f_complete + '\'' +
                 ", f_check='" + f_check + '\'' +
                 ", f_upload='" + f_upload + '\'' +

@@ -11,6 +11,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import fis.pms.controller.dto.UploadSearchBoxRequest;
 import fis.pms.domain.Files;
 import fis.pms.domain.Office;
+import fis.pms.domain.QWorkList;
+import fis.pms.domain.fileEnum.F_process;
 import fis.pms.repository.querymethod.FileQueryMethods;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -20,6 +22,7 @@ import java.util.List;
 
 import static fis.pms.domain.QFiles.files;
 import static fis.pms.domain.QOffice.office;
+import static fis.pms.domain.QWorkList.workList;
 
 @Repository
 @RequiredArgsConstructor
@@ -28,8 +31,9 @@ public class FileRepository extends FileQueryMethods {
     private final EntityManager em;
     private final JPAQueryFactory jpaQueryFactory;
 
-    public void save(Files files) {
+    public Long save(Files files) {
         em.persist(files);
+        return files.getF_id();
     }
 
     public Files findOne(Long id) {
@@ -140,7 +144,7 @@ public class FileRepository extends FileQueryMethods {
                 .selectFrom(files)
                 .where(first_labelGoe(first_label),
                         last_labelLoe(last_label),
-                        files.f_exportdate.eq("none"))
+                        files.f_process.goe(F_process.EXPORT))
                 .fetch();
     }
 
@@ -154,9 +158,10 @@ public class FileRepository extends FileQueryMethods {
         return jpaQueryFactory
                 .selectFrom(files)
                 .leftJoin(files.office, office).fetchJoin()
-                .where(first_DateGoe(first_f_exportdate),
-                        last_DateLoe(last_f_exportdate),
-                        files.f_exportdate.ne("none"))
+                .join(files.workList, workList)
+                .where(first_DateGoe(workList.date),
+                        last_DateLoe(workList.date),
+                        files.f_process.goe(F_process.EXPORT))
                 .fetch();
     }
 
@@ -171,7 +176,7 @@ public class FileRepository extends FileQueryMethods {
                 .leftJoin(files.office, office).fetchJoin()
                 .where(first_b_numGoe(first_b_num),
                         last_b_numLoe(last_b_num),
-                        files.f_exportdate.ne("none"))
+                        files.f_process.goe(F_process.EXPORT))
                 .fetch();
     }
 

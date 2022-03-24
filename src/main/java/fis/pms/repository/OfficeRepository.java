@@ -19,8 +19,9 @@ public class OfficeRepository {
     //스프링 빈 자동 등록
     private final EntityManager em;
 
-    public void save(Office office){
+    public String save(Office office){
         em.persist(office);
+        return office.getO_code();
     }
 
     public Office findOne(String code){
