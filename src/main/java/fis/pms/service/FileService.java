@@ -24,7 +24,6 @@ public class FileService {
 
     private final FileRepository fileRepository;
     private final WorkListRepository workListRepository;
-    private final ImageService imageService;
 
     /**
      * 작성날짜: 2022/03/23 11:34 AM
@@ -37,14 +36,6 @@ public class FileService {
 
         if (findFile.getF_process().equals(F_process.PREINFO)) {
 
-            // 소속 기관코드 디렉토리가 없다면 생성
-            mkdir(imageService.getOriginOfficePath(findFile));
-            mkdir(imageService.getModifyOfficePath(findFile));
-
-            // 소속기관 디렉토리 안에 해당 철의 이미지를 저장하기위한 디레토리 생성
-            mkdir(imageService.getOriginFullPath(findFile));
-            mkdir(imageService.getModifyFullPath(findFile));
-
             // file export 처리
             findFile.exportFile(exportInfo);
             WorkList workList = WorkList.createWorkList(findFile, F_process.EXPORT);
@@ -53,13 +44,6 @@ public class FileService {
             return exportInfo.getF_id();
         }
         return null;
-    }
-
-    public void mkdir(String path) {
-        File originDirectory = new File(path);
-        if (!originDirectory.exists()) {
-            originDirectory.mkdir();
-        }
     }
 
     /**

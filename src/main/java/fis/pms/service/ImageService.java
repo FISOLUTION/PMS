@@ -1,5 +1,6 @@
 package fis.pms.service;
 
+import fis.pms.controller.dto.ImagesMaxnumResponse;
 import fis.pms.controller.dto.SaveImageRequest;
 import fis.pms.domain.Files;
 import fis.pms.repository.FileRepository;
@@ -12,9 +13,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+*   작성날짜: 2022/03/25 2:11 PM
+*   작성자: 이승범
+*   작성내용: 이미지 관련 로직을 위한 service
+*/
 @Slf4j
 @Service
 @Transactional
@@ -29,34 +35,47 @@ public class ImageService {
     @Value("${image.path.modify}")
     private String modifyPath;
 
-    public List<Files> searchFilesByScan(){
-        checkHaveOriginImages();
-        return fileRepository.findByScanWithOffice();
+    public String getFullPath(Long fileId, String state) {
+        if (state.equals("origin")) {
+            return originPath + fileId + '/';
+        }
+        return modifyPath + fileId + '/';
     }
 
-    public void checkHaveOriginImages() {
-        List<Files> uncheckedFileList = fileRepository.findByUnchecked();
-        List<Long> willCheckFileList = new ArrayList<>();
-        uncheckedFileList.forEach(file->{
-            if(checkHaveImage(getOriginFullPath(file))){
-                willCheckFileList.add(file.getF_id());
+    @Transactional
+    public Long storeImages(SaveImageRequest request, String state) throws IOException {
+
+        // 등록된 철인지 검사
+        Files findFile = fileRepository.findOne(request.getFileId());
+        if (findFile == null)
+            return null;
+
+        // 철의 이미지들이 저장될 디렉토리 생성(overwrite)
+        String path = getFullPath(request.getFileId(), state);
+        mkdir(path);
+
+        // request에 담겨있는 이미지들을 생성한 디렉토리에 저장
+        long imageCnt = 0;
+        for (MultipartFile multipartFile : request.getImages()) {
+            if (!multipartFile.isEmpty()) {
+                // 이미지 저장
+                multipartFile.transferTo(new File(path + (++imageCnt)));
             }
-        });
-        fileRepository.updateScan(willCheckFileList);
+        }
+        findFile.imageUpload(imageCnt, state);
+
+        // 철의 이미지 갯수 반환
+        return imageCnt;
     }
 
-    private Boolean checkHaveImage(String path) {
-        File directory = new File(path);
-        return directory.listFiles() != null;
-    }
-
-    public void delSubFiles(String path) {
+    private void mkdir(String path) {
         File directory = new File(path);
         while (directory.exists()) {
             File[] subFiles = directory.listFiles();
             for (int i = 0; i < subFiles.length; i++) {
                 subFiles[i].delete();
             }
+            System.out.println(directory.length());
             if (subFiles.length == 0) {
                 directory.delete();
             }
@@ -66,21 +85,13 @@ public class ImageService {
         }
     }
 
-
-    public String getModifyOfficePath(Files file) {
-        return modifyPath + file.getOffice().getO_code() + '/';
-    }
-
-    public String getOriginOfficePath(Files file) {
-        return originPath + file.getOffice().getO_code() + '/';
-    }
-
-    public String getModifyFullPath(Files file) {
-        return modifyPath + file.getOffice().getO_code() + '/' + file.getF_labelcode() + '/';
-    }
-
-    public String getOriginFullPath(Files file) {
-        return originPath + file.getOffice().getO_code() + '/' + file.getF_labelcode() + '/';
+    public ImagesMaxnumResponse imagesMaxNum() {
+        List<Files> filesList = fileRepository.findAllWithImages();
+        List<ImagesMaxnumResponse.ImagesNum> collect = filesList.stream()
+                .map(files -> new ImagesMaxnumResponse.ImagesNum(String.valueOf(files.getF_id()), files.getImages()))
+                .collect(Collectors.toList());
+        ImagesMaxnumResponse imagesMaxnumResponse = new ImagesMaxnumResponse(collect);
+        return imagesMaxnumResponse;
     }
 
 }
