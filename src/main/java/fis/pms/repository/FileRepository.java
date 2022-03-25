@@ -145,7 +145,7 @@ public class FileRepository extends FileQueryMethods {
                 .selectFrom(files)
                 .where(first_labelGoe(first_label),
                         last_labelLoe(last_label),
-                        files.f_process.goe(F_process.EXPORT))
+                        files.f_process.lt(F_process.EXPORT))
                 .fetch();
     }
 
@@ -246,5 +246,14 @@ public class FileRepository extends FileQueryMethods {
                 .executeUpdate();
         em.flush();
         em.clear();
+    }
+
+    public List<Files> findByScanWithOffice() {
+        return em.createQuery("select f " +
+                        "from Files f " +
+                        "join fetch f.office " +
+                        "where f.f_process = :scan", Files.class)
+                .setParameter("scan", F_process.SCAN)
+                .getResultList();
     }
 }

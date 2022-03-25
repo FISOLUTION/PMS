@@ -29,6 +29,11 @@ public class ImageService {
     @Value("${image.path.modify}")
     private String modifyPath;
 
+    public List<Files> searchFilesByScan(){
+        checkHaveOriginImages();
+        return fileRepository.findByScanWithOffice();
+    }
+
     public void checkHaveOriginImages() {
         List<Files> uncheckedFileList = fileRepository.findByUnchecked();
         List<Long> willCheckFileList = new ArrayList<>();
@@ -43,13 +48,6 @@ public class ImageService {
     private Boolean checkHaveImage(String path) {
         File directory = new File(path);
         return directory.listFiles() != null;
-    }
-
-    public void mkdir(String path) {
-        File originDirectory = new File(path);
-        if (!originDirectory.exists()) {
-            originDirectory.mkdir();
-        }
     }
 
     public void delSubFiles(String path) {

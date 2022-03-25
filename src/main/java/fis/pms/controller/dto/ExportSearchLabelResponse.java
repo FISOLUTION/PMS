@@ -19,7 +19,6 @@ import java.util.List;
 @NoArgsConstructor
 public class ExportSearchLabelResponse {
 
-
     private Long f_id;              // 철아이디
     private String f_labelcode;     // 레이블
     private String f_name;          // 철이름

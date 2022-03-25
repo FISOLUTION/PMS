@@ -1,18 +1,18 @@
 package fis.pms.controller;
 
-import fis.pms.controller.dto.ExportFilesRequest;
-import fis.pms.controller.dto.ExportFilesResponse;
-import fis.pms.controller.dto.ExportSearchLabelResponse;
-import fis.pms.controller.dto.ExportSearchResponse;
+import fis.pms.controller.dto.*;
+import fis.pms.domain.Files;
 import fis.pms.domain.WorkList;
 import fis.pms.repository.WorkListRepository;
 import fis.pms.service.FileService;
+import fis.pms.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class FileController {
 
     private final FileService fileService;
-    private final WorkListRepository workListRepository;
+    private final ImageService imageService;
 
     /**
      * 작성날짜: 2022/03/22 5:47 PM
@@ -49,7 +49,7 @@ public class FileController {
     public List<ExportSearchLabelResponse> searchFilesByLabelCode(@RequestParam(value = "slabel", required = false) String slabel,
                                                                   @RequestParam(value = "elabel", required = false) String elabel) {
 
-        return fileService.searchFileByLabelCode(slabel, elabel).stream()
+        return fileService.searchFilesByLabelCode(slabel, elabel).stream()
                 .map(ExportSearchLabelResponse::createExportSearchLabelResponse)
                 .collect(Collectors.toList());
     }
@@ -80,6 +80,14 @@ public class FileController {
 
         return fileService.searchFilesByBox(sbox, ebox).stream()
                 .map(ExportSearchResponse::createExportSearchResponse)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/file/scan")
+    public List<SearchScanResponse> searchScanFiles(){
+        List<Files> scanFiles = imageService.searchFilesByScan();
+        return scanFiles.stream()
+                .map(SearchScanResponse::createSearchScanResponse)
                 .collect(Collectors.toList());
     }
 

@@ -38,12 +38,12 @@ public class FileService {
         if (findFile.getF_process().equals(F_process.PREINFO)) {
 
             // 소속 기관코드 디렉토리가 없다면 생성
-            imageService.mkdir(imageService.getOriginOfficePath(findFile));
-            imageService.mkdir(imageService.getModifyOfficePath(findFile));
+            mkdir(imageService.getOriginOfficePath(findFile));
+            mkdir(imageService.getModifyOfficePath(findFile));
 
             // 소속기관 디렉토리 안에 해당 철의 이미지를 저장하기위한 디레토리 생성
-            imageService.mkdir(imageService.getOriginFullPath(findFile));
-            imageService.mkdir(imageService.getModifyFullPath(findFile));
+            mkdir(imageService.getOriginFullPath(findFile));
+            mkdir(imageService.getModifyFullPath(findFile));
 
             // file export 처리
             findFile.exportFile(exportInfo);
@@ -55,12 +55,19 @@ public class FileService {
         return null;
     }
 
+    public void mkdir(String path) {
+        File originDirectory = new File(path);
+        if (!originDirectory.exists()) {
+            originDirectory.mkdir();
+        }
+    }
+
     /**
      * 작성날짜: 2022/03/23 12:13 PM
      * 작성자: 이승범
      * 작성내용: 반출된 철 레이블 범위 검색
      */
-    public List<Files> searchFileByLabelCode(String slabel, String elabel) {
+    public List<Files> searchFilesByLabelCode(String slabel, String elabel) {
         return fileRepository.findByLabelRange(slabel, elabel);
     }
 
