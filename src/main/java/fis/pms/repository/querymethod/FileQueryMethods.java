@@ -49,14 +49,14 @@ public class FileQueryMethods {
         return files.b_num.loe(last_b_num);
     }
 
-    protected BooleanExpression first_DateGoe(DatePath<LocalDate> date) {
+    protected BooleanExpression first_DateGoe(LocalDate date) {
         if (date == null) {
             return null;
         }
         return workList.date.goe(date);
     }
 
-    protected BooleanExpression last_DateLoe(DatePath<LocalDate> date) {
+    protected BooleanExpression last_DateLoe(LocalDate date) {
         if (date == null) {
             return null;
         }

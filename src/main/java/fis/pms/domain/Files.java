@@ -447,4 +447,8 @@ public class Files {
             f_process = F_process.IMGMODIFY;
         }
     }
+
+    public void completeScan() {
+        f_process = F_process.SCAN;
+    }
 }

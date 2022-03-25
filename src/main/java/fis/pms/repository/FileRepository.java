@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.util.List;
 
 import static fis.pms.domain.QFiles.files;
@@ -153,14 +154,14 @@ public class FileRepository extends FileQueryMethods {
     *   작성자: 이승범
     *   작성내용: 날짜별 동적쿼리
     */
-    public List<Files> findByDateRange(String first_f_exportdate, String last_f_exportdate) {
+    public List<Files> findByDateRange(LocalDate sdate, LocalDate edate) {
         //JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         return jpaQueryFactory
                 .selectFrom(files)
                 .leftJoin(files.office, office).fetchJoin()
                 .join(files.workList, workList)
-                .where(first_DateGoe(workList.date),
-                        last_DateLoe(workList.date),
+                .where(first_DateGoe(sdate),
+                        last_DateLoe(edate),
                         files.f_process.goe(F_process.EXPORT))
                 .fetch();
     }
@@ -181,7 +182,10 @@ public class FileRepository extends FileQueryMethods {
     }
 
     public Files findOneWithOffice(Long fileId) {
-        return em.createQuery("select f from Files f join fetch f.office where f.f_id=:fileId", Files.class)
+        return em.createQuery("select f " +
+                        "from Files f " +
+                        "join fetch f.office " +
+                        "where f.f_id=:fileId", Files.class)
                 .setParameter("fileId", fileId)
                 .getSingleResult();
     }
@@ -217,5 +221,30 @@ public class FileRepository extends FileQueryMethods {
     public void resetAll() {
         em.createQuery("delete from Files")
                 .executeUpdate();
+    }
+
+    public List<Files> findByIdsWithOffice(List<Long> fileIds) {
+        return em.createQuery("select f " +
+                        "from Files f " +
+                        "join fetch f.office " +
+                        "where f.f_id = :fileIds", Files.class)
+                .setParameter("fileIds", fileIds)
+                .getResultList();
+    }
+
+    public List<Files> findByUnchecked() {
+        return em.createQuery("select f " +
+                        "from Files f " +
+                        "where f.f_process=:export", Files.class)
+                .setParameter("export", F_process.EXPORT)
+                .getResultList();
+    }
+
+    public void updateScan(List<Long> willCheckFileIds) {
+        em.createQuery("update Files f set f.f_process=:scan where f.f_id in :ids")
+                .setParameter("ids", willCheckFileIds)
+                .executeUpdate();
+        em.flush();
+        em.clear();
     }
 }

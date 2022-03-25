@@ -4,13 +4,18 @@ import fis.pms.controller.dto.ExportFilesRequest;
 import fis.pms.controller.dto.ExportFilesResponse;
 import fis.pms.controller.dto.ExportSearchLabelResponse;
 import fis.pms.controller.dto.ExportSearchResponse;
+import fis.pms.domain.WorkList;
+import fis.pms.repository.WorkListRepository;
 import fis.pms.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -19,28 +24,30 @@ import java.util.stream.Collectors;
 public class FileController {
 
     private final FileService fileService;
+    private final WorkListRepository workListRepository;
 
     /**
-    *    작성날짜: 2022/03/22 5:47 PM
-    *    작성자: 이승범
-    *    작성내용: 철 리스트 반출 등록
-    */
+     * 작성날짜: 2022/03/22 5:47 PM
+     * 작성자: 이승범
+     * 작성내용: 철 리스트 반출 등록
+     */
     @PatchMapping("/file/export")
     public ExportFilesResponse exportFiles(@Validated @RequestBody ExportFilesRequest exportFilesRequest) {
         List<Long> collect = exportFilesRequest.getExportInfoList().stream()
                 .map(fileService::exportFile)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         return new ExportFilesResponse(collect);
     }
 
     /**
-    *   작성날짜: 2022/03/23 11:38 AM
-    *   작성자: 이승범
-    *   작성내용: 반출된 철 레이블 범위 검색
-    */
+     * 작성날짜: 2022/03/23 11:38 AM
+     * 작성자: 이승범
+     * 작성내용: 반출된 철 레이블 범위 검색
+     */
     @GetMapping("/file/export/label")
     public List<ExportSearchLabelResponse> searchFilesByLabelCode(@RequestParam(value = "slabel", required = false) String slabel,
-                                                                  @RequestParam(value = "elabel", required = false) String elabel){
+                                                                  @RequestParam(value = "elabel", required = false) String elabel) {
 
         return fileService.searchFileByLabelCode(slabel, elabel).stream()
                 .map(ExportSearchLabelResponse::createExportSearchLabelResponse)
@@ -48,24 +55,25 @@ public class FileController {
     }
 
     /**
-    *   작성날짜: 2022/03/23 12:59 PM
-    *   작성자: 이승범
-    *   작성내용: 반출된 철 날짜 범위 검색
-    */
+     * 작성날짜: 2022/03/23 12:59 PM
+     * 작성자: 이승범
+     * 작성내용: 반출된 철 날짜 범위 검색
+     */
     @GetMapping("/file/export/date")
-    public List<ExportSearchResponse> searchFilesByDate(@RequestParam(value = "sdate", required = false) String sdate,
-                                                        @RequestParam(value = "edate", required = false) String edate) {
+    public List<ExportSearchResponse> searchFilesByDate(
+            @RequestParam( required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate sdate,
+            @RequestParam( required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate edate) {
 
-       return fileService.searchFilesByDate(sdate, edate).stream()
-               .map(ExportSearchResponse::createExportSearchResponse)
-               .collect(Collectors.toList());
+        return fileService.searchFilesByDate(sdate, edate).stream()
+                .map(ExportSearchResponse::createExportSearchResponse)
+                .collect(Collectors.toList());
     }
 
     /**
-    *   작성날짜: 2022/03/23 1:20 PM
-    *   작성자: 이승범
-    *   작성내용: 반출된 철 박스 범위 검색
-    */
+     * 작성날짜: 2022/03/23 1:20 PM
+     * 작성자: 이승범
+     * 작성내용: 반출된 철 박스 범위 검색
+     */
     @GetMapping("/file/export/box")
     public List<ExportSearchResponse> searchFilesByBox(@RequestParam(value = "sbox", required = false) String sbox,
                                                        @RequestParam(value = "ebox", required = false) String ebox) {

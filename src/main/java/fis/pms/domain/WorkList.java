@@ -1,13 +1,16 @@
 package fis.pms.domain;
 
 import fis.pms.domain.fileEnum.F_process;
+import fis.pms.domain.fileEnum.F_processConverter;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class WorkList {
@@ -22,6 +25,8 @@ public class WorkList {
     @ManyToOne(fetch = FetchType.LAZY)
     private Worker worker;
 
+    @Convert(converter = F_processConverter.class)
+    @Column(length = 2)
     private F_process f_process;
 
     private LocalDate date;
@@ -33,6 +38,7 @@ public class WorkList {
         workList.mappingFile(files);
         return workList;
     }
+
     /**
     *   작성날짜: 2022/03/24 10:53 AM
     *   작성자: 이승범

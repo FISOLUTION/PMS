@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -23,12 +24,7 @@ public class FileService {
 
     private final FileRepository fileRepository;
     private final WorkListRepository workListRepository;
-
-    @Value("${image.path.origin}")
-    private String originPath;
-
-    @Value("${image.path.modify}")
-    private String modifyPath;
+    private final ImageService imageService;
 
     /**
      * 작성날짜: 2022/03/23 11:34 AM
@@ -39,33 +35,24 @@ public class FileService {
 
         Files findFile = fileRepository.findOneWithOffice(exportInfo.getF_id());
 
-        // 기관코드로 이미지 저장 디렉토리 생성
-        makeOfficeDir(findFile.getOffice().getO_code());
+        if (findFile.getF_process().equals(F_process.PREINFO)) {
 
-        // file export 처리
-        findFile.exportFile(exportInfo);
-        WorkList workList = WorkList.createWorkList(findFile, F_process.EXPORT);
-        workListRepository.save(workList);
+            // 소속 기관코드 디렉토리가 없다면 생성
+            imageService.mkdir(imageService.getOriginOfficePath(findFile));
+            imageService.mkdir(imageService.getModifyOfficePath(findFile));
 
-        return exportInfo.getF_id();
-    }
+            // 소속기관 디렉토리 안에 해당 철의 이미지를 저장하기위한 디레토리 생성
+            imageService.mkdir(imageService.getOriginFullPath(findFile));
+            imageService.mkdir(imageService.getModifyFullPath(findFile));
 
-    /**
-    *   작성날짜: 2022/03/24 10:16 AM
-    *   작성자: 이승범
-    *   작성내용: 이미지 저장을 위한 기관코드 디렉토리 생성
-    */
-    private void makeOfficeDir(String o_code) {
-        String originOfficePath = originPath + o_code + '/';
-        String modifyOfficePath = modifyPath + o_code + '/';
-        File originDirectory = new File(originOfficePath);
-        if (!originDirectory.exists()) {
-            originDirectory.mkdir();
+            // file export 처리
+            findFile.exportFile(exportInfo);
+            WorkList workList = WorkList.createWorkList(findFile, F_process.EXPORT);
+            workListRepository.save(workList);
+
+            return exportInfo.getF_id();
         }
-        File modifyDirectory = new File(modifyOfficePath);
-        if (!modifyDirectory.exists()) {
-            modifyDirectory.mkdir();
-        }
+        return null;
     }
 
     /**
@@ -82,7 +69,7 @@ public class FileService {
      * 작성자: 이승범
      * 작성내용: 반출된 철 날짜 범위 검색
      */
-    public List<Files> searchFilesByDate(String sdate, String edate) {
+    public List<Files> searchFilesByDate(LocalDate sdate, LocalDate edate) {
         return fileRepository.findByDateRange(sdate, edate);
     }
 
