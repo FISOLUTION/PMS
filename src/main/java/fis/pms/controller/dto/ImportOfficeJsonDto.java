@@ -8,5 +8,5 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class ImportOfficeJsonDto {
-    List<OfficeExcel> data;
+    List<OfficeForm> data;
 }

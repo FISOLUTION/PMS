@@ -52,7 +52,7 @@ public class FileService {
      * @return 사전 조사한 철의 id를 반환합니다
      */
     public Long preInfoFile(PreInfoFileInfo preInfoFileInfo) throws FilesException, OfficeException {
-        Office office = officeService.findOffice(preInfoFileInfo.getO_code());
+        Office office = officeService.findById(preInfoFileInfo.getO_code());
         if(!officeService.validateOffice(office.getO_code(), office.getO_name())) throw new OfficeException("해당 기관코드와 기관이름이 맞지 않습니다");
         // dto -> Entity
         Files file = preInfoFileInfo.createFiles(office);
@@ -75,7 +75,7 @@ public class FileService {
      */
     public Long updatePreInfo(PreInfoFileUpdateInfo dto) throws OfficeException, FilesException {
         // 기관 유효성 검사
-        Office office = officeService.findOffice(dto.getO_code());
+        Office office = officeService.findById(dto.getO_code());
         if(!officeService.validateOffice(office.getO_code(), office.getO_name())) throw new OfficeException("해당 기관코드와 기관이름이 맞지 않습니다");
         // dto -> Entity
         Files file = fileRepository.findOne(dto.getF_id())
@@ -95,7 +95,7 @@ public class FileService {
     }
 
     public List<Files> findPreInfoFile(PreInfoFileSearchDTO searchDTO) throws OfficeException {
-        Office office = officeService.findOffice(searchDTO.getO_code());
+        Office office = officeService.findById(searchDTO.getO_code());
         return fileRepository.preInfoSearch(office, searchDTO.getF_labelcode(), searchDTO.getF_name(), searchDTO.getF_pyear(), searchDTO.getBNum());
     }
 
