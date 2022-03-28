@@ -11,6 +11,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import fis.pms.controller.dto.UploadSearchBoxRequest;
 import fis.pms.domain.Files;
 import fis.pms.domain.Office;
+import fis.pms.domain.QOffice;
+import fis.pms.repository.dto.PreInfoSearch;
 import fis.pms.repository.querymethod.FileQueryMethods;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -95,7 +97,7 @@ public class FileRepository extends FileQueryMethods {
      * 작성내용: findAll,findByLabel
      */
     public List<Files> findAll() {
-        return em.createQuery("select f from Files f", Files.class)
+        return em.createQuery("select f from Files f join fetch f.office ", Files.class)
                 .getResultList();
     }
 
@@ -123,11 +125,12 @@ public class FileRepository extends FileQueryMethods {
      * 작성내용: findByOcodeLabelFnamePyear
      */
 
-    public List<Files> findByOcodeLabelFnamePyear(Office office, String f_labelcode, String f_name, String f_pyear) {
-        // JPAQueryFactory jpaQueryFactory = new JPAQueryFactory(em);
+    public List<Files> preInfoSearch(Office office, String label, String name, String sYear, String bNum) {
         return jpaQueryFactory
                 .selectFrom(files)
-                .where(o_codeEq(office), f_labelcodeEq(f_labelcode), f_nameEq(f_name), f_pyearEq(f_pyear))
+                .join(files.office)
+                .fetchJoin()
+                .where(o_codeEq(office), f_labelcodeEq(label), f_nameEq(name), f_pyearEq(sYear), bNumLike(bNum))
                 .fetch();
     }
 

@@ -10,6 +10,7 @@ import fis.pms.service.excelService.ExcelColumn;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.Optional;
 
@@ -18,11 +19,13 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ExcelUpdateDTO {
     @ExcelColumn(name = "레이블")
+    @Length(max = 6)
     private String f_labelcode;    //철번호(레이블번호)
     @ExcelColumn(name = "보존기간")
     private String f_kperiod;   //철보존기간 (01-1년, 03-3년, 05-5년, 10-10년, 20-20년, 25-30년, 30-준영구, 40-영구)
     @ExcelColumn(name = "분류번호")
     private String f_typenum; // 분류번호
+    @Length(max = 4)
     @ExcelColumn(name = "생산년도")
     private String f_pyear; //철생산년도
     @ExcelColumn(name = "문서유형")
@@ -40,6 +43,7 @@ public class ExcelUpdateDTO {
     @ExcelColumn(name = "보존장소")
     private String f_kplace;    //보존장소 (1-기록관, 2-전문관리기관)
     @ExcelColumn(name = "박스번호")
+    @Length(max = 3)
     private String b_num;   //박스 번호
     @ExcelColumn(name = "처리과코드")
     private String o_code;  //처리과 코드

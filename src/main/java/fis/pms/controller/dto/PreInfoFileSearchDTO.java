@@ -1,4 +1,4 @@
-package fis.pms.repository.search;
+package fis.pms.controller.dto;
 
 
 import fis.pms.domain.Office;
@@ -13,9 +13,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class FindPreinfoBySearch {
-    private Office office;
+public class PreInfoFileSearchDTO {
+    private String o_code;
     private String f_labelcode;
     private String f_name;
     private String f_pyear;
+    private String bNum;
 }

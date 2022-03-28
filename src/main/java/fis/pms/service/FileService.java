@@ -6,11 +6,13 @@ import fis.pms.domain.Office;
 import fis.pms.exception.FilesException;
 import fis.pms.exception.OfficeException;
 import fis.pms.repository.FileRepository;
+import fis.pms.controller.dto.PreInfoFileSearchDTO;
 import fis.pms.service.dto.PreInfoFileInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -33,7 +35,7 @@ public class FileService {
     }
 
     public Long save(Files files) throws FilesException {
-        if(isEmpty(files.getF_labelcode())) throw new FilesException();
+        if(isEmpty(files.getF_labelcode())) throw new FilesException("중복된 레이블 코드가 있습니다");
         return fileRepository.save(files);
     }
 
@@ -90,5 +92,14 @@ public class FileService {
     public Long remove(Long id) throws FilesException {
         Optional<Files> file = findOne(id);
         return fileRepository.remove(file.orElseThrow( ()-> new FilesException(id, "존재하지 않는 철입니다")));
+    }
+
+    public List<Files> findPreInfoFile(PreInfoFileSearchDTO searchDTO) throws OfficeException {
+        Office office = officeService.findOffice(searchDTO.getO_code());
+        return fileRepository.preInfoSearch(office, searchDTO.getF_labelcode(), searchDTO.getF_name(), searchDTO.getF_pyear(), searchDTO.getBNum());
+    }
+
+    public List<Files> findAll() {
+        return fileRepository.findAll();
     }
 }
