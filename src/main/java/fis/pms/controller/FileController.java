@@ -4,16 +4,16 @@ import fis.pms.controller.dto.PreInfoFileUpdateInfo;
 import fis.pms.controller.dto.Result;
 import fis.pms.controller.dto.filedto.*;
 import fis.pms.domain.Files;
-import fis.pms.domain.Office;
+import fis.pms.exception.ExcelException;
 import fis.pms.exception.FilesException;
 import fis.pms.exception.OfficeException;
+import fis.pms.controller.dto.PreInfoFileSearchDTO;
 import fis.pms.service.FileService;
 import fis.pms.service.dto.PreInfoFileInfo;
-import fis.pms.service.dto.PreInfoFileRequest;
+import fis.pms.service.excelService.ExcelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,11 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Stream;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -34,6 +31,7 @@ import java.util.stream.Stream;
 public class FileController {
 
     private final FileService fileService;
+    private final ExcelService excelService;
 
     //사전정보 저장 철기준
 
@@ -66,62 +64,51 @@ public class FileController {
         return null;
     }
 
-
+    /**
+     * @author 현승구
+     * @param request
+     * @return 삭제된 철의 id
+     * @throws FilesException 삭제할 철이 존재하지 않으면 throw 합니다
+     * @implNote 철을 삭제합니다
+     */
     @DeleteMapping("/file/preInfo")
-    public PreinfoFileDelResponse deletePreInfo(@RequestBody PreInfoFileDelrequest preInfoFileDelrequest) {
-
-        preInfoFileDelrequest.getF_id().forEach(id -> {
+    public PreinfoFileDelResponse deletePreInfo(@RequestBody PreInfoFileDelrequest request) throws FilesException {
+        PreinfoFileDelResponse response = new PreinfoFileDelResponse();
+        request.getF_id().stream().forEach(id -> {
             fileService.remove(id);
-        })
-        PreinfoFileDelResponse preinfoFileDelResponse = new PreinfoFileDelResponse();
-        return preinfoFileDelResponse;
+            request.getF_id().add(id);
+        });
+        return response;
     }
 
-    //사전정보 검색
-    @GetMapping("/preinfo/file")
-    public List<PreinfoFileSearchResponse> searchResponse(@ModelAttribute PreInfoSearchDTO preInfoSearchDTO,
-                                                          BindingResult bindingResult) {
-        FindPreinfoBySearch findPreinfoBySearch = new FindPreinfoBySearch();
-        if (preInfoSearchDTO.getO_code() != null) {
-            Office office = commonService.findOne(preInfoSearchDTO.getO_code());
-            findPreinfoBySearch.setOffice(office);
-        }
-        findPreinfoBySearch.setF_labelcode(preInfoSearchDTO.getF_labelcode());
-        findPreinfoBySearch.setF_name(preInfoSearchDTO.getF_name());
-        findPreinfoBySearch.setF_pyear(preInfoSearchDTO.getF_pyear());
-
-        return preInfoService.searchFileByPreinfo(findPreinfoBySearch);
+    /**
+     *
+     * @param searchDTO
+     * @return
+     * @throws OfficeException - 기관코드 없으면
+     */
+    @GetMapping("/preInfo/file")
+    public List<PreInfoFileSearchResponse> searchResponse(@ModelAttribute PreInfoFileSearchDTO searchDTO) throws OfficeException {
+        return fileService.findPreInfoFile(searchDTO).stream()
+                .map(files -> PreInfoFileSearchResponse.createResponse(files))
+                .collect(Collectors.toList());
     }
 
     @PostMapping("preinfo/excel")
-    public Result<List> excelUpdate(HttpServletRequest request, HttpServletResponse response, @RequestParam("excelfile") MultipartFile file) throws IOException, NoSuchMethodException {
+    public Result<List> excelUpdate(@RequestParam MultipartFile excelFile) throws ExcelException, NoSuchMethodException {
+        List<PreInfoFileInfo> preInfoFileInfoList = excelService.excelToJson(excelFile, ExcelUpdateDTO.class).stream()
+                .map(data -> new PreInfoFileInfo((ExcelUpdateDTO)data))
+                .collect(Collectors.toList());
+        preInfoFileInfoList.forEach(preInfoFileInfo -> {
+            fileService.preInfoFile(preInfoFileInfo);
+        });
 
-        List<ExcelUpdateDTO> dataList = new ArrayList<>();
-        List<PreInfoFileRequest> daoList = new ArrayList<>();
-        try {
-            preInfoService.reset();
-            excelService.excelToJson(file, ExcelUpdateDTO.class).forEach(data -> {
-                dataList.add((ExcelUpdateDTO) data);
-                daoList.add(new PreInfoFileRequest((ExcelUpdateDTO) data));
-            });
-            daoList.forEach(preInfoFileRequest -> {
-                try {
-                    preInfoService.savePreinfo(preInfoFileRequest);
-                } catch (Exception e){
-
-                }
-            });
-            return new Result<>(daoList);
-        } catch (Exception exception){
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            exception.printStackTrace();
-            return null;
-        }
+        return new Result<>(preInfoFileInfoList);
     }
 
     @GetMapping("preinfo/excel")
     public void excelFile(HttpServletResponse response) throws IOException {
-        List<Files> files = preInfoService.findAll();
+        List<Files> files = fileService.findAll();
         List<ExcelUpdateDTO> dataList = new ArrayList<>();
         files.stream().forEach(data -> {
             ExcelUpdateDTO excelUpdateDTO = new ExcelUpdateDTO(data);

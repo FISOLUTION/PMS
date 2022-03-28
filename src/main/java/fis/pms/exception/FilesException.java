@@ -1,10 +1,10 @@
 package fis.pms.exception;
 
-public class FilesException extends Exception {
+public class FilesException extends RuntimeException {
 
     private Long id;
 
-    public FilesException() {
+    public FilesException(Exception e) {
     }
 
     public FilesException(String message) {
@@ -12,8 +12,8 @@ public class FilesException extends Exception {
     }
 
     public FilesException(Long id, String message) {
-        this.id = id;
         super(message);
+        this.id = id;
     }
 
     @Override

@@ -56,7 +56,7 @@ public class PreInfoFileInfo {
     }
 
 
-    public PreInfoFileRequest(ExcelUpdateDTO excelUpdateDTO) {
+    public PreInfoFileInfo(ExcelUpdateDTO excelUpdateDTO) {
         F_kperiodConverter f_kperiodConverter = new F_kperiodConverter();
         F_constructConverter f_constructConverter = new F_constructConverter();
         F_kplaceConverter f_kplaceConverter = new F_kplaceConverter();
