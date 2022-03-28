@@ -255,13 +255,6 @@ public class Files {
     private String f_typenum;   //분류번호 (뭔지 모름)
     //업로드 완료여부 미완료 0 완료 timestamp
 
-    //=======================생성 메서드(210827원보라)==========================//
-    public static Files createFiles(PreInfoFileRequest preInfoFileRequest, Office office) {
-        Files files = new Files(preInfoFileRequest.getF_labelcode(), office, preInfoFileRequest.getB_num(), preInfoFileRequest.getF_name(), preInfoFileRequest.getF_pyear(), preInfoFileRequest.getF_kperiod(), preInfoFileRequest.getF_kplace(), preInfoFileRequest.getF_db(), preInfoFileRequest.getF_scan(), preInfoFileRequest.getF_type(), preInfoFileRequest.getF_location(), preInfoFileRequest.getF_typenum());
-        return files;
-    }
-
-
     /*
     * 작성자: 원보라
     * 작성날짜: 2021/08/25

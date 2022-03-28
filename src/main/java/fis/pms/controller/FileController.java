@@ -84,7 +84,7 @@ public class FileController {
     /**
      *
      * @param searchDTO
-     * @return
+     * @return file 검색 결과 반환 (이름, 박스, 기관 코드, 시작년도, 철 이름으로 검색)
      * @throws OfficeException - 기관코드 없으면
      */
     @GetMapping("/preInfo/file")
@@ -94,6 +94,15 @@ public class FileController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     *
+     * @param excelFile
+     * @return 엑셀 분석한 파일의 값을 리턴
+     * @throws ExcelException 액셀파일 읽어드리는데에 발생하는 오류
+     * @throws NoSuchMethodException 엑셀 파일 읽어드릴때 reflection 사용의 오류
+     * @throws OfficeException 기관에 대한 유효성 예외
+     * @throws FilesException 레이블이 이미 존재하면 예외 발생
+     */
     @PostMapping("preinfo/excel")
     public Result<List> excelUpdate(@RequestParam MultipartFile excelFile) throws ExcelException, NoSuchMethodException {
         List<PreInfoFileInfo> preInfoFileInfoList = excelService.excelToJson(excelFile, ExcelUpdateDTO.class).stream()
@@ -106,6 +115,11 @@ public class FileController {
         return new Result<>(preInfoFileInfoList);
     }
 
+    /**
+     * @return preInfo 완료 혹은 preInfo가 된 목록들에 대한 철들을 모두 보냅니다.
+     * @param response
+     * @throws IOException
+     */
     @GetMapping("preinfo/excel")
     public void excelFile(HttpServletResponse response) throws IOException {
         List<Files> files = fileService.findAll();
@@ -117,7 +131,6 @@ public class FileController {
 
         // 컨텐츠 타입과 파일명 지정
         response.setContentType("ms-vnd/excel");
-        //response.setHeader("Content-Disposition", "attachment;filename=example.xls");
         response.setHeader("Content-Disposition", "attachment;filename=preInfo.xlsx");
 
         // Excel File Output

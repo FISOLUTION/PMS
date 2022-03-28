@@ -12,7 +12,6 @@ import fis.pms.controller.dto.UploadSearchBoxRequest;
 import fis.pms.domain.Files;
 import fis.pms.domain.Office;
 import fis.pms.domain.QOffice;
-import fis.pms.repository.dto.PreInfoSearch;
 import fis.pms.repository.querymethod.FileQueryMethods;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
