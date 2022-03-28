@@ -53,15 +53,6 @@ public class Cases {
     @JoinColumn(name = "f_id")
     private Files files;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "w_put")
-    private Worker workerput;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "w_check")
-    private Worker workercheck;
-
-
     @OneToMany(mappedBy = "case1", cascade = CascadeType.REMOVE)
     private List<Special> specials = new ArrayList<>();
 
