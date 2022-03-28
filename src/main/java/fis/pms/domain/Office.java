@@ -1,10 +1,7 @@
 package fis.pms.domain;
 
 import fis.pms.exception.OfficeException;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +18,7 @@ import java.util.List;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Office {
     @Id
     @Column(length = 7, name = "o_code")
@@ -32,18 +30,8 @@ public class Office {
     @Column(name = "o_del", length = 1)
     private String o_del;
 
-//    @OneToMany(mappedBy = "office")
-//    private List<Box> boxList;
-
     @OneToMany(mappedBy = "office")
     private List<Files> fileList;
-
-//    public Office(OfficeExcel o) {
-//        this.o_code = o.getO_code();
-//        this.o_name = o.getO_name();
-//        this.o_del = o.getO_del();
-//        fileList = null;
-//    }
 
     public void updateOffice(String o_code, String o_name, String o_del) {
         this.o_code = o_code;

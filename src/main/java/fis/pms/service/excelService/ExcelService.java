@@ -25,7 +25,8 @@ public class ExcelService {
      *   엑셀 파일 xlsx 와 xls 가 호환됩니다. Object배열을 리턴합니다
      *   엑셀 파일 생성시에 매핑하는 첫번째 열들을 @ExcelColumn을 활용해서 작성하면 됩니다.
      */
-    public List<Object> excelToJson(MultipartFile file, Class<?> clazz) throws ExcelException, NoSuchMethodException {
+    public List<Object>
+    excelToJson(MultipartFile file, Class<?> clazz) throws ExcelException, NoSuchMethodException {
 
         List<List<List>> excelFile = analyzeExcel(file);
         // 엑셀파일과 DTO 매핑하기
