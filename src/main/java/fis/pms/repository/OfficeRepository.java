@@ -8,12 +8,6 @@ import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
-/*
-* 작성자 : 현승구
-* 작성일자 : 2021/08/23
-* 작성내용 : save, findOne, remove
-*/
-
 @Repository
 @RequiredArgsConstructor
 public class OfficeRepository {
