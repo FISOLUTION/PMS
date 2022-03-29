@@ -7,6 +7,7 @@ import fis.pms.domain.Files;
 import fis.pms.exception.ExcelException;
 import fis.pms.exception.FilesException;
 import fis.pms.exception.OfficeException;
+import fis.pms.repository.search.FindIndexDetailInfo;
 import fis.pms.service.FileService;
 import fis.pms.service.dto.FindIndexPreinfo;
 import fis.pms.service.dto.PreInfoFileInfo;
@@ -108,12 +109,34 @@ public class FileController {
                 .collect(Collectors.toList());
     }
 
+    /**
+    *   작성날짜: 2022/03/29 1:13 PM
+    *   작성자: 이승범
+    *   작성내용: 철 색인 작업
+    */
     @PostMapping("/file/index")
     public IndexSaveLabelResponse indexSaveLabelResponse(@RequestBody IndexSaveLabelRequest indexSaveLabelRequest) {
         return fileService.saveFilesAndVolume(indexSaveLabelRequest);
     }
 
-    //사전정보 저장 철기준
+    /**
+    *   작성날짜: 2022/03/29 1:22 PM
+    *   작성자: 이승범
+    *   작성내용: 철 항목 검색 api
+    */
+    @GetMapping("/index/label")
+    public List<IndexSearchLabelResponse> indexSearchLabelResponses(@RequestParam(value = "f_name", required = false) String f_name,
+                                                                    @RequestParam(value = "syear", required = false) String syear,
+                                                                    @RequestParam(value = "eyear", required = false) String eyear) {
+        FindIndexDetailInfo findIndexDetailInfo = new FindIndexDetailInfo();
+        findIndexDetailInfo.setF_name(f_name);
+        findIndexDetailInfo.setF_pyear(syear);
+        findIndexDetailInfo.setF_eyear(eyear);
+
+        return fileService.searchFilesByDetailInfo(findIndexDetailInfo).stream()
+                .map(IndexSearchLabelResponse::createIndexSearchLabelResponse)
+                .collect(Collectors.toList());
+    }
 
     /**
      *

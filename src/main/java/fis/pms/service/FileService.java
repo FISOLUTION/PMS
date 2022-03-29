@@ -1,17 +1,15 @@
 package fis.pms.service;
 
-import fis.pms.controller.dto.IndexSaveLabelRequest;
-import fis.pms.controller.dto.IndexSaveLabelResponse;
-import fis.pms.controller.dto.PreInfoFileUpdateInfo;
+import fis.pms.controller.dto.*;
 import fis.pms.domain.*;
 import fis.pms.domain.fileEnum.F_process;
 import fis.pms.exception.FilesException;
 import fis.pms.exception.OfficeException;
 import fis.pms.repository.CasesRepository;
 import fis.pms.repository.FileRepository;
-import fis.pms.controller.dto.PreInfoFileSearchDTO;
 import fis.pms.repository.VolumeRepository;
 import fis.pms.repository.WorkListRepository;
+import fis.pms.repository.search.FindIndexDetailInfo;
 import fis.pms.service.dto.ExportInfo;
 import fis.pms.service.dto.FindIndexPreinfo;
 import fis.pms.service.dto.PreInfoFileInfo;
@@ -138,7 +136,7 @@ public class FileService {
     /**
      * 작성날짜: 2022/03/23 12:13 PM
      * 작성자: 이승범
-     * 작성내용: 반출된 철 레이블 범위 검색
+     * 작성내용: 반출되지 않은 철들의 레이블 범위 검색
      */
     public List<Files> searchFilesByLabelCode(String slabel, String elabel) {
         return fileRepository.findByLabelRange(slabel, elabel);
@@ -245,5 +243,15 @@ public class FileService {
                 volume.resetCount();
             }
         }
+    }
+
+    public List<Files> searchFilesByDetailInfo(FindIndexDetailInfo findIndexDetailInfo) {
+
+        List<Files> findList = fileRepository.findByFnameFpyearFeyear(
+                findIndexDetailInfo.getF_name(),
+                findIndexDetailInfo.getF_pyear(),
+                findIndexDetailInfo.getF_eyear());      //넘어온 정보를 통해서 검색한 결과를 List 로 생성
+
+        return findList;
     }
 }
