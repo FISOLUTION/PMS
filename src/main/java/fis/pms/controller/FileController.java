@@ -1,18 +1,14 @@
 package fis.pms.controller;
 
 import fis.pms.controller.dto.*;
-import fis.pms.domain.Files;
-import fis.pms.domain.WorkList;
-import fis.pms.repository.WorkListRepository;
+import fis.pms.service.dto.FindIndexPreinfo;
 import fis.pms.service.FileService;
-import fis.pms.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -24,7 +20,6 @@ import java.util.stream.Collectors;
 public class FileController {
 
     private final FileService fileService;
-    private final ImageService imageService;
 
     /**
      * 작성날짜: 2022/03/22 5:47 PM
@@ -83,12 +78,25 @@ public class FileController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/file/scan")
-    public List<SearchScanResponse> searchScanFiles(){
-        List<Files> scanFiles = imageService.searchFilesByScan();
-        return scanFiles.stream()
-                .map(SearchScanResponse::createSearchScanResponse)
+    /**
+    *   작성날짜: 2022/03/25 4:57 PM
+    *   작성자: 이승범
+    *   작성내용: 색인 작업할(스캔이 끝난) 철 목록 불러오기
+    */
+    @GetMapping("/file/index/{o_code}")
+    public List<IndexSearchResponse> indexSearchResponses(@PathVariable String o_code,
+                                                          @RequestParam(value = "box", required = false) String f_bnum,
+                                                          @RequestParam(value = "label", required = false) String f_labelcode) {
+
+        FindIndexPreinfo findIndexPreinfo = FindIndexPreinfo.createFindIndexPreinfo(o_code, f_bnum, f_labelcode);
+        return fileService.searchFilesByPreInfo(findIndexPreinfo).stream()
+                .map(IndexSearchResponse::createIndexSearchResponse)
                 .collect(Collectors.toList());
+    }
+
+    @PostMapping("/file/index")
+    public IndexSaveLabelResponse indexSaveLabelResponse(@RequestBody IndexSaveLabelRequest indexSaveLabelRequest) {
+        return fileService.saveFilesAndVolume(indexSaveLabelRequest);
     }
 
 }

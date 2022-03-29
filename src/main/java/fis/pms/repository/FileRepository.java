@@ -11,7 +11,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import fis.pms.controller.dto.UploadSearchBoxRequest;
 import fis.pms.domain.Files;
 import fis.pms.domain.Office;
-import fis.pms.domain.QWorkList;
 import fis.pms.domain.fileEnum.F_process;
 import fis.pms.repository.querymethod.FileQueryMethods;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +27,7 @@ import static fis.pms.domain.QWorkList.workList;
 @Repository
 @RequiredArgsConstructor
 public class FileRepository extends FileQueryMethods {
+
     //스프링 빈 자동 등록
     private final EntityManager em;
     private final JPAQueryFactory jpaQueryFactory;
@@ -107,11 +107,6 @@ public class FileRepository extends FileQueryMethods {
                 .getResultList();
     }
 
-//    public List<Files> findByLabel(String f_labelcode) {
-//        return em.createQuery("select f from Files f where f.f_labelcode = :f_labelcode", Files.class)
-//                .setParameter("f_labelcode", f_labelcode)
-//                .getResultList();
-//    }
 
     public List<Files> findByLabel(String f_labelcode) {
         return jpaQueryFactory

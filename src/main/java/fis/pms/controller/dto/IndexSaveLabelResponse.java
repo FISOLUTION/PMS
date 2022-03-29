@@ -16,6 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 public class IndexSaveLabelResponse {
     private List<Long> v_id;        // list로 반환
-    private Long f_id;              // 저장된 철 id 반환	//성공
-    private String err_code;		//실패
+    private Long f_id;              // 저장된 철 id 반환
+    private String err_code;		// 실패
 }
