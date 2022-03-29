@@ -52,7 +52,7 @@ public class CasesRepository extends CasesQueryMethod {
         return id;
     }
 
-    public List<Cases> findByOldNumTitleReceiver(String c_oldnum, String c_title, String c_receiver) {
+    public List<Cases> findByOldNumTitleReceiverWithFiles(String c_oldnum, String c_title, String c_receiver) {
         // 동적쿼리를 이용한 or 조건은 BooleanBuilder로만 가능
         BooleanBuilder builder = new BooleanBuilder();
         if(c_oldnum!=null){

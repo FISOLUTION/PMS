@@ -7,6 +7,7 @@ import fis.pms.domain.Files;
 import fis.pms.exception.ExcelException;
 import fis.pms.exception.FilesException;
 import fis.pms.exception.OfficeException;
+import fis.pms.repository.search.FindIndexDetailInfo;
 import fis.pms.service.FileService;
 import fis.pms.service.dto.FindIndexPreinfo;
 import fis.pms.service.dto.PreInfoFileInfo;
@@ -52,10 +53,10 @@ public class FileController {
     /**
      * 작성날짜: 2022/03/23 11:38 AM
      * 작성자: 이승범
-     * 작성내용: 반출된 철 레이블 범위 검색
+     * 작성내용: 사전조사 단계 철 레이블 범위 검색
      */
     @GetMapping("/file/export/label")
-    public List<ExportSearchLabelResponse> searchFilesByLabelCode(@RequestParam(value = "slabel", required = false) String slabel,
+    public List<ExportSearchLabelResponse> searchPreInfoByLabelCode(@RequestParam(value = "slabel", required = false) String slabel,
                                                                   @RequestParam(value = "elabel", required = false) String elabel) {
 
         return fileService.searchFilesByLabelCode(slabel, elabel).stream()
@@ -69,7 +70,7 @@ public class FileController {
      * 작성내용: 반출된 철 날짜 범위 검색
      */
     @GetMapping("/file/export/date")
-    public List<ExportSearchResponse> searchFilesByDate(
+    public List<ExportSearchResponse> searchExportByDate(
             @RequestParam( required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate sdate,
             @RequestParam( required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate edate) {
 
@@ -84,7 +85,7 @@ public class FileController {
      * 작성내용: 반출된 철 박스 범위 검색
      */
     @GetMapping("/file/export/box")
-    public List<ExportSearchResponse> searchFilesByBox(@RequestParam(value = "sbox", required = false) String sbox,
+    public List<ExportSearchResponse> searchExportByBox(@RequestParam(value = "sbox", required = false) String sbox,
                                                        @RequestParam(value = "ebox", required = false) String ebox) {
 
         return fileService.searchFilesByBox(sbox, ebox).stream()
@@ -98,7 +99,7 @@ public class FileController {
     *   작성내용: 색인 작업할(스캔이 끝난) 철 목록 불러오기
     */
     @GetMapping("/file/index/{o_code}")
-    public List<IndexSearchResponse> indexSearchResponses(@PathVariable String o_code,
+    public List<IndexSearchResponse> SearchIndexByOffice(@PathVariable String o_code,
                                                           @RequestParam(value = "box", required = false) String f_bnum,
                                                           @RequestParam(value = "label", required = false) String f_labelcode) {
 
@@ -108,12 +109,44 @@ public class FileController {
                 .collect(Collectors.toList());
     }
 
+    /**
+    *   작성날짜: 2022/03/29 1:13 PM
+    *   작성자: 이승범
+    *   작성내용: 철 색인 작업
+    */
     @PostMapping("/file/index")
-    public IndexSaveLabelResponse indexSaveLabelResponse(@RequestBody IndexSaveLabelRequest indexSaveLabelRequest) {
+    public IndexSaveLabelResponse SaveIndex(@RequestBody IndexSaveLabelRequest indexSaveLabelRequest) {
         return fileService.saveFilesAndVolume(indexSaveLabelRequest);
     }
 
-    //사전정보 저장 철기준
+    /**
+    *   작성날짜: 2022/03/29 1:22 PM
+    *   작성자: 이승범
+    *   작성내용: 철 항목 검색 api
+    */
+    @GetMapping("/file/index")
+    public List<IndexSearchLabelResponse> SearchLabel(@RequestParam(value = "f_name", required = false) String f_name,
+                                                                    @RequestParam(value = "syear", required = false) String syear,
+                                                                    @RequestParam(value = "eyear", required = false) String eyear) {
+        FindIndexDetailInfo findIndexDetailInfo = new FindIndexDetailInfo();
+        findIndexDetailInfo.setF_name(f_name);
+        findIndexDetailInfo.setF_pyear(syear);
+        findIndexDetailInfo.setF_eyear(eyear);
+
+        return fileService.searchFilesByDetailInfo(findIndexDetailInfo).stream()
+                .map(IndexSearchLabelResponse::createIndexSearchLabelResponse)
+                .collect(Collectors.toList());
+    }
+
+    /**
+    *   작성날짜: 2022/03/29 2:07 PM
+    *   작성자: 이승범
+    *   작성내용: 색인 단계에서 철 삭제
+    */
+    @DeleteMapping("/file/index/{f_id}")
+    public Long deleteIndex(@PathVariable Long f_id) {
+        return fileService.deleteIndex(f_id);
+    }
 
     /**
      *

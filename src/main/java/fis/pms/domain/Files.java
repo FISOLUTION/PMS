@@ -20,7 +20,6 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@DynamicInsert //원보라 : 디폴트값은 ddl만 적용됨 insert 문에도 디폴트 적용하기 위함
 @NoArgsConstructor
 @Builder
 public class Files {
@@ -39,7 +38,6 @@ public class Files {
         this.f_location = f_location;
         this.f_typenum = f_typenum;
         this.f_volumeSaved = "0";
-        this.f_pageSaved = "0";
         this.f_process = F_process.PREINFO;
     }
 
@@ -73,6 +71,7 @@ public class Files {
     private List<Cases> cases = new ArrayList<>();
 
     @OneToMany(mappedBy = "files")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<WorkList> workList = new ArrayList<>();
 
     //@NotBlank
@@ -183,11 +182,6 @@ public class Files {
     @Column(columnDefinition = "varchar(1) default '0'")
     private F_inheritance f_inheritance;   //인수인계구분 (0.없음 1.인수 2.인계)
 
-//    //@NotBlank
-//    @Column(columnDefinition = "varchar(20) default 'none'")
-//    private String f_exportdate;    //반출날짜
-
-
     //@NotBlank
     @Column(columnDefinition = "varchar(30) default '0'")
     private String f_complete;    //미완료:0 | 완료:timestamp
@@ -201,20 +195,8 @@ public class Files {
     @Column(columnDefinition = "varchar(30) default '0'")
     private String f_upload;    //미완료:0 | 완료:timestamp
 
-    /*
-     * 작성자: 한명수
-     * 작성날짜: 2021/09/03
-     * 작성내용: f_volumeSaved 추가
-     */
-
     @Column(columnDefinition = "varchar(1) default '0'")
     private String f_volumeSaved;
-
-    @Column
-    private String f_pageSaved;
-
-
-//========null 옵션 컬럼================
 
     @Column(length = 8)
     private String f_smallfunc; //소기능코드
@@ -256,13 +238,6 @@ public class Files {
     private String f_typenum;   //분류번호 (뭔지 모름)
     //업로드 완료여부 미완료 0 완료 timestamp
 
-    /*
-     * 작성자: 원보라
-     * 작성날짜: 2021/08/25
-     * 작성내용: 수정메서드 updateFileInfo, updateFileExport
-     */
-
-
     //=======================수정 메서드==========================//
     public void preInfoUpdate(Office office, PreInfoFileUpdateInfo dto) {
         this.office = office;                 // 기관
@@ -302,11 +277,6 @@ public class Files {
         this.f_process = F_process.EXPORT;                    // 철 작업 상황
     }
 
-    /*
-     * 작성자: 한명수
-     * 작성날짜: 2021/08/27
-     * 작성내용: 수정 메서드 updateFileIndex
-     */
     public void updateFileIndex(IndexSaveLabelRequest indexSaveLabelRequest, int volumeCount) {
         this.f_name = indexSaveLabelRequest.getF_name();
         this.f_volumeamount = indexSaveLabelRequest.getF_volumeamount();
@@ -320,21 +290,9 @@ public class Files {
         this.f_volumeSaved = "1";
     }
 
-    /*
-     * 작성자: 한명수
-     * 작성날짜: 2021/09/01
-     * 작성내용: reduceVolumeCount
-     */
-
     public void reduceVolumeCount() {
         this.f_volumecount = Integer.toString(Integer.valueOf(this.f_volumecount) - 1);
     }
-
-    /*
-     * 작성자: 한명수
-     * 작성날짜: 2021/09/01
-     * 작성내용: updateProcess
-     */
 
     public void updateProcess() {
         if (this.f_process == F_process.IMGMODIFY) {
@@ -359,10 +317,6 @@ public class Files {
         this.f_process = F_process.UPLOADED;
         Date date = new Date(System.currentTimeMillis());
         this.f_upload = date.toString();
-    }
-
-    public void updatePageSave() {
-        this.f_pageSaved = "1";
     }
 
     // 2022-02-28 이미지 개수 파악을 위한 메서드

@@ -1,17 +1,15 @@
 package fis.pms.service;
 
-import fis.pms.controller.dto.IndexSaveLabelRequest;
-import fis.pms.controller.dto.IndexSaveLabelResponse;
-import fis.pms.controller.dto.PreInfoFileUpdateInfo;
+import fis.pms.controller.dto.*;
 import fis.pms.domain.*;
 import fis.pms.domain.fileEnum.F_process;
 import fis.pms.exception.FilesException;
 import fis.pms.exception.OfficeException;
 import fis.pms.repository.CasesRepository;
 import fis.pms.repository.FileRepository;
-import fis.pms.controller.dto.PreInfoFileSearchDTO;
 import fis.pms.repository.VolumeRepository;
 import fis.pms.repository.WorkListRepository;
+import fis.pms.repository.search.FindIndexDetailInfo;
 import fis.pms.service.dto.ExportInfo;
 import fis.pms.service.dto.FindIndexPreinfo;
 import fis.pms.service.dto.PreInfoFileInfo;
@@ -118,7 +116,11 @@ public class FileService {
     }
 
 
-
+    /**
+    *   작성날짜: 2022/03/29 1:53 PM
+    *   작성자: 이승범
+    *   작성내용: 철 반출
+    */
     public Long exportFile(ExportInfo exportInfo) {
 
         Files findFile = fileRepository.findOneWithOffice(exportInfo.getF_id());
@@ -138,7 +140,7 @@ public class FileService {
     /**
      * 작성날짜: 2022/03/23 12:13 PM
      * 작성자: 이승범
-     * 작성내용: 반출된 철 레이블 범위 검색
+     * 작성내용: 사전조사 단계 철들의 레이블 범위 검색
      */
     public List<Files> searchFilesByLabelCode(String slabel, String elabel) {
         return fileRepository.findByLabelRange(slabel, elabel);
@@ -232,7 +234,11 @@ public class FileService {
         return indexSaveLabelResponse;
     }
 
-    // 2022-03-11 이승범 : 철에 있는 권들의 정보가 모두 입력되었는지 확인
+    /**
+    *   작성날짜: 2022/03/29 1:54 PM
+    *   작성자: 이승범
+    *   작성내용: 철의 volumecount가 0이 되면 해당 철의 색인 or 검수 작업 완료
+    */
     public void checkVolumeCount(Files findFile) {
         if (findFile.getF_volumecount().compareTo("0") == 0) {
             findFile.updateProcess();
@@ -245,5 +251,30 @@ public class FileService {
                 volume.resetCount();
             }
         }
+    }
+
+    /**
+    *   작성날짜: 2022/03/29 1:55 PM
+    *   작성자: 이승범
+    *   작성내용: 철 항목 검색
+    */
+    public List<Files> searchFilesByDetailInfo(FindIndexDetailInfo findIndexDetailInfo) {
+
+        List<Files> findList = fileRepository.findByFnameFpyearFeyear(
+                findIndexDetailInfo.getF_name(),
+                findIndexDetailInfo.getF_pyear(),
+                findIndexDetailInfo.getF_eyear());
+
+        return findList;
+    }
+
+    /**
+    *   작성날짜: 2022/03/29 2:11 PM
+    *   작성자: 이승범
+    *   작성내용: 색인단계에서 철 삭제
+    */
+    public Long deleteIndex(Long f_id) {
+        Files files = fileRepository.findOne(f_id).get();     //넘어온 file_id 를 이용하여 해당 file 찾음
+        return fileRepository.remove(files);                  //해당 file을 삭제
     }
 }
