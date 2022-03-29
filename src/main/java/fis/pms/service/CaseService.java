@@ -2,14 +2,19 @@ package fis.pms.service;
 
 import fis.pms.controller.dto.IndexSaveCaseRequest;
 import fis.pms.controller.dto.IndexSaveCaseResponse;
+import fis.pms.controller.dto.IndexSearchCaseResponse;
 import fis.pms.domain.Cases;
 import fis.pms.domain.Files;
 import fis.pms.domain.Volume;
 import fis.pms.repository.CasesRepository;
+import fis.pms.repository.search.FindIndexCaseInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -20,7 +25,11 @@ public class CaseService {
     private final CasesRepository casesRepository;
     private final VolumeService volumeService;
 
-
+    /**
+    *   작성날짜: 2022/03/29 1:39 PM
+    *   작성자: 이승범
+    *   작성내용: 건의 색인 정보 입력
+    */
     public IndexSaveCaseResponse saveCases(IndexSaveCaseRequest indexSaveCaseRequest) {
         //건 테이블 저장
         //건 튜플 first 1인지 체크 후 그에따른 로직 실행
@@ -41,5 +50,15 @@ public class CaseService {
         IndexSaveCaseResponse indexSaveCaseResponse = new IndexSaveCaseResponse();
         indexSaveCaseResponse.setC_id(findCases.getId());
         return indexSaveCaseResponse;
+    }
+
+    /**
+    *   작성날짜: 2022/03/29 1:40 PM
+    *   작성자: 이승범
+    *   작성내용: 건 검색 api
+    */
+    public List<Cases> searchCasesByCasesInfo(FindIndexCaseInfo findIndexCaseInfo) {
+        return casesRepository.findByOldNumTitleReceiverWithFiles(
+                findIndexCaseInfo.getC_oldnum(), findIndexCaseInfo.getC_title(), findIndexCaseInfo.getC_receiver());
     }
 }
