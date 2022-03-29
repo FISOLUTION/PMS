@@ -22,9 +22,9 @@ public class CaseController {
     *   작성자: 이승범
     *   작성내용: 건 색인 입력 api
     */
-    @PatchMapping("/index/save")
-    public IndexSaveCaseResponse saveIndex(@RequestBody IndexSaveCaseRequest indexSaveCaseRequest) {
-        return caseService.saveCases(indexSaveCaseRequest);
+    @PatchMapping("/case/index")
+    public Long saveIndex(@RequestBody IndexSaveCaseRequest indexSaveCaseRequest) {
+        return caseService.saveCases(indexSaveCaseRequest).getId();
     }
 
     /**

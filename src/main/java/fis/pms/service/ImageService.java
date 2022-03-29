@@ -51,7 +51,7 @@ public class ImageService {
             return null;
 
         // 철의 이미지들이 저장될 디렉토리 생성(overwrite)
-        String path = getFullPath(request.getFileId(), state);
+        String path = getFullPath(findFile.getF_id(), state);
         mkdir(path);
 
         // request에 담겨있는 이미지들을 생성한 디렉토리에 저장
@@ -90,8 +90,7 @@ public class ImageService {
         List<ImagesMaxnumResponse.ImagesNum> collect = filesList.stream()
                 .map(files -> new ImagesMaxnumResponse.ImagesNum(String.valueOf(files.getF_id()), files.getImages()))
                 .collect(Collectors.toList());
-        ImagesMaxnumResponse imagesMaxnumResponse = new ImagesMaxnumResponse(collect);
-        return imagesMaxnumResponse;
+        return new ImagesMaxnumResponse(collect);
     }
 
 }

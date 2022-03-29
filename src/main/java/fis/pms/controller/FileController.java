@@ -124,7 +124,7 @@ public class FileController {
     *   작성자: 이승범
     *   작성내용: 철 항목 검색 api
     */
-    @GetMapping("/index/label")
+    @GetMapping("/file/index")
     public List<IndexSearchLabelResponse> SearchLabel(@RequestParam(value = "f_name", required = false) String f_name,
                                                                     @RequestParam(value = "syear", required = false) String syear,
                                                                     @RequestParam(value = "eyear", required = false) String eyear) {
@@ -143,7 +143,7 @@ public class FileController {
     *   작성자: 이승범
     *   작성내용: 색인 단계에서 철 삭제
     */
-    @DeleteMapping("/index/label/{f_id}")
+    @DeleteMapping("/file/index/{f_id}")
     public Long deleteIndex(@PathVariable Long f_id) {
         return fileService.deleteIndex(f_id);
     }

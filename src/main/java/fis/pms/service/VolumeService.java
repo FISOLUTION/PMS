@@ -32,10 +32,10 @@ public class VolumeService {
     private final FileService fileService;
 
     /**
-    *   작성날짜: 2022/03/29 1:26 PM
-    *   작성자: 이승범
-    *   작성내용: 해당 철의 권 정보들과 각 권들의 건 정보들 가져오기
-    */
+     * 작성날짜: 2022/03/29 1:26 PM
+     * 작성자: 이승범
+     * 작성내용: 해당 철의 권 정보들과 각 권들의 건 정보들 가져오기
+     */
     public List<VolumesInfo> getVolumesInfo(Long f_id) {
         List<VolumesInfo> result = volumeRepository.findByFilesWithFiles(f_id);
         List<Long> volumeIds = toVolumeIds(result);
@@ -45,10 +45,10 @@ public class VolumeService {
     }
 
     /**
-    *   작성날짜: 2022/03/29 1:28 PM
-    *   작성자: 이승범
-    *   작성내용: 권들의 아이디를 반환하는 메서드
-    */
+     * 작성날짜: 2022/03/29 1:28 PM
+     * 작성자: 이승범
+     * 작성내용: 권들의 아이디를 반환하는 메서드
+     */
     private List<Long> toVolumeIds(List<VolumesInfo> result) {
         return result.stream()
                 .map(VolumesInfo::getV_id)
@@ -56,10 +56,10 @@ public class VolumeService {
     }
 
     /**
-    *   작성날짜: 2022/03/29 1:28 PM
-    *   작성자: 이승범
-    *   작성내용: 해당 권에 속해있는 건들의 페이지 정보를 토대로 건들 생성
-    */
+     * 작성날짜: 2022/03/29 1:28 PM
+     * 작성자: 이승범
+     * 작성내용: 해당 권에 속해있는 건들의 페이지 정보를 토대로 건들 생성
+     */
     public IndexSaveVolumeResponse saveCasesPages(IndexSaveVolumeRequest indexSaveVolumeRequest) {
         Files findFiles = fileRepository.findOne(indexSaveVolumeRequest.getF_id()).get();
         Volume updateVolume = volumeRepository.findOne(indexSaveVolumeRequest.getV_id());
@@ -69,12 +69,12 @@ public class VolumeService {
 
         if (updateVolume.getV_pageSaved().compareTo("0") == 0) {
             updateVolume.resetCaseCount(pageList.size());
-            for(int i=0; i<Integer.parseInt(updateVolume.getV_casenum()); i++){
+            for (int i = 0; i < Integer.parseInt(updateVolume.getV_casenum()); i++) {
                 Cases cases = Cases.createCases(i, updateVolume, findFiles, pageList.get(i).getStartPage(), pageList.get(i).getEndPage());
                 casesRepository.save(cases);
                 result.add(cases.getId());
             }
-        }else{
+        } else {
             List<Cases> casesList = casesRepository.findByVolume(indexSaveVolumeRequest.getV_id());
             if (pageList.size() > casesList.size()) {
                 for (int j = 0; j < casesList.size(); j++) {
@@ -116,10 +116,10 @@ public class VolumeService {
     }
 
     /**
-    *   작성날짜: 2022/03/29 1:29 PM
-    *   작성자: 이승범
-    *   작성내용: 권의 casecount가 0이면 해당 권의 색인 or 검수 작업 완료
-    */
+     * 작성날짜: 2022/03/29 1:29 PM
+     * 작성자: 이승범
+     * 작성내용: 권의 casecount가 0이면 해당 권의 색인 or 검수 작업 완료
+     */
     public void checkCaseCount(Files findFile, Volume findVolume) {
         if (findVolume.getV_casecount().compareTo("0") == 0) {
             findFile.reduceVolumeCount();

@@ -18,19 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cases {
-
-    public Cases(int caseNum, Volume volume, Files files, String c_spage, String c_epage, String c_page) {
-        this.c_first = "1";
-        this.volume = volume;
-        this.files = files;
-        this.c_spage = c_spage;
-        this.c_epage = c_epage;
-        this.c_page = c_page;
-        this.c_num = caseNum;
-        volume.getCaseList().add(this);
-        files.getCases().add(this);
-    }
-
     @Id @GeneratedValue
     @Column(name = "c_id")
     private Long id;
@@ -221,25 +208,36 @@ public class Cases {
     @Column(length = 2)
     private C_detailtype c_detailtype; //건 세부유형 2 (11.졸업대장, 21.생활기록부, 22.인사카드)
 
+
+    public Cases(int caseNum, Volume volume, Files files, String c_spage, String c_epage, String c_page) {
+        this.c_first = "1";
+        this.c_spage = c_spage;
+        this.c_epage = c_epage;
+        this.c_page = c_page;
+        this.c_num = caseNum;
+        mappingVolume(volume);
+        mappingFiles(files);
+    }
+
     //===연관 관계 메서드===//
-    public void setVolume(Volume volume) {
+    public void mappingVolume(Volume volume) {
         this.volume = volume;
         volume.getCaseList().add(this);
     }
 
-    public void setFiles(Files files) {
+    public void mappingFiles(Files files) {
         this.files = files;
         files.getCases().add(this);
     }
 
     public static Cases createCases(int caseNum, Volume volume, Files files, String c_spage, String c_epage){
-        String c_page = Integer.toString(Integer.valueOf(c_epage) - Integer.valueOf(c_spage) + 1);
+        String c_page = Integer.toString(Integer.parseInt(c_epage) - Integer.parseInt(c_spage) + 1);
         Cases cases = new Cases(caseNum, volume, files, c_spage, c_epage, c_page);
         return cases;
     }
 
     public void updatePage(String c_spage, String c_epage) {
-        String c_page = Integer.toString(Integer.valueOf(c_epage)-Integer.valueOf(c_spage) + 1);
+        String c_page = Integer.toString(Integer.parseInt(c_epage)-Integer.parseInt(c_spage) + 1);
         this.c_spage = c_spage;
         this.c_epage = c_epage;
         this.c_page = c_page;
@@ -264,7 +262,6 @@ public class Cases {
         this.c_hidden = indexSaveCaseRequest.getC_hidden();         // 공개제한부분표시
         return this;
     }
-
 
     public void resetCount(){
         this.c_first = "1";

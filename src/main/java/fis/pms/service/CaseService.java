@@ -30,7 +30,7 @@ public class CaseService {
     *   작성자: 이승범
     *   작성내용: 건의 색인 정보 입력
     */
-    public IndexSaveCaseResponse saveCases(IndexSaveCaseRequest indexSaveCaseRequest) {
+    public Cases saveCases(IndexSaveCaseRequest indexSaveCaseRequest) {
         //건 테이블 저장
         //건 튜플 first 1인지 체크 후 그에따른 로직 실행
         //상위 테이블에 -1 후 0인지 체크
@@ -47,9 +47,7 @@ public class CaseService {
             volumeService.checkCaseCount(findFile, findVolume);
         }
         findCases.updateCases(indexSaveCaseRequest);
-        IndexSaveCaseResponse indexSaveCaseResponse = new IndexSaveCaseResponse();
-        indexSaveCaseResponse.setC_id(findCases.getId());
-        return indexSaveCaseResponse;
+        return findCases;
     }
 
     /**
