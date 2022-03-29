@@ -163,7 +163,6 @@ public class InitDb {
             file.setF_check(f_check);
             file.setF_upload(f_upload);
             file.setF_volumeSaved("0");
-            file.setF_pageSaved("0");
             file.setF_location(f_location);
             return file;
         }

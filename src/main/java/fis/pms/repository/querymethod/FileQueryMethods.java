@@ -7,8 +7,9 @@ import fis.pms.domain.fileEnum.F_process;
 
 import java.time.LocalDate;
 
-import static fis.pms.domain.QFiles.*;
+import static fis.pms.domain.QFiles.files;
 import static fis.pms.domain.QWorkList.workList;
+
 
 public class FileQueryMethods {
 

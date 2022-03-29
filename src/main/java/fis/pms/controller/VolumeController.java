@@ -22,7 +22,7 @@ public class VolumeController {
         return volumeService.getVolumesInfo(f_id);
     }
 
-    @PostMapping("/index/volume")
+    @PostMapping("/volume/index")
     public IndexSaveVolumeResponse indexSaveVolumeResponse(@RequestBody IndexSaveVolumeRequest indexSaveVolumeRequest) {
         return volumeService.saveCasesPages(indexSaveVolumeRequest);
     }

@@ -62,11 +62,6 @@ public class FileRepository extends FileQueryMethods {
                 .fetch();
     }
 
-    /*
-     * 작성자: 한명수
-     * 작성날짜: 2021/08/24
-     * 작성내용: searchFilesByDetailInfo에 대한 query 작성
-     */
     // 2022-03-04 이승범 : or 조건 연산자를 사용하려면 BooleanBuilder를 사용해야 한다.
     public List<Files> findByFnameFpyearFeyear(String f_name, String f_pyear, String f_eyear) {
         // JPAQueryFactory jpaQueryFactory = new JPAQueryFactory(em);
@@ -146,9 +141,8 @@ public class FileRepository extends FileQueryMethods {
     *   작성내용: 날짜별 동적쿼리
     */
     public List<Files> findByDateRange(LocalDate sdate, LocalDate edate) {
-        //JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         return jpaQueryFactory
-                .selectFrom(files)
+                .selectFrom(files).distinct()
                 .leftJoin(files.office, office).fetchJoin()
                 .join(files.workList, workList)
                 .where(first_DateGoe(sdate),
@@ -164,7 +158,7 @@ public class FileRepository extends FileQueryMethods {
     */
     public List<Files> findByBoxRange(String first_b_num, String last_b_num) {
         return jpaQueryFactory
-                .selectFrom(files)
+                .selectFrom(files).distinct()
                 .leftJoin(files.office, office).fetchJoin()
                 .where(first_b_numGoe(first_b_num),
                         last_b_numLoe(last_b_num),
