@@ -42,7 +42,6 @@ public class ImageService {
         return modifyPath + fileId + '/';
     }
 
-    @Transactional
     public Long storeImages(SaveImageRequest request, String state) throws IOException {
 
         // 등록된 철인지 검사
