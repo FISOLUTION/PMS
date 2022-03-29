@@ -1,6 +1,5 @@
 package fis.pms.domain.fileEnum;
 
-
 //현재완료한 공정
 public enum F_process {
     NONE(""),
@@ -21,7 +20,6 @@ public enum F_process {
     UPLOAD("15"),           //업로드
     UPLOADED("16");         //업로드
 
-    //이게 뭔데 쓰면 오류 안나지 ???
     private String process;
 
     F_process(String process) {

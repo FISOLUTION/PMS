@@ -23,7 +23,6 @@ import javax.persistence.EntityManager;
 @RequiredArgsConstructor
 public class InitDb {
 
-
     private final InitService initService;
 
     @PostConstruct
@@ -48,7 +47,7 @@ public class InitDb {
             em.persist(process3);
             Process process4 = new Process("이미지보정", F_process.IMGMODIFY);
             em.persist(process4);
-            Process process9 = new Process("이미지보정", F_process.IMG_CHECK);
+            Process process9 = new Process("이미지체크", F_process.IMG_CHECK);
             em.persist(process9);
             Process process5 = new Process("색인입력", F_process.INPUT);
             em.persist(process5);
@@ -77,25 +76,25 @@ public class InitDb {
 
             F_location f_location = new F_location("층", "서가", "열", "번");
 
-            Files files1 = createFile(office1, "000001", "001", F_process.IMGMODIFY, "5", "005", "강남구청 인사과", "2021", F_kperiod.SEMI, F_kmethod.ALL, F_kplace.PROFESSION, "2021", "2021", F_construct.YES, F_construct.YES, "99999999", F_type.GENERAL, F_newold.OLD, F_modify.NOTHING, "000100", "500", "0", F_inheritance.NONE, "2021-08-25", "0", "0", "0", f_location);
+            Files files1 = createFile(office1, "000001", "001", F_process.PREINFO, "5", "005", "강남구청 인사과", "2021", F_kperiod.SEMI, F_kmethod.ALL, F_kplace.PROFESSION, "2021", "2021", F_construct.YES, F_construct.YES, "99999999", F_type.GENERAL, F_newold.OLD, F_modify.NOTHING, "000100", "500", "0", F_inheritance.NONE, "0", "0", "0", f_location);
             em.persist(files1);
 
-            Files files2 = createFile(office1, "000002", "002", F_process.UPLOAD, "3", "003", "경기도 안양시", "1990", F_kperiod.PERMANENT, F_kmethod.ORIGINAL, F_kplace.ARCHIVIST, "1990", "1995", F_construct.YES, F_construct.NO, "99999999", F_type.CARD, F_newold.OLD, F_modify.MODIFY, "00666", "984", "0", F_inheritance.NONE, "1998-03-29", "0", "0", "0", f_location);
+            Files files2 = createFile(office1, "000002", "002", F_process.PREINFO, "3", "003", "경기도 안양시", "1990", F_kperiod.PERMANENT, F_kmethod.ORIGINAL, F_kplace.ARCHIVIST, "1990", "1995", F_construct.YES, F_construct.NO, "99999999", F_type.CARD, F_newold.OLD, F_modify.MODIFY, "00666", "984", "0", F_inheritance.NONE, "0", "0", "0", f_location);
             em.persist(files2);
 
-            Files files3 = createFile(office2, "000003", "001", F_process.INPUT, "5", "005", "강남구청 인사과", "2021", F_kperiod.SEMI, F_kmethod.ALL, F_kplace.PROFESSION, "2021", "2021", F_construct.YES, F_construct.YES, "99999999", F_type.GENERAL, F_newold.OLD, F_modify.NOTHING, "000100", "500", "0", F_inheritance.NONE, "2021-08-25", "0", "0", "0", f_location);
+            Files files3 = createFile(office2, "000003", "001", F_process.PREINFO, "5", "005", "강남구청 인사과", "2021", F_kperiod.SEMI, F_kmethod.ALL, F_kplace.PROFESSION, "2021", "2021", F_construct.YES, F_construct.YES, "99999999", F_type.GENERAL, F_newold.OLD, F_modify.NOTHING, "000100", "500", "0", F_inheritance.NONE,"0", "0", "0", f_location);
             em.persist(files3);
 
-            Files files4 = createFile(office5, "000004", "004", F_process.CHECK, "5", "005", "강남구청 인사과 안녕하세요 인사과입니다 안뇽뇽", "2024", F_kperiod.SEMI, F_kmethod.ALL, F_kplace.PROFESSION, "2024", "2024", F_construct.YES, F_construct.YES, "99999999", F_type.GENERAL, F_newold.OLD, F_modify.NOTHING, "000400", "500", "0", F_inheritance.NONE, "none", "0", "0", "0", f_location);
+            Files files4 = createFile(office5, "000004", "004", F_process.PREINFO, "5", "005", "강남구청 인사과 안녕하세요 인사과입니다 안뇽뇽", "2024", F_kperiod.SEMI, F_kmethod.ALL, F_kplace.PROFESSION, "2024", "2024", F_construct.YES, F_construct.YES, "99999999", F_type.GENERAL, F_newold.OLD, F_modify.NOTHING, "000400", "500", "0", F_inheritance.NONE, "0", "0", "0", f_location);
             em.persist(files4);
 
-            Files files5 = createFile(office5, "000005", "005", F_process.CHECK, "3", "003", "안양시청 실내수영장 10월 일정표", "2025", F_kperiod.SEMI, F_kmethod.ALL, F_kplace.PROFESSION, "2025", "2025", F_construct.YES, F_construct.YES, "99999999", F_type.GENERAL, F_newold.OLD, F_modify.NOTHING, "000500", "500", "0", F_inheritance.NONE, "none", "0", "0", "0", f_location);
+            Files files5 = createFile(office5, "000005", "005", F_process.PREINFO, "3", "003", "안양시청 실내수영장 10월 일정표", "2025", F_kperiod.SEMI, F_kmethod.ALL, F_kplace.PROFESSION, "2025", "2025", F_construct.YES, F_construct.YES, "99999999", F_type.GENERAL, F_newold.OLD, F_modify.NOTHING, "000500", "500", "0", F_inheritance.NONE,  "0", "0", "0", f_location);
             em.persist(files5);
 
-            Files files6 = createFile(office1, "000006", "006", F_process.CHECK, "10", "010", "금천구청 ...", "2000", F_kperiod.SEMI, F_kmethod.ALL, F_kplace.PROFESSION, "2000", "2001", F_construct.NO, F_construct.YES, "99999999", F_type.GENERAL, F_newold.OLD, F_modify.NOTHING, "000600", "600", "0", F_inheritance.NONE, "none", "0", "0", "0", f_location);
+            Files files6 = createFile(office1, "000006", "006", F_process.PREINFO, "10", "010", "금천구청 ...", "2000", F_kperiod.SEMI, F_kmethod.ALL, F_kplace.PROFESSION, "2000", "2001", F_construct.NO, F_construct.YES, "99999999", F_type.GENERAL, F_newold.OLD, F_modify.NOTHING, "000600", "600", "0", F_inheritance.NONE, "0", "0", "0", f_location);
             em.persist(files6);
 
-            Files files7 = createFile(office2, "000007", "007", F_process.CHECK, "8", "008", "경기도 ...", "1999", F_kperiod.SEMI, F_kmethod.ALL, F_kplace.PROFESSION, "1999", "1999", F_construct.NO, F_construct.NO, "99999999", F_type.GENERAL, F_newold.OLD, F_modify.NOTHING, "000700", "700", "0", F_inheritance.NONE, "none", "0", "0", "0", f_location);
+            Files files7 = createFile(office2, "000007", "007", F_process.PREINFO, "8", "008", "경기도 ...", "1999", F_kperiod.SEMI, F_kmethod.ALL, F_kplace.PROFESSION, "1999", "1999", F_construct.NO, F_construct.NO, "99999999", F_type.GENERAL, F_newold.OLD, F_modify.NOTHING, "000700", "700", "0", F_inheritance.NONE, "0", "0", "0", f_location);
             em.persist(files7);
 
             Worker worker1 = creatWorker(Authority.WORKER, "1234", "한명수");
@@ -138,7 +137,7 @@ public class InitDb {
         }
 
 
-        private Files createFile(Office office, String f_labelcode, String b_num, F_process f_process, String f_volumecount, String f_volumeamount, String f_name, String f_pyear, F_kperiod f_kperiod, F_kmethod f_kmethod, F_kplace f_kplace, String f_syear, String f_eyear, F_construct f_db, F_construct f_scan, String f_unitcode, F_type f_type, F_newold f_newold, F_modify f_modify, String f_regnum, String f_page, String f_efilenum, F_inheritance f_inheritance, String f_exportdate, String f_complete, String f_check, String f_upload, F_location f_location) {
+        private Files createFile(Office office, String f_labelcode, String b_num, F_process f_process, String f_volumecount, String f_volumeamount, String f_name, String f_pyear, F_kperiod f_kperiod, F_kmethod f_kmethod, F_kplace f_kplace, String f_syear, String f_eyear, F_construct f_db, F_construct f_scan, String f_unitcode, F_type f_type, F_newold f_newold, F_modify f_modify, String f_regnum, String f_page, String f_efilenum, F_inheritance f_inheritance, String f_complete, String f_check, String f_upload, F_location f_location) {
             Files file = new Files();
             file.setOffice(office);
             file.setF_labelcode(f_labelcode);
@@ -163,7 +162,6 @@ public class InitDb {
             file.setF_page(f_page);
             file.setF_efilenum(f_efilenum);
             file.setF_inheritance(f_inheritance);
-            file.setF_exportdate(f_exportdate);
             file.setF_complete(f_complete);
             file.setF_check(f_check);
             file.setF_upload(f_upload);

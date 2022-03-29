@@ -29,8 +29,9 @@ public class VolumeRepository {
     private final EntityManager em;
     private final JPAQueryFactory jpaQueryFactory;
 
-    public void save(Volume volume){
+    public Long save(Volume volume){
         em.persist(volume);
+        return volume.getId();
     }
 
     public Volume findOne(Long id){

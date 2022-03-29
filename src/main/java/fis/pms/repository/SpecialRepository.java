@@ -18,8 +18,9 @@ public class SpecialRepository {
 
     private final EntityManager em;
 
-    public void save(Special special) {
+    public Long save(Special special) {
         em.persist(special);
+        return special.getId();
     }
 
     public Special findOne(Long id) {
