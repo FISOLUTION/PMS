@@ -375,6 +375,10 @@ public class Files {
         }
     }
 
+    public void makePreInfo() {
+        f_process = F_process.PREINFO;
+    }
+
     public void completeScan() {
         f_process = F_process.SCAN;
     }

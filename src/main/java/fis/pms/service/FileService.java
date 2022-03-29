@@ -69,6 +69,7 @@ public class FileService {
         if(!officeService.validateOffice(office.getO_code(), office.getO_name())) throw new OfficeException("해당 기관코드와 기관이름이 맞지 않습니다");
         // dto -> Entity
         Files file = preInfoFileInfo.createFiles(office);
+        file.makePreInfo();
         return save(file);
     }
 

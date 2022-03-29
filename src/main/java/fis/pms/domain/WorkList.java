@@ -31,7 +31,16 @@ public class WorkList {
 
     private LocalDate date;
 
+
     public static WorkList createWorkList(Files files, F_process f_process){
+        WorkList workList = new WorkList();
+        workList.f_process = f_process;
+        workList.date = LocalDate.now();
+        workList.mappingFile(files);
+        return workList;
+    }
+
+    public static WorkList createWorkList(Files files, Worker worker, F_process f_process){
         WorkList workList = new WorkList();
         workList.f_process = f_process;
         workList.date = LocalDate.now();
