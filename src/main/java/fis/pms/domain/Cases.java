@@ -247,17 +247,6 @@ public class Cases {
         files.getCases().add(this);
     }
 
-    public void setWorkerput(Worker workerput) {
-        this.workerput = workerput;
-        workerput.getCaseList_put().add(this);
-    }
-
-    public void setWorkercheck(Worker workercheck) {
-        this.workercheck = workercheck;
-        workercheck.getCaseList_check().add(this);
-    }
-
-
     /*
      * 작성자: 한명수
      * 작성날짜: 2021/08/31

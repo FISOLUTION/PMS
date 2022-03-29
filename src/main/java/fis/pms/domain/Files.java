@@ -375,4 +375,8 @@ public class Files {
             f_process = F_process.IMGMODIFY;
         }
     }
+
+    public void makePreInfo() {
+        f_process = F_process.PREINFO;
+    }
 }

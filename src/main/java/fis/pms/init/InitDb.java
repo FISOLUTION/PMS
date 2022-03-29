@@ -1,6 +1,7 @@
 package fis.pms.init;
 
 import fis.pms.domain.*;
+import fis.pms.domain.Process;
 import fis.pms.domain.fileEnum.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -37,6 +38,26 @@ public class InitDb {
         private final EntityManager em;
 
         public void dbInit() {
+            Process process = new Process("", F_process.NONE);
+            em.persist(process);
+            Process process1 = new Process("사전조사", F_process.PREINFO);
+            em.persist(process1);
+            Process process2 = new Process("문서반출", F_process.EXPORT);
+            em.persist(process2);
+            Process process3 = new Process("스캔작업", F_process.SCAN);
+            em.persist(process3);
+            Process process4 = new Process("이미지보정", F_process.IMGMODIFY);
+            em.persist(process4);
+            Process process9 = new Process("이미지보정", F_process.IMG_CHECK);
+            em.persist(process9);
+            Process process5 = new Process("색인입력", F_process.INPUT);
+            em.persist(process5);
+            Process process6 = new Process("색인검수", F_process.CHECK);
+            em.persist(process6);
+            Process process7 = new Process("업로드", F_process.UPLOAD);
+            em.persist(process7);
+            Process process8 = new Process("업로드완료", F_process.UPLOADED);
+            em.persist(process8);
 
             Office office1 = createOffice("1234567", "서울 강남구", "1");
             em.persist(office1);
@@ -85,6 +106,14 @@ public class InitDb {
             em.persist(worker2);
             em.persist(worker3);
             em.persist(worker4);
+
+            em.persist(WorkList.createWorkList(files1, worker1, F_process.CHECK));
+            em.persist(WorkList.createWorkList(files1, worker1, F_process.PREINFO));
+            em.persist(WorkList.createWorkList(files1, worker1, F_process.INPUT));
+            em.persist(WorkList.createWorkList(files1, worker1, F_process.IMG_CHECK));
+            em.persist(WorkList.createWorkList(files1, worker1, F_process.SCAN));
+            em.persist(WorkList.createWorkList(files2, worker2, F_process.SCAN));
+
         }
 
         private Cases createCase(String pdate, String pnum, String attachnum, Files file, String c_oldnum, String c_title, String c_receiver){

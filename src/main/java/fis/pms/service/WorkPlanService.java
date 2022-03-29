@@ -13,6 +13,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WorkPlanService {
 
+    /**
+     * @author 현승구
+     * @implNote workPlan은 그냥 하나만 존재한다고 요구사항이 들어왔기 때문에 저장이 들어오게 되면 기존것들 삭제하고 다시 디비에 저장하는 식으로 작성
+     */
     private final WorkPlanRepository workPlanRepository;
 
     public WorkPlan save(WorkPlan workPlan) {
