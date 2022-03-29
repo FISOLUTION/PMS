@@ -3,14 +3,20 @@ package fis.pms.service.dto;
 import fis.pms.repository.dto.PerformanceDTO;
 import lombok.Data;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Data
 public class OverallPerformanceDTO {
-    private PerformanceDTO preInfo;
-    private PerformanceDTO export;
-    private PerformanceDTO scan;
-    private PerformanceDTO imgmodify;
-    private PerformanceDTO input;
-    private PerformanceDTO check;
-    private PerformanceDTO upload;
 
+    private Map<String, PerformanceDTO> data = new HashMap<>();
+
+    public static OverallPerformanceDTO createOverall(List<PerformanceDTO> dto) {
+        OverallPerformanceDTO overall = new OverallPerformanceDTO();
+        dto.stream().forEach(performanceDTO -> {
+            overall.data.put(performanceDTO.getName(), performanceDTO);
+        });
+        return overall;
+    }
 }

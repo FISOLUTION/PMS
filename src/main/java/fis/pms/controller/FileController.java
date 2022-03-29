@@ -37,6 +37,16 @@ public class FileController {
     private final ExcelService excelService;
 
     /**
+     * @implNote 기관별 등록된 철의 갯수를 반환합니다. manage 작업할 때 쓰입니다
+     * @return 기관별 등록된 철의 갯수
+     * @author 현승구
+     */
+    @GetMapping("/file/registrationStatus")
+    public Result registrationStatus(){
+        return new Result(fileService.getRegistration());
+    }
+
+    /**
      * 작성날짜: 2022/03/22 5:47 PM
      * 작성자: 이승범
      * 작성내용: 철 리스트 반출 등록

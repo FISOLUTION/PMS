@@ -1,12 +1,14 @@
 package fis.pms.service;
 
 import fis.pms.domain.WorkPlan;
+import fis.pms.exception.PlanException;
 import fis.pms.repository.WorkPlanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @Service
@@ -35,7 +37,7 @@ public class WorkPlanService {
     }
 
     public WorkPlan findOne(){
-        if(isEmpty()) return null;
+        if(isEmpty()) throw new PlanException("");
         else return findAll().get(0);
     }
 
@@ -43,4 +45,6 @@ public class WorkPlanService {
         if(findAll().isEmpty()) return true;
         else return false;
     }
+
+
 }

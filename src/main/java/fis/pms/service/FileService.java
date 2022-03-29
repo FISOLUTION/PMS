@@ -9,11 +9,13 @@ import fis.pms.repository.CasesRepository;
 import fis.pms.repository.FileRepository;
 import fis.pms.repository.VolumeRepository;
 import fis.pms.repository.WorkListRepository;
+import fis.pms.repository.dto.RegisterStatusDTO;
 import fis.pms.repository.search.FindIndexDetailInfo;
 import fis.pms.service.dto.ExportInfo;
 import fis.pms.service.dto.FindIndexPreinfo;
 import fis.pms.service.dto.PreInfoFileInfo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class FileService {
 
     private final FileRepository fileRepository;
@@ -67,7 +70,11 @@ public class FileService {
         if(!officeService.validateOffice(office.getO_code(), office.getO_name())) throw new OfficeException("해당 기관코드와 기관이름이 맞지 않습니다");
         // dto -> Entity
         Files file = preInfoFileInfo.createFiles(office);
+
+        // 철을 사전조사 했다고 등록시키는 과정
         file.makePreInfo();
+        WorkList workList = WorkList.createWorkList(file, file.getF_process());
+        workListRepository.save(workList);
         return save(file);
     }
 
@@ -251,6 +258,10 @@ public class FileService {
                 volume.resetCount();
             }
         }
+    }
+
+    public List<RegisterStatusDTO> getRegistration() {
+        return fileRepository.findRegistStatus();
     }
 
     /**
