@@ -23,7 +23,7 @@ public class CaseController {
     *   작성내용: 건 색인 입력 api
     */
     @PatchMapping("/index/save")
-    public IndexSaveCaseResponse indexSaveCaseRequest(@RequestBody IndexSaveCaseRequest indexSaveCaseRequest) {
+    public IndexSaveCaseResponse saveIndex(@RequestBody IndexSaveCaseRequest indexSaveCaseRequest) {
         return caseService.saveCases(indexSaveCaseRequest);
     }
 
@@ -33,7 +33,7 @@ public class CaseController {
     *   작성내용: 건 검색 api
     */
     @GetMapping("/index/case")
-    public List<IndexSearchCaseResponse> indexSearchCaseResponse(@RequestParam(value = "docnum", required = false) String c_oldnum,
+    public List<IndexSearchCaseResponse> SearchIndexCase(@RequestParam(value = "docnum", required = false) String c_oldnum,
                                                                  @RequestParam(value = "c_name", required = false) String c_title,
                                                                  @RequestParam(value = "c_receiver", required = false) String c_receiver) {
         FindIndexCaseInfo findIndexCaseInfo = new FindIndexCaseInfo();
