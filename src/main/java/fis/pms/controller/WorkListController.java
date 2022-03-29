@@ -1,8 +1,10 @@
 package fis.pms.controller;
 
+import fis.pms.controller.dto.Result;
 import fis.pms.domain.WorkPlan;
 import fis.pms.service.WorkListService;
 import fis.pms.service.WorkPlanService;
+import fis.pms.service.dto.OverallPerformanceDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,10 +34,13 @@ public class WorkListController {
     private final WorkPlanService workPlanService;
 
     @GetMapping("/prepare")
-    public void preparePlanResult(){
+    public Result preparePlanResult() {
         WorkPlan workPlan = workPlanService.findOne();
-        workListService.getOverallPerformance();
-
+        return new Result(workListService.prepareWithPlan(workPlan));
     }
 
+    @GetMapping("/workList/overall")
+    public OverallPerformanceDTO overall() {
+        return workListService.getOverallPerformance();
+    }
 }

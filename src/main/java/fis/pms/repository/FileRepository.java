@@ -6,6 +6,7 @@ import fis.pms.controller.dto.UploadSearchBoxRequest;
 import fis.pms.domain.Files;
 import fis.pms.domain.Office;
 import fis.pms.domain.fileEnum.F_process;
+import fis.pms.repository.dto.RegisterStatusDTO;
 import fis.pms.repository.querymethod.FileQueryMethods;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -244,6 +245,13 @@ public class FileRepository extends FileQueryMethods {
                         "join fetch f.office " +
                         "where f.f_process = :scan", Files.class)
                 .setParameter("scan", F_process.SCAN)
+                .getResultList();
+    }
+
+    public List<RegisterStatusDTO> findRegistStatus() {
+        return em.createQuery("select new fis.pms.repository.dto.RegisterStatusDTO(file.office.o_code, file.office.o_name, count(file)) " +
+                "from Files file join file.office " +
+                "group by file.office.o_code", RegisterStatusDTO.class)
                 .getResultList();
     }
 }
