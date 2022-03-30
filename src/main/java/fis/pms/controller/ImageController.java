@@ -1,5 +1,6 @@
 package fis.pms.controller;
 
+import fis.pms.configuator.argumentResolver.Login;
 import fis.pms.controller.dto.ImagesMaxnumResponse;
 import fis.pms.controller.dto.SaveImageRequest;
 import fis.pms.service.ImageService;
@@ -20,14 +21,20 @@ public class ImageController {
 
     private final ImageService imageService;
 
-    // 이미지 저장
-    @PostMapping("/images/{state}")
-    public Long saveImage(@ModelAttribute SaveImageRequest request, @PathVariable String state) throws IOException {
-        Long imageCnt = imageService.storeImages(request, state);
+    // 원본 이미지 upload
+    @PostMapping("/images/origin")
+    public Long saveOriginImage(@ModelAttribute SaveImageRequest request, @Login Long workerId) throws IOException {
+        Long imageCnt = imageService.storeOriginImages(request, workerId);
         return imageCnt;
     }
 
-    // 이미지 원본 download
+    @PostMapping("/images/modify")
+    public Long saveModifyImage(@ModelAttribute SaveImageRequest request, @Login Long workerId) throws IOException {
+        Long imageCnt = imageService.storeModifyImages(request, workerId);
+        return imageCnt;
+    }
+
+    // 이미지 download
     @GetMapping("/images/{state}/{fileId}/{imageNum}")
     public Resource downloadImage(@PathVariable String state, @PathVariable Long fileId, @PathVariable String imageNum) throws MalformedURLException {
         if(state.equals("origin")){
