@@ -1,5 +1,6 @@
 package fis.pms.controller;
 
+import fis.pms.configuator.argumentResolver.Login;
 import fis.pms.controller.dto.Result;
 import fis.pms.controller.dto.WorkerFormRequest;
 import fis.pms.controller.dto.WorkerFormResponse;
@@ -28,7 +29,7 @@ public class WorkerController {
      * @return
      * @throws WorkerException
      */
-    @PostMapping("worker")
+    @PostMapping("/worker/signup")
     public WorkerFormResponse saveWorker(@RequestBody @Valid WorkerFormRequest request) throws WorkerException {
         Worker worker = request.createWorker();
         workerService.saveWorker(worker);
@@ -42,7 +43,7 @@ public class WorkerController {
      * @return 개인정보 제외한 값 반환
      * @throws WorkerException
      */
-    @PatchMapping("worker/{id}")
+    @PatchMapping("/worker/{id}")
     public WorkerFormResponse updateWorker(@RequestBody @Valid WorkerFormRequest request, @PathVariable Long id) throws WorkerException {
         Worker worker = workerService.updateWorker(id, request);
         return WorkerFormResponse.createResponse(worker);
@@ -53,7 +54,7 @@ public class WorkerController {
      * @param w_id 작업자 id값
      * @return DB에서 특정 id 를 가진 Worker를 삭제합니다
      */
-    @DeleteMapping("worker/{id}")
+    @DeleteMapping("/worker/{id}")
     public Long deleteWorker(@PathVariable Long w_id) {
         return workerService.remove(w_id);
     }
@@ -62,7 +63,7 @@ public class WorkerController {
      * @author 현승구
      * @return 전체 작업자 목록을 반환합니다
      */
-    @GetMapping("worker")
+    @GetMapping("/worker")
     public Result searchWorker() {
         List<Worker> workers = workerService.findAll();
         List<WorkerSearchResponse> responses = workers.stream()
