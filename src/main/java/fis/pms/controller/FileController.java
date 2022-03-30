@@ -1,6 +1,7 @@
 package fis.pms.controller;
 
 
+import fis.pms.configuator.argumentResolver.Login;
 import fis.pms.controller.dto.*;
 import fis.pms.controller.dto.filedto.*;
 import fis.pms.domain.Files;
@@ -42,9 +43,9 @@ public class FileController {
      * 작성내용: 철 리스트 반출 등록
      */
     @PatchMapping("/file/export")
-    public ExportFilesResponse exportFiles(@Validated @RequestBody ExportFilesRequest exportFilesRequest) {
+    public ExportFilesResponse exportFiles(@Validated @RequestBody ExportFilesRequest exportFilesRequest, @Login Long workerId) {
         List<Long> collect = exportFilesRequest.getExportInfoList().stream()
-                .map(fileService::exportFile)
+                .map(exportInfo -> fileService.exportFile(exportInfo, workerId))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         return new ExportFilesResponse(collect);

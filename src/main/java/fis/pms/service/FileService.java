@@ -5,10 +5,8 @@ import fis.pms.domain.*;
 import fis.pms.domain.fileEnum.F_process;
 import fis.pms.exception.FilesException;
 import fis.pms.exception.OfficeException;
-import fis.pms.repository.CasesRepository;
-import fis.pms.repository.FileRepository;
-import fis.pms.repository.VolumeRepository;
-import fis.pms.repository.WorkListRepository;
+import fis.pms.exception.WorkerException;
+import fis.pms.repository.*;
 import fis.pms.repository.search.FindIndexDetailInfo;
 import fis.pms.service.dto.ExportInfo;
 import fis.pms.service.dto.FindIndexPreinfo;
@@ -33,38 +31,40 @@ public class FileService {
     private final WorkListRepository workListRepository;
     private final VolumeRepository volumeRepository;
     private final CasesRepository casesRepository;
+    private final WorkListService workListService;
 
 
     /**
-     * @author 현승구
      * @param labelCode 철의 고유한 값
      * @return empty 이면 true 반환
+     * @author 현승구
      * @implNote 철을 레이블 코드로 검색하여 존재 여부 확인
      */
-    public boolean isEmpty(String labelCode){
+    public boolean isEmpty(String labelCode) {
         return fileRepository.findByLabel(labelCode).isEmpty();
     }
 
     public Long save(Files files) throws FilesException {
-        if(isEmpty(files.getF_labelcode())) throw new FilesException("중복된 레이블 코드가 있습니다");
+        if (isEmpty(files.getF_labelcode())) throw new FilesException("중복된 레이블 코드가 있습니다");
         return fileRepository.save(files);
     }
 
     /**
-     * @author 현승구
      * @param preInfoFileInfo
+     * @return 사전 조사한 철의 id를 반환합니다
+     * @throws OfficeException 기관에 대한 유효성 예외
+     * @throws FilesException  레이블이 이미 존재하면 예외 발생
+     * @author 현승구
      * @implNote file을 사전 조사하기 위한 서비스 로직입니다.
      * <p>
      * 1. office 에 대한 유효성 검사하를 합니다
      * <p>
      * 2. 레이블 코드가 이미 존재하는 지에 대한 유효성 검사를 진행합니다.
-     * @throws OfficeException 기관에 대한 유효성 예외
-     * @throws FilesException 레이블이 이미 존재하면 예외 발생
-     * @return 사전 조사한 철의 id를 반환합니다
      */
     public Long preInfoFile(PreInfoFileInfo preInfoFileInfo) throws FilesException, OfficeException {
         Office office = officeService.findById(preInfoFileInfo.getO_code());
-        if(!officeService.validateOffice(office.getO_code(), office.getO_name())) throw new OfficeException("해당 기관코드와 기관이름이 맞지 않습니다");
+        if (!officeService.validateOffice(office.getO_code(), office.getO_name()))
+            throw new OfficeException("해당 기관코드와 기관이름이 맞지 않습니다");
         // dto -> Entity
         Files file = preInfoFileInfo.createFiles(office);
         file.makePreInfo();
@@ -72,23 +72,23 @@ public class FileService {
     }
 
     /**
-     * @Author: 현승구
      * @param dto 수정가능한 사전조사 정보를 담은 DTO입니다
      * @return 철의 id 값
-     * @implNote
-     * file을 사전 조사하기 위한 서비스 로직입니다.
+     * @throws OfficeException 기관에 대한 유효성 예외
+     * @throws FilesException  레이블이 이미 존재하면 예외 발생
+     * @Author: 현승구
+     * @implNote file을 사전 조사하기 위한 서비스 로직입니다.
      * <p>
      * 1. office 에 대한 유효성 검사하를 합니다
-     *  <p>
-     *  2. 레이블 코드가 이미 존재하는 지에 대한 유효성 검사를 진행합니다.
-     *  @throws OfficeException 기관에 대한 유효성 예외
-     *  @throws FilesException 레이블이 이미 존재하면 예외 발생
+     * <p>
+     * 2. 레이블 코드가 이미 존재하는 지에 대한 유효성 검사를 진행합니다.
      * @author 현승구
      */
     public Long updatePreInfo(PreInfoFileUpdateInfo dto) throws OfficeException, FilesException {
         // 기관 유효성 검사
         Office office = officeService.findById(dto.getO_code());
-        if(!officeService.validateOffice(office.getO_code(), office.getO_name())) throw new OfficeException("해당 기관코드와 기관이름이 맞지 않습니다");
+        if (!officeService.validateOffice(office.getO_code(), office.getO_name()))
+            throw new OfficeException("해당 기관코드와 기관이름이 맞지 않습니다");
         // dto -> Entity
         Files file = fileRepository.findOne(dto.getF_id())
                 .orElseThrow(() -> new FilesException("존재하는 철이 아닙니다"));
@@ -97,13 +97,13 @@ public class FileService {
         return file.getF_id();
     }
 
-    public Optional<Files> findOne(Long id){
+    public Optional<Files> findOne(Long id) {
         return fileRepository.findOne(id);
     }
 
     public Long remove(Long id) throws FilesException {
         Optional<Files> file = findOne(id);
-        return fileRepository.remove(file.orElseThrow( ()-> new FilesException(id, "존재하지 않는 철입니다")));
+        return fileRepository.remove(file.orElseThrow(() -> new FilesException(id, "존재하지 않는 철입니다")));
     }
 
     public List<Files> findPreInfoFile(PreInfoFileSearchDTO searchDTO) throws OfficeException {
@@ -117,11 +117,11 @@ public class FileService {
 
 
     /**
-    *   작성날짜: 2022/03/29 1:53 PM
-    *   작성자: 이승범
-    *   작성내용: 철 반출
-    */
-    public Long exportFile(ExportInfo exportInfo) {
+     * 작성날짜: 2022/03/29 1:53 PM
+     * 작성자: 이승범
+     * 작성내용: 철 반출
+     */
+    public Long exportFile(ExportInfo exportInfo, Long workerId) {
 
         Files findFile = fileRepository.findOneWithOffice(exportInfo.getF_id());
 
@@ -129,8 +129,9 @@ public class FileService {
 
             // file export 처리
             findFile.exportFile(exportInfo);
-            WorkList workList = WorkList.createWorkList(findFile, F_process.EXPORT);
-            workListRepository.save(workList);
+
+            // 반출 작업 workList 반영
+            workListService.createWorkList(findFile, workerId, F_process.EXPORT);
 
             return exportInfo.getF_id();
         }
@@ -165,9 +166,9 @@ public class FileService {
     }
 
     /**
-     *   작성날짜: 2022/03/25 5:09 PM
-     *   작성자: 이승범
-     *   작성내용: 색인 작업할 철 목록 가져오기
+     * 작성날짜: 2022/03/25 5:09 PM
+     * 작성자: 이승범
+     * 작성내용: 색인 작업할 철 목록 가져오기
      */
     public List<Files> searchFilesByPreInfo(FindIndexPreinfo findIndexPreinfo) {
         //Files 테이블에서 o_code, b_num, f_labelcode로 검색
@@ -180,9 +181,9 @@ public class FileService {
     }
 
     /**
-     *   작성날짜: 2022/03/25 5:49 PM
-     *   작성자: 이승범
-     *   작성내용: 철 색인 작업
+     * 작성날짜: 2022/03/25 5:49 PM
+     * 작성자: 이승범
+     * 작성내용: 철 색인 작업
      */
     public IndexSaveLabelResponse saveFilesAndVolume(IndexSaveLabelRequest indexSaveLabelRequest) {
         int reqVolumeAmount = Integer.parseInt(indexSaveLabelRequest.getF_volumeamount());   //총 권호수 만큼 카운터 생성
@@ -214,7 +215,7 @@ public class FileService {
         List<Volume> volumes = volumeRepository.findByFiles(files);
         for (Volume volume : volumes) {
             String caseCount = Optional.ofNullable(volume.getV_casecount()).orElse("-1");
-            if(caseCount.equals("0")){
+            if (caseCount.equals("0")) {
                 volumeCount++;
             }
         }
@@ -235,10 +236,10 @@ public class FileService {
     }
 
     /**
-    *   작성날짜: 2022/03/29 1:54 PM
-    *   작성자: 이승범
-    *   작성내용: 철의 volumecount가 0이 되면 해당 철의 색인 or 검수 작업 완료
-    */
+     * 작성날짜: 2022/03/29 1:54 PM
+     * 작성자: 이승범
+     * 작성내용: 철의 volumecount가 0이 되면 해당 철의 색인 or 검수 작업 완료
+     */
     public void checkVolumeCount(Files findFile) {
         if (findFile.getF_volumecount().compareTo("0") == 0) {
             findFile.updateProcess();
@@ -254,10 +255,10 @@ public class FileService {
     }
 
     /**
-    *   작성날짜: 2022/03/29 1:55 PM
-    *   작성자: 이승범
-    *   작성내용: 철 항목 검색
-    */
+     * 작성날짜: 2022/03/29 1:55 PM
+     * 작성자: 이승범
+     * 작성내용: 철 항목 검색
+     */
     public List<Files> searchFilesByDetailInfo(FindIndexDetailInfo findIndexDetailInfo) {
 
         List<Files> findList = fileRepository.findByFnameFpyearFeyear(
@@ -269,10 +270,10 @@ public class FileService {
     }
 
     /**
-    *   작성날짜: 2022/03/29 2:11 PM
-    *   작성자: 이승범
-    *   작성내용: 색인단계에서 철 삭제
-    */
+     * 작성날짜: 2022/03/29 2:11 PM
+     * 작성자: 이승범
+     * 작성내용: 색인단계에서 철 삭제
+     */
     public Long deleteIndex(Long f_id) {
         Files files = fileRepository.findOne(f_id).get();     //넘어온 file_id 를 이용하여 해당 file 찾음
         return fileRepository.remove(files);                  //해당 file을 삭제
