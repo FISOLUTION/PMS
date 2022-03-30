@@ -7,8 +7,14 @@ import fis.pms.service.WorkPlanService;
 import fis.pms.service.dto.OverallPerformanceDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
+import java.util.Date;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,7 +39,7 @@ public class WorkListController {
     private final WorkListService workListService;
     private final WorkPlanService workPlanService;
 
-    @GetMapping("/prepare")
+    @GetMapping("workList/prepare")
     public Result preparePlanResult() {
         WorkPlan workPlan = workPlanService.findOne();
         return new Result(workListService.prepareWithPlan(workPlan));
@@ -42,5 +48,11 @@ public class WorkListController {
     @GetMapping("/workList/overall")
     public OverallPerformanceDTO overall() {
         return workListService.getOverallPerformance();
+    }
+
+    @GetMapping("/workList")
+    public void findWorkListByDate(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate){
+        workListService.getWorkPerformancePeriod(startDate, endDate);
     }
 }
