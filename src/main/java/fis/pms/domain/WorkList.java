@@ -32,7 +32,7 @@ public class WorkList {
     private LocalDate date;
 
 
-    public static WorkList createWorkList(Files files, F_process f_process){
+    public static WorkList createWorkList(Files files, F_process f_process) {
         WorkList workList = new WorkList();
         workList.f_process = f_process;
         workList.date = LocalDate.now();
@@ -40,21 +40,32 @@ public class WorkList {
         return workList;
     }
 
-    public static WorkList createWorkList(Files files, Worker worker, F_process f_process){
+    public static WorkList createWorkList(Files files, Worker worker, F_process f_process) {
         WorkList workList = new WorkList();
         workList.f_process = f_process;
         workList.date = LocalDate.now();
         workList.mappingFile(files);
+        workList.mappingWorker(worker);
         return workList;
+    }
+
+    public void updateWorkList(Worker worker) {
+        this.mappingWorker(worker);
+        this.date = LocalDate.now();
     }
 
     /**
-    *   작성날짜: 2022/03/24 10:53 AM
-    *   작성자: 이승범
-    *   작성내용: 철과의 연관관계 매서드
-    */
+     * 작성날짜: 2022/03/24 10:53 AM
+     * 작성자: 이승범
+     * 작성내용: 연관관계 매서드
+     */
     public void mappingFile(Files files) {
         this.files = files;
         files.getWorkList().add(this);
+    }
+
+    public void mappingWorker(Worker worker) {
+        this.worker = worker;
+        worker.getWorkList().add(this);
     }
 }

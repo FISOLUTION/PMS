@@ -128,11 +128,11 @@ public class FileService {
 
         if (findFile.getF_process().equals(F_process.PREINFO)) {
 
+            // 반출 작업 workList 반영
+            workListService.reflectWorkList(findFile, workerId, F_process.EXPORT);
+
             // file export 처리
             findFile.exportFile(exportInfo);
-
-            // 반출 작업 workList 반영
-            workListService.createWorkList(findFile, workerId, F_process.EXPORT);
 
             return exportInfo.getF_id();
         }
@@ -245,7 +245,8 @@ public class FileService {
      */
     public void checkVolumeCount(Files findFile, Long workerId) {
         if (findFile.getF_volumecount().compareTo("0") == 0) {
-            workListService.createWorkList(findFile, workerId, findFile.getF_process());
+            F_process f_process = findFile.getF_process() == F_process.INPUT ? F_process.CHECK : F_process.INPUT;
+            workListService.reflectWorkList(findFile, workerId, f_process);
             findFile.updateProcess();
             List<Cases> findCasesList = casesRepository.findByFiles(findFile);
             for (Cases cases : findCasesList) {

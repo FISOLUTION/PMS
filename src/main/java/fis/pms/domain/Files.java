@@ -296,7 +296,7 @@ public class Files {
     }
 
     public void updateProcess() {
-        if (this.f_process == F_process.IMGMODIFY) {
+        if (F_process.IMGMODIFY.compareTo(this.f_process)<0) {
             this.f_process = F_process.INPUT;
             LocalDate timestamp = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

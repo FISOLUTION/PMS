@@ -1,5 +1,7 @@
 package fis.pms.repository;
 
+import fis.pms.domain.Files;
+import fis.pms.domain.fileEnum.F_process;
 import fis.pms.repository.dto.PerformanceDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,5 +34,16 @@ public class WorkListRepository {
     public List<WorkList> findAll(){
         return em.createQuery("select wl from WorkList wl", WorkList.class)
                 .getResultList();
+    }
+
+    public WorkList findByFileAndF_process(Files file, F_process f_process){
+        return em.createQuery("select wl " +
+                        "from WorkList wl " +
+                        "where wl.f_process=:f_process " +
+                        "and wl.files=:file", WorkList.class)
+                .setParameter("f_process", f_process)
+                .setParameter("file", file)
+                .getResultList()
+                .get(0);
     }
 }

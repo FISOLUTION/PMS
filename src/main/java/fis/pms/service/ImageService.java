@@ -50,9 +50,9 @@ public class ImageService {
         // request에 담겨있는 이미지들을 생성한 디렉토리에 저장
         long imageCnt = imgTransfer(request, path);
 
-        findFile.imageUpload(imageCnt, "origin");
+        workListService.reflectWorkList(findFile, workerId, F_process.SCAN);
 
-        workListService.createWorkList(findFile, workerId, F_process.SCAN);
+        findFile.imageUpload(imageCnt, "origin");
 
         // 철의 이미지 개수 반환
         return imageCnt;
@@ -74,9 +74,9 @@ public class ImageService {
         // request에 담겨있는 이미지들을 생성한 디렉토리에 저장
         long imageCnt = imgTransfer(request, path);
 
-        findFile.imageUpload(imageCnt, "modify");
+        workListService.reflectWorkList(findFile, workerId, F_process.IMGMODIFY);
 
-        workListService.createWorkList(findFile, workerId, F_process.IMGMODIFY);
+        findFile.imageUpload(imageCnt, "modify");
 
         // 철의 이미지 개수 반환
         return imageCnt;
