@@ -13,7 +13,7 @@ public enum F_process {
     SCAN("8"),              //스캔문서
     //SCAN_PAGE("9"),         //스캔도면
     IMGMODIFY("10"),        //이미지보정
-    IMG_CHECK("11"),        //이미지검수
+    //IMG_CHECK("11"),        //이미지검수
     INPUT("12"),            //색인입력
     CHECK("13"),            //색인검수
     //LOADING("14"),          //로딩
