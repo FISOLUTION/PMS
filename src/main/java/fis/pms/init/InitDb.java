@@ -37,8 +37,6 @@ public class InitDb {
         private final EntityManager em;
 
         public void dbInit() {
-            Process process = new Process("", F_process.NONE);
-            em.persist(process);
             Process process1 = new Process("사전조사", F_process.PREINFO);
             em.persist(process1);
             Process process2 = new Process("문서반출", F_process.EXPORT);
@@ -105,7 +103,6 @@ public class InitDb {
             em.persist(WorkList.createWorkList(files1, worker1, F_process.CHECK));
             em.persist(WorkList.createWorkList(files1, worker1, F_process.PREINFO));
             em.persist(WorkList.createWorkList(files1, worker1, F_process.INPUT));
-            em.persist(WorkList.createWorkList(files1, worker1, F_process.IMG_CHECK));
             em.persist(WorkList.createWorkList(files1, worker1, F_process.SCAN));
             em.persist(WorkList.createWorkList(files2, worker2, F_process.SCAN));
 
@@ -173,6 +170,8 @@ public class InitDb {
             worker.setPassword(password);
             worker.setW_name(w_name);
             worker.setNickname(w_name);
+            worker.setW_address("sfds");
+            worker.setW_tel("fds");
             return worker;
         }
 

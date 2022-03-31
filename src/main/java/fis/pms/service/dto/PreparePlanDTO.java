@@ -12,6 +12,7 @@ public class PreparePlanDTO {
     private String name;
     private Long plan;
     private Long count;
+    private double rate;
 
     public static PreparePlanDTO create(PerformanceDTO dto){
         return PreparePlanDTO.builder()
@@ -19,5 +20,14 @@ public class PreparePlanDTO {
                 .name(dto.getName())
                 .count(dto.getCount())
                 .build();
+    }
+
+    public PreparePlanDTO putPlan(Long plan){
+        this.plan = plan;
+        return this;
+    }
+
+    public void calculateRate(){
+        rate = (double)count / plan * 100;
     }
 }
