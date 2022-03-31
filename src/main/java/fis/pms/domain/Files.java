@@ -313,11 +313,11 @@ public class Files {
         this.f_volumecount = this.f_volumeamount;
     }
 
-    public void Uploaded() {
-        this.f_process = F_process.UPLOADED;
-        Date date = new Date(System.currentTimeMillis());
-        this.f_upload = date.toString();
-    }
+//    public void Uploaded() {
+//        this.f_process = F_process.UPLOADED;
+//        Date date = new Date(System.currentTimeMillis());
+//        this.f_upload = date.toString();
+//    }
 
     // 2022-02-28 이미지 개수 파악을 위한 메서드
     public void imageUpload(Long imageNum, String state) {

@@ -44,6 +44,7 @@ public class WorkList {
         WorkList workList = new WorkList();
         workList.f_process = f_process;
         workList.date = LocalDate.now();
+        workList.worker = worker;
         workList.mappingFile(files);
         return workList;
     }

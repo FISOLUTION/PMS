@@ -170,6 +170,8 @@ public class InitDb {
             worker.setPassword(password);
             worker.setW_name(w_name);
             worker.setNickname(w_name);
+            worker.setW_address("sfds");
+            worker.setW_tel("fds");
             return worker;
         }
 
