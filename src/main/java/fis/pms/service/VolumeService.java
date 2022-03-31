@@ -7,6 +7,8 @@ import fis.pms.controller.dto.VolumesInfo;
 import fis.pms.domain.Cases;
 import fis.pms.domain.Files;
 import fis.pms.domain.Volume;
+import fis.pms.exception.FilesException;
+import fis.pms.exception.VolumeException;
 import fis.pms.repository.CasesRepository;
 import fis.pms.repository.FileRepository;
 import fis.pms.repository.VolumeRepository;
@@ -60,9 +62,14 @@ public class VolumeService {
      * 작성자: 이승범
      * 작성내용: 해당 권에 속해있는 건들의 페이지 정보를 토대로 건들 생성
      */
-    public IndexSaveVolumeResponse saveCasesPages(IndexSaveVolumeRequest indexSaveVolumeRequest) {
-        Files findFiles = fileRepository.findOne(indexSaveVolumeRequest.getF_id()).get();
-        Volume updateVolume = volumeRepository.findOne(indexSaveVolumeRequest.getV_id());
+    public IndexSaveVolumeResponse saveCasesPages(IndexSaveVolumeRequest indexSaveVolumeRequest, Long workerId) {
+
+        Files findFiles = fileRepository.findOne(indexSaveVolumeRequest.getF_id())
+                .orElseThrow(()->new FilesException("존재하지 않는 파일입니다."));
+
+        Volume updateVolume = volumeRepository.findOne(indexSaveVolumeRequest.getV_id())
+                .orElseThrow(()->new VolumeException("존재하지 않는 권입니다."));
+
         List<IndexSaveVolumeRequest.PageInfo> pageList = indexSaveVolumeRequest.getV_info();
         IndexSaveVolumeResponse indexSaveVolumeResponse = new IndexSaveVolumeResponse();
         List<Long> result = new ArrayList<>();
@@ -96,8 +103,10 @@ public class VolumeService {
                 }
                 casesRepository.deleteRemainCases(deletedCasesIdList);
                 // 벌크 연산후 영속성 컨텍스트 다시 구성
-                findFiles = fileRepository.findOne(indexSaveVolumeRequest.getF_id()).get();
-                updateVolume = volumeRepository.findOne(indexSaveVolumeRequest.getV_id());
+                findFiles = fileRepository.findOne(indexSaveVolumeRequest.getF_id())
+                        .orElseThrow(()->new FilesException("존재하지 않는 철입니다."));
+                updateVolume = volumeRepository.findOne(indexSaveVolumeRequest.getV_id())
+                        .orElseThrow(()->new VolumeException("존재하지 않는 권입니다."));
                 casesList = casesRepository.findByVolume(indexSaveVolumeRequest.getV_id());
                 // 현재 남아있는 건들의 정보들이 다 입력된 상태인가
             } // 수정된 권의 건수가 그 전과 동일할 경우 페이지들만 수정
@@ -107,7 +116,7 @@ public class VolumeService {
                 }
             }
             updateVolume.updateCaseCount(casesList);
-            checkCaseCount(findFiles, updateVolume);
+            checkCaseCount(findFiles, updateVolume, workerId);
             result = casesList.stream().map(Cases::getId).collect(Collectors.toList());
         }
         updateVolume.updatePageSaved();
@@ -120,10 +129,10 @@ public class VolumeService {
      * 작성자: 이승범
      * 작성내용: 권의 casecount가 0이면 해당 권의 색인 or 검수 작업 완료
      */
-    public void checkCaseCount(Files findFile, Volume findVolume) {
+    public void checkCaseCount(Files findFile, Volume findVolume, Long workerId) {
         if (findVolume.getV_casecount().compareTo("0") == 0) {
             findFile.reduceVolumeCount();
-            fileService.checkVolumeCount(findFile);
+            fileService.checkVolumeCount(findFile, workerId);
         }
     }
 

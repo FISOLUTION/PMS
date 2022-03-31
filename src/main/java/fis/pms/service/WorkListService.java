@@ -32,7 +32,8 @@ public class WorkListService {
     }
 
     public void createWorkList(Files file, Long workerId, F_process f_process) {
-        Worker worker = workerRepository.findOne(workerId).orElseThrow(() -> new WorkerException("존재하지 않는 사용자입니다."));
+        Worker worker = workerRepository.findOne(workerId)
+                .orElseThrow(() -> new WorkerException("존재하지 않는 사용자입니다."));
         WorkList workList = WorkList.createWorkList(file, worker, f_process);
         workListRepository.save(workList);
     }

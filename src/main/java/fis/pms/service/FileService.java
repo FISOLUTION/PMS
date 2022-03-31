@@ -32,6 +32,7 @@ public class FileService {
     private final VolumeRepository volumeRepository;
     private final CasesRepository casesRepository;
     private final WorkListService workListService;
+    private final WorkerRepository workerRepository;
 
 
     /**
@@ -185,10 +186,12 @@ public class FileService {
      * 작성자: 이승범
      * 작성내용: 철 색인 작업
      */
-    public IndexSaveLabelResponse saveFilesAndVolume(IndexSaveLabelRequest indexSaveLabelRequest) {
+    public IndexSaveLabelResponse saveFilesAndVolume(IndexSaveLabelRequest indexSaveLabelRequest, Long workerId) {
+
         int reqVolumeAmount = Integer.parseInt(indexSaveLabelRequest.getF_volumeamount());   //총 권호수 만큼 카운터 생성
 
-        Files files = fileRepository.findOne(indexSaveLabelRequest.getF_id()).get();      //file 찾아오기.
+        Files files = fileRepository.findOne(indexSaveLabelRequest.getF_id())
+                .orElseThrow(()->new FilesException("존재하지 않는 파일입니다."));      //file 찾아오기.
 
         IndexSaveLabelResponse indexSaveLabelResponse = new IndexSaveLabelResponse();
 
@@ -223,7 +226,7 @@ public class FileService {
         //file 정보 업데이트
         files = fileRepository.findOne(indexSaveLabelRequest.getF_id()).get();
         files.updateFileIndex(indexSaveLabelRequest, volumeCount);
-        checkVolumeCount(files);
+        checkVolumeCount(files, workerId);
 
         List<Long> result = volumes.stream()
                 .map(Volume::getId)
@@ -240,8 +243,9 @@ public class FileService {
      * 작성자: 이승범
      * 작성내용: 철의 volumecount가 0이 되면 해당 철의 색인 or 검수 작업 완료
      */
-    public void checkVolumeCount(Files findFile) {
+    public void checkVolumeCount(Files findFile, Long workerId) {
         if (findFile.getF_volumecount().compareTo("0") == 0) {
+            workListService.createWorkList(findFile, workerId, findFile.getF_process());
             findFile.updateProcess();
             List<Cases> findCasesList = casesRepository.findByFiles(findFile);
             for (Cases cases : findCasesList) {

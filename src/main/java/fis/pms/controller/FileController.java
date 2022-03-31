@@ -116,8 +116,8 @@ public class FileController {
     *   작성내용: 철 색인 작업
     */
     @PostMapping("/file/index")
-    public IndexSaveLabelResponse SaveIndex(@RequestBody IndexSaveLabelRequest indexSaveLabelRequest) {
-        return fileService.saveFilesAndVolume(indexSaveLabelRequest);
+    public IndexSaveLabelResponse SaveIndex(@RequestBody IndexSaveLabelRequest indexSaveLabelRequest, @Login Long workerId) {
+        return fileService.saveFilesAndVolume(indexSaveLabelRequest, workerId);
     }
 
     /**
