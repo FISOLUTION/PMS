@@ -29,4 +29,8 @@ public enum F_process {
     public String getProcess() {
         return process;
     }
+
+    public F_process getNext() {
+        return this.ordinal() < F_process.values().length - 1 ? F_process.values()[this.ordinal() + 1] : null;
+    }
 }

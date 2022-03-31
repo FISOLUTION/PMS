@@ -3,6 +3,7 @@ package fis.pms.domain;
 import fis.pms.controller.dto.IndexSaveLabelRequest;
 import fis.pms.controller.dto.PreInfoFileUpdateInfo;
 import fis.pms.domain.fileEnum.*;
+import fis.pms.exception.FilesException;
 import fis.pms.service.dto.ExportInfo;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -23,23 +24,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Files {
-
-    public Files(String f_labelcode, Office office, String b_num, String f_name, String f_pyear, F_kperiod f_kperiod, F_kplace f_kplace, F_construct f_db, F_construct f_scan, F_type f_type, F_location f_location, String f_typenum) {
-        this.f_labelcode = f_labelcode;
-        this.office = office;
-        this.b_num = b_num;
-        this.f_name = f_name;
-        this.f_pyear = f_pyear;
-        this.f_kperiod = f_kperiod;
-        this.f_kplace = f_kplace;
-        this.f_db = f_db;
-        this.f_scan = f_scan;
-        this.f_type = f_type;
-        this.f_location = f_location;
-        this.f_typenum = f_typenum;
-        this.f_volumeSaved = "0";
-        this.f_process = F_process.PREINFO;
-    }
 
     @Id
     @GeneratedValue //auto inc
@@ -238,6 +222,24 @@ public class Files {
     private String f_typenum;   //분류번호 (뭔지 모름)
     //업로드 완료여부 미완료 0 완료 timestamp
 
+
+    public Files(String f_labelcode, Office office, String b_num, String f_name, String f_pyear, F_kperiod f_kperiod, F_kplace f_kplace, F_construct f_db, F_construct f_scan, F_type f_type, F_location f_location, String f_typenum) {
+        this.f_labelcode = f_labelcode;
+        this.office = office;
+        this.b_num = b_num;
+        this.f_name = f_name;
+        this.f_pyear = f_pyear;
+        this.f_kperiod = f_kperiod;
+        this.f_kplace = f_kplace;
+        this.f_db = f_db;
+        this.f_scan = f_scan;
+        this.f_type = f_type;
+        this.f_location = f_location;
+        this.f_typenum = f_typenum;
+        this.f_volumeSaved = "0";
+        this.f_process = F_process.PREINFO;
+    }
+
     //=======================수정 메서드==========================//
     public void preInfoUpdate(Office office, PreInfoFileUpdateInfo dto) {
         this.office = office;                 // 기관
@@ -295,7 +297,7 @@ public class Files {
     }
 
     public void updateProcess() {
-        if (this.f_process == F_process.IMGMODIFY) {
+        if (F_process.IMGMODIFY.compareTo(this.f_process)<0) {
             this.f_process = F_process.INPUT;
             LocalDate timestamp = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -319,12 +321,11 @@ public class Files {
 //        this.f_upload = date.toString();
 //    }
 
-    // 2022-02-28 이미지 개수 파악을 위한 메서드
     public void imageUpload(Long imageNum, String state) {
-        images = imageNum;
         if (state.equals("origin")) {
             f_process = F_process.SCAN;
-        } else {
+            images = imageNum;
+        } else if (state.equals("modify")) {
             f_process = F_process.IMGMODIFY;
         }
     }

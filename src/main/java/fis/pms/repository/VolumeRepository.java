@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 import static fis.pms.domain.QFiles.files;
 import static fis.pms.domain.QVolume.volume;
@@ -34,8 +35,8 @@ public class VolumeRepository {
         return volume.getId();
     }
 
-    public Volume findOne(Long id){
-        return em.find(Volume.class, id);
+    public Optional<Volume> findOne(Long id){
+        return Optional.ofNullable(em.find(Volume.class, id));
     }
 
     public Long remove(Volume volume){

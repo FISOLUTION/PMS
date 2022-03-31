@@ -3,6 +3,8 @@ package fis.pms.service;
 import fis.pms.controller.dto.ImagesMaxnumResponse;
 import fis.pms.controller.dto.SaveImageRequest;
 import fis.pms.domain.Files;
+import fis.pms.domain.fileEnum.F_process;
+import fis.pms.exception.FilesException;
 import fis.pms.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 public class ImageService {
 
     private final FileRepository fileRepository;
+    private final WorkListService workListService;
 
     @Value("${image.path.origin}")
     private String originPath;
@@ -35,25 +38,51 @@ public class ImageService {
     @Value("${image.path.modify}")
     private String modifyPath;
 
-    public String getFullPath(Long fileId, String state) {
-        if (state.equals("origin")) {
-            return originPath + fileId + '/';
-        }
-        return modifyPath + fileId + '/';
-    }
+    public Long storeOriginImages(SaveImageRequest request, Long workerId) throws IOException {
 
-    public Long storeImages(SaveImageRequest request, String state) throws IOException {
-
-        // 등록된 철인지 검사
-        Files findFile = fileRepository.findOne(request.getFileId()).get();
-        if (findFile == null)
-            return null;
+        Files findFile = fileRepository.findOne(request.getFileId())
+                .orElseThrow(()->new FilesException("존재하지 않는 파일 철입니다."));
 
         // 철의 이미지들이 저장될 디렉토리 생성(overwrite)
-        String path = getFullPath(findFile.getF_id(), state);
+        String path = getFullPath(findFile.getF_id(), "origin");
         mkdir(path);
 
         // request에 담겨있는 이미지들을 생성한 디렉토리에 저장
+        long imageCnt = imgTransfer(request, path);
+
+        workListService.reflectWorkList(findFile, workerId, F_process.SCAN);
+
+        findFile.imageUpload(imageCnt, "origin");
+
+        // 철의 이미지 개수 반환
+        return imageCnt;
+    }
+
+    public Long storeModifyImages(SaveImageRequest request, Long workerId) throws IOException {
+
+        Files findFile = fileRepository.findOne(request.getFileId())
+                .orElseThrow(()->new FilesException("존재하지 않는 파일 철입니다."));
+
+        if (findFile.getImages()!=request.getImages().size()) {
+            throw new IllegalArgumentException("보정 이미지 개수가 원본 이미지 개수와 다름");
+        }
+
+        // 철의 이미지들이 저장될 디렉토리 생성(overwrite)
+        String path = getFullPath(findFile.getF_id(), "modify");
+        mkdir(path);
+
+        // request에 담겨있는 이미지들을 생성한 디렉토리에 저장
+        long imageCnt = imgTransfer(request, path);
+
+        workListService.reflectWorkList(findFile, workerId, F_process.IMGMODIFY);
+
+        findFile.imageUpload(imageCnt, "modify");
+
+        // 철의 이미지 개수 반환
+        return imageCnt;
+    }
+
+    private long imgTransfer(SaveImageRequest request, String path) throws IOException {
         long imageCnt = 0;
         for (MultipartFile multipartFile : request.getImages()) {
             if (!multipartFile.isEmpty()) {
@@ -61,10 +90,16 @@ public class ImageService {
                 multipartFile.transferTo(new File(path + (++imageCnt)));
             }
         }
-        findFile.imageUpload(imageCnt, state);
-
-        // 철의 이미지 갯수 반환
         return imageCnt;
+    }
+
+    public String getFullPath(Long fileId, String state) {
+        if (state.equals("origin")) {
+            return originPath + fileId + '/';
+        } else if (state.equals("modify")) {
+            return modifyPath + fileId + '/';
+        }
+        throw new IllegalArgumentException("origin or modify 필요");
     }
 
     private void mkdir(String path) {
@@ -74,7 +109,6 @@ public class ImageService {
             for (int i = 0; i < subFiles.length; i++) {
                 subFiles[i].delete();
             }
-            System.out.println(directory.length());
             if (subFiles.length == 0) {
                 directory.delete();
             }

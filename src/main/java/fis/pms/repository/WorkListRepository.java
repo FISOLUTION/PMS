@@ -2,8 +2,9 @@ package fis.pms.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import fis.pms.domain.QProcess;
-import fis.pms.domain.QWorkList;
+import fis.pms.domain.Files;
+import fis.pms.domain.fileEnum.F_process;
+
 import fis.pms.repository.dto.PerformanceDTO;
 import fis.pms.repository.dto.WorkListGroupByDateDTO;
 import fis.pms.repository.dto.WorkListGroupByFileDTO;
@@ -46,6 +47,17 @@ public class WorkListRepository extends WorkListQueryMethod {
     public List<WorkList> findAll(){
         return em.createQuery("select wl from WorkList wl", WorkList.class)
                 .getResultList();
+    }
+
+    public WorkList findByFileAndF_process(Files file, F_process f_process) {
+        return em.createQuery("select wl " +
+                        "from WorkList wl " +
+                        "where wl.f_process=:f_process " +
+                        "and wl.files=:file", WorkList.class)
+                .setParameter("f_process", f_process)
+                .setParameter("file", file)
+                .getResultList()
+                .get(0);
     }
 
     public List<WorkListGroupByDateDTO> findWorkListByDate(LocalDate startDate, LocalDate endDate) {

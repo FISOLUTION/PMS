@@ -52,6 +52,7 @@ public class PreInfoFileInfo {
                         .f_kplace(f_kplace)
                         .f_type(f_type)
                         .f_typenum(f_typenum)
+                        .f_volumeSaved("0")
                         .build();
     }
 

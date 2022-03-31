@@ -4,12 +4,6 @@ import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.Arrays;
 
-
-/*
- * 작성자: 원보라
- * 작성날짜: 2021/08/26
- * 작성내용: F_kperiodConverter
- */
 @Converter
 public class F_kperiodConverter implements AttributeConverter<F_kperiod, String>{
 

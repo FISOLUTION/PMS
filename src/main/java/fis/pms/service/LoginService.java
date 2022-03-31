@@ -17,16 +17,16 @@ public class LoginService {
 
     private final WorkerRepository workerRepository;
 
-    public Worker login(LoginRequest loginRequest){
+    public Worker login(LoginRequest loginRequest) {
         Worker worker = workerRepository.findByNickname(loginRequest.getNickname())
                 .orElseThrow(() -> new WorkerException("존재하지 않는 닉네임 입니다. 닉네임을 다시 한번 확인해 주세요"));
-        if(worker.getPassword().equals(loginRequest.getPassword())){
+        if (worker.getPassword().equals(loginRequest.getPassword())) {
             return worker;
         }
         return null;
     }
 
-    public LoginResponse workerInfo(Long workerId){
+    public LoginResponse workerInfo(Long workerId) {
         Worker worker = workerRepository.findOne(workerId)
                 .orElseThrow(() -> new WorkerException("해당 유저가 존재하지 않습니다"));
         if (worker == null) {
