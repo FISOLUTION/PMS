@@ -74,6 +74,11 @@ public class WorkListService {
         return map;
     }
 
+    /**
+     *
+     * @param date
+     * @return
+     */
     public Map<Long, WorkerPerformanceDTO> getWorkPerformanceWorker(LocalDate date) {
         Map<Long, WorkerPerformanceDTO> result = workerRepository.findAll().stream()
                 .map(WorkerPerformanceDTO::new)
@@ -95,6 +100,10 @@ public class WorkListService {
         return result;
     }
 
+    /**
+     *
+     * @return
+     */
     public Map<String, FileWorkListDTO> getFilesWorkList() {
         Map<String, List<WorkListGroupByFileDTO>> fileProcessMap = workListRepository.WorkListGroupByFile().stream()
                 .collect(Collectors.groupingBy(workListGroupByFileDTO -> workListGroupByFileDTO.getLabelCode()));

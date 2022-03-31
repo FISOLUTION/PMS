@@ -1,14 +1,13 @@
 package fis.pms.service;
 
+import fis.pms.configuator.argumentResolver.Login;
 import fis.pms.controller.dto.*;
 import fis.pms.domain.*;
 import fis.pms.domain.fileEnum.F_process;
 import fis.pms.exception.FilesException;
 import fis.pms.exception.OfficeException;
-import fis.pms.repository.CasesRepository;
-import fis.pms.repository.FileRepository;
-import fis.pms.repository.VolumeRepository;
-import fis.pms.repository.WorkListRepository;
+import fis.pms.exception.WorkerException;
+import fis.pms.repository.*;
 import fis.pms.repository.dto.RegisterStatusDTO;
 import fis.pms.repository.search.FindIndexDetailInfo;
 import fis.pms.service.dto.ExportInfo;
@@ -36,6 +35,7 @@ public class FileService {
     private final WorkListRepository workListRepository;
     private final VolumeRepository volumeRepository;
     private final CasesRepository casesRepository;
+    private final WorkerRepository workerRepository;
 
 
     /**
@@ -65,7 +65,8 @@ public class FileService {
      * @throws FilesException 레이블이 이미 존재하면 예외 발생
      * @return 사전 조사한 철의 id를 반환합니다
      */
-    public Long preInfoFile(PreInfoFileInfo preInfoFileInfo) throws FilesException, OfficeException {
+    public Long preInfoFile(PreInfoFileInfo preInfoFileInfo, Long workerId) throws FilesException, OfficeException {
+        Worker worker = workerRepository.findOne(workerId).orElseThrow(()-> new WorkerException("preInfo 도중 올바르지 않은 사용자"));
         Office office = officeService.findById(preInfoFileInfo.getO_code());
         if(!officeService.validateOffice(office.getO_code(), office.getO_name())) throw new OfficeException("해당 기관코드와 기관이름이 맞지 않습니다");
         // dto -> Entity
@@ -73,7 +74,7 @@ public class FileService {
 
         // 철을 사전조사 했다고 등록시키는 과정
         file.makePreInfo();
-        WorkList workList = WorkList.createWorkList(file, file.getF_process());
+        WorkList workList = WorkList.createWorkList(file, worker, file.getF_process());
         workListRepository.save(workList);
         return save(file);
     }

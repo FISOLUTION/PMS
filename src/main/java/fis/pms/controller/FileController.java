@@ -1,6 +1,7 @@
 package fis.pms.controller;
 
 
+import fis.pms.configuator.argumentResolver.Login;
 import fis.pms.controller.dto.*;
 import fis.pms.controller.dto.filedto.*;
 import fis.pms.domain.Files;
@@ -167,8 +168,8 @@ public class FileController {
      * @author 현승구
      */
     @PostMapping("/file/preInfo")
-    public PreinfoFileSaveResponse joinPreInfo(@RequestBody @Validated PreInfoFileInfo preInfoFileInfo) throws OfficeException, FilesException {
-        Long id = fileService.preInfoFile(preInfoFileInfo);
+    public PreinfoFileSaveResponse joinPreInfo(@RequestBody @Validated PreInfoFileInfo preInfoFileInfo, @Login Long workerId) throws OfficeException, FilesException {
+        Long id = fileService.preInfoFile(preInfoFileInfo, workerId);
         return new PreinfoFileSaveResponse(id);
     }
 
@@ -227,12 +228,12 @@ public class FileController {
      * @throws FilesException 레이블이 이미 존재하면 예외 발생
      */
     @PostMapping("preinfo/excel")
-    public Result<List> excelUpdate(@RequestParam MultipartFile excelFile) throws ExcelException, NoSuchMethodException {
+    public Result<List> excelUpdate(@RequestParam MultipartFile excelFile, @Login Long workerId) throws ExcelException, NoSuchMethodException {
         List<PreInfoFileInfo> preInfoFileInfoList = excelService.excelToJson(excelFile, ExcelUpdateDTO.class).stream()
                 .map(data -> new PreInfoFileInfo((ExcelUpdateDTO)data))
                 .collect(Collectors.toList());
         preInfoFileInfoList.forEach(preInfoFileInfo -> {
-            fileService.preInfoFile(preInfoFileInfo);
+            fileService.preInfoFile(preInfoFileInfo, workerId);
         });
 
         return new Result<>(preInfoFileInfoList);
