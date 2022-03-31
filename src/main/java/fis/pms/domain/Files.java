@@ -3,6 +3,7 @@ package fis.pms.domain;
 import fis.pms.controller.dto.IndexSaveLabelRequest;
 import fis.pms.controller.dto.PreInfoFileUpdateInfo;
 import fis.pms.domain.fileEnum.*;
+import fis.pms.exception.FilesException;
 import fis.pms.service.dto.ExportInfo;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -314,11 +315,11 @@ public class Files {
         this.f_volumecount = this.f_volumeamount;
     }
 
-    public void Uploaded() {
-        this.f_process = F_process.UPLOADED;
-        Date date = new Date(System.currentTimeMillis());
-        this.f_upload = date.toString();
-    }
+//    public void Uploaded() {
+//        this.f_process = F_process.UPLOADED;
+//        Date date = new Date(System.currentTimeMillis());
+//        this.f_upload = date.toString();
+//    }
 
     public void imageUpload(Long imageNum, String state) {
         if (state.equals("origin")) {

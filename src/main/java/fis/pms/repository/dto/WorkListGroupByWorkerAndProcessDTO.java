@@ -4,10 +4,11 @@ import fis.pms.domain.fileEnum.F_process;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+
 @Data
 @AllArgsConstructor
-public class PerformanceDTO {
+public class WorkListGroupByWorkerAndProcessDTO {
+    private Long workerId;
+    private F_process process;
     private Long count;
-    private F_process f_process;
-    private String name;
 }

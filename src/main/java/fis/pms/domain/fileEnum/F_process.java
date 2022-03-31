@@ -2,7 +2,7 @@ package fis.pms.domain.fileEnum;
 
 //현재완료한 공정
 public enum F_process {
-    NONE(""),
+    //NONE(""),
     PREINFO("1"),           //사전조사
     //LIST("2"),              //목록작업
     EXPORT("3"),            //반입반출
@@ -17,8 +17,8 @@ public enum F_process {
     INPUT("12"),            //색인입력
     CHECK("13"),            //색인검수
     //LOADING("14"),          //로딩
-    UPLOAD("15"),           //업로드
-    UPLOADED("16");         //업로드
+    UPLOAD("15");           //업로드
+    //UPLOADED("16");         //업로드
 
     private String process;
 
@@ -28,5 +28,9 @@ public enum F_process {
 
     public String getProcess() {
         return process;
+    }
+
+    public F_process getNext() {
+        return this.ordinal() < F_process.values().length - 1 ? F_process.values()[this.ordinal() + 1] : null;
     }
 }

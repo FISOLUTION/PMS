@@ -1,12 +1,18 @@
 package fis.pms.controller;
 
+import fis.pms.controller.dto.Result;
 import fis.pms.domain.WorkPlan;
 import fis.pms.service.WorkListService;
 import fis.pms.service.WorkPlanService;
+import fis.pms.service.dto.OverallPerformanceDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,11 +37,30 @@ public class WorkListController {
     private final WorkListService workListService;
     private final WorkPlanService workPlanService;
 
-    @GetMapping("/prepare")
-    public void preparePlanResult(){
+    @GetMapping("workList/prepare")
+    public Result preparePlanResult() {
         WorkPlan workPlan = workPlanService.findOne();
-        workListService.getOverallPerformance();
-
+        return new Result(workListService.prepareWithPlan(workPlan));
     }
 
+    @GetMapping("/workList/overall")
+    public OverallPerformanceDTO overall() {
+        return workListService.getOverallPerformance();
+    }
+
+    @GetMapping("/workList/date")
+    public Result findWorkListByDate(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate){
+        return new Result(workListService.getWorkPerformancePeriod(startDate, endDate));
+    }
+
+    @GetMapping("/workList/worker")
+    public Result findWorkListByWorker(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date){
+        return new Result(workListService.getWorkPerformanceWorker(date));
+    }
+
+    @GetMapping("/workList/file")
+    public Result findFileWorkList(){
+        return new Result(workListService.getFilesWorkList());
+    }
 }

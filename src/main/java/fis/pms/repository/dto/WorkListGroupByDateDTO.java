@@ -4,10 +4,13 @@ import fis.pms.domain.fileEnum.F_process;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
-public class PerformanceDTO {
-    private Long count;
-    private F_process f_process;
-    private String name;
+public class WorkListGroupByDateDTO {
+    String name;
+    F_process process;
+    LocalDate date;
+    Long count;
 }

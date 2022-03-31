@@ -15,7 +15,7 @@ public class FileQueryMethods {
 
     protected BooleanExpression uploadinclude(Boolean upload) {
         if(upload){
-            return files.f_process.loe(F_process.UPLOADED);
+            return null;
         }
         else{
             return files.f_process.loe(F_process.UPLOAD);

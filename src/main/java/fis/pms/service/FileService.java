@@ -5,13 +5,14 @@ import fis.pms.domain.*;
 import fis.pms.domain.fileEnum.F_process;
 import fis.pms.exception.FilesException;
 import fis.pms.exception.OfficeException;
-import fis.pms.exception.WorkerException;
 import fis.pms.repository.*;
+import fis.pms.repository.dto.RegisterStatusDTO;
 import fis.pms.repository.search.FindIndexDetailInfo;
 import fis.pms.service.dto.ExportInfo;
 import fis.pms.service.dto.FindIndexPreinfo;
 import fis.pms.service.dto.PreInfoFileInfo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class FileService {
 
     private final FileRepository fileRepository;
@@ -68,7 +70,11 @@ public class FileService {
             throw new OfficeException("해당 기관코드와 기관이름이 맞지 않습니다");
         // dto -> Entity
         Files file = preInfoFileInfo.createFiles(office);
+
+        // 철을 사전조사 했다고 등록시키는 과정
         file.makePreInfo();
+        WorkList workList = WorkList.createWorkList(file, file.getF_process());
+        workListRepository.save(workList);
         return save(file);
     }
 
@@ -125,6 +131,10 @@ public class FileService {
     public Long exportFile(ExportInfo exportInfo, Long workerId) {
 
         Files findFile = fileRepository.findOneWithOffice(exportInfo.getF_id());
+
+//        // preInfo 전 단계에서는 export 불가능
+//        if(findFile.getF_process().getNext().compareTo(F_process.EXPORT)<0)
+//            throw new
 
         if (findFile.getF_process().equals(F_process.PREINFO)) {
 
@@ -257,6 +267,10 @@ public class FileService {
                 volume.resetCount();
             }
         }
+    }
+
+    public List<RegisterStatusDTO> getRegistration() {
+        return fileRepository.findRegistStatus();
     }
 
     /**
