@@ -4,6 +4,7 @@ import fis.pms.configuator.argumentResolver.Login;
 import fis.pms.controller.dto.IndexSaveCaseRequest;
 import fis.pms.controller.dto.IndexSaveCaseResponse;
 import fis.pms.controller.dto.IndexSearchCaseResponse;
+import fis.pms.domain.fileEnum.F_process;
 import fis.pms.repository.search.FindIndexCaseInfo;
 import fis.pms.service.CaseService;
 import lombok.RequiredArgsConstructor;
@@ -23,20 +24,25 @@ public class CaseController {
     *   작성자: 이승범
     *   작성내용: 건 색인 입력 api
     */
-    @PatchMapping("/case/index")
-    public Long saveIndex(@RequestBody IndexSaveCaseRequest indexSaveCaseRequest, @Login Long workerId) {
-        return caseService.saveCases(indexSaveCaseRequest, workerId).getId();
+    @PatchMapping("/case/index/input")
+    public IndexSaveCaseResponse saveIndex(@RequestBody IndexSaveCaseRequest indexSaveCaseRequest, @Login Long workerId) {
+        return caseService.saveCases(indexSaveCaseRequest, workerId, F_process.INPUT);
+    }
+
+    @PatchMapping("/case/index/check")
+    public IndexSaveCaseResponse checkIndex(@RequestBody IndexSaveCaseRequest indexSaveCaseRequest, @Login Long workerId) {
+        return caseService.saveCases(indexSaveCaseRequest, workerId, F_process.CHECK);
     }
 
     /**
-    *   작성날짜: 2022/03/29 1:41 PM
-    *   작성자: 이승범
-    *   작성내용: 건 검색 api
-    */
+     *   작성날짜: 2022/03/29 1:41 PM
+     *   작성자: 이승범
+     *   작성내용: 건 검색 api
+     */
     @GetMapping("/index/case")
     public List<IndexSearchCaseResponse> SearchIndexCase(@RequestParam(value = "docnum", required = false) String c_oldnum,
-                                                                 @RequestParam(value = "c_name", required = false) String c_title,
-                                                                 @RequestParam(value = "c_receiver", required = false) String c_receiver) {
+                                                         @RequestParam(value = "c_name", required = false) String c_title,
+                                                         @RequestParam(value = "c_receiver", required = false) String c_receiver) {
         FindIndexCaseInfo findIndexCaseInfo = new FindIndexCaseInfo();
         findIndexCaseInfo.setC_oldnum(c_oldnum);
         findIndexCaseInfo.setC_title(c_title);

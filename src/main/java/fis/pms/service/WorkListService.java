@@ -4,6 +4,7 @@ import fis.pms.domain.Files;
 import fis.pms.domain.WorkList;
 import fis.pms.domain.Worker;
 import fis.pms.domain.fileEnum.F_process;
+import fis.pms.exception.ProcessOrderException;
 import fis.pms.exception.WorkerException;
 import fis.pms.domain.WorkPlan;
 import fis.pms.domain.fileEnum.F_process;
@@ -119,7 +120,6 @@ public class WorkListService {
 
             resultList.put(temp.getLabelCode(), result);
         });
-
         return resultList;
     }
 
@@ -137,8 +137,7 @@ public class WorkListService {
             WorkList workList = WorkList.createWorkList(file, worker, f_process);
             workListRepository.save(workList);
         } else{
-            // 이 경우는 있으면 안되는데????
-            System.out.println("ASDASDSADSADASDSADASDASDSADASDASDASDSADASDASD");
+            throw new ProcessOrderException("아직 이전 단계의 작업을 완료하지 못했습니다.");
         }
     }
 }

@@ -5,6 +5,7 @@ import fis.pms.configuator.argumentResolver.Login;
 import fis.pms.controller.dto.*;
 import fis.pms.controller.dto.filedto.*;
 import fis.pms.domain.Files;
+import fis.pms.domain.fileEnum.F_process;
 import fis.pms.exception.ExcelException;
 import fis.pms.exception.FilesException;
 import fis.pms.exception.OfficeException;
@@ -110,7 +111,7 @@ public class FileController {
     *   작성내용: 색인 작업할(스캔이 끝난) 철 목록 불러오기
     */
     @GetMapping("/file/index/{o_code}")
-    public List<IndexSearchResponse> SearchIndexByOffice(@PathVariable String o_code,
+    public List<IndexSearchResponse> searchIndexByOffice(@PathVariable String o_code,
                                                           @RequestParam(value = "box", required = false) String f_bnum,
                                                           @RequestParam(value = "label", required = false) String f_labelcode) {
 
@@ -123,11 +124,21 @@ public class FileController {
     /**
     *   작성날짜: 2022/03/29 1:13 PM
     *   작성자: 이승범
-    *   작성내용: 철 색인 작업
+    *   작성내용: 철 색인 입력 작업
     */
-    @PostMapping("/file/index")
-    public IndexSaveLabelResponse SaveIndex(@RequestBody IndexSaveLabelRequest indexSaveLabelRequest, @Login Long workerId) {
-        return fileService.saveFilesAndVolume(indexSaveLabelRequest, workerId);
+    @PostMapping("/file/index/input")
+    public IndexSaveLabelResponse saveIndex(@RequestBody IndexSaveLabelRequest indexSaveLabelRequest, @Login Long workerId) {
+        return fileService.saveFilesAndVolume(indexSaveLabelRequest, workerId, F_process.INPUT);
+    }
+
+    /**
+    *   작성날짜: 2022/04/01 10:13 AM
+    *   작성자: 이승범
+    *   작성내용: 철 색인 검수 작업
+    */
+    @PostMapping("/file/index/check")
+    public IndexSaveLabelResponse checkIndex(@RequestBody IndexSaveLabelRequest indexSaveLabelRequest, @Login Long workerId) {
+        return fileService.saveFilesAndVolume(indexSaveLabelRequest, workerId, F_process.CHECK);
     }
 
     /**

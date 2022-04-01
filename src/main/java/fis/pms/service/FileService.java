@@ -193,20 +193,16 @@ public class FileService {
      * 작성자: 이승범
      * 작성내용: 철 색인 작업
      */
-    public IndexSaveLabelResponse saveFilesAndVolume(IndexSaveLabelRequest indexSaveLabelRequest, Long workerId) {
+    public IndexSaveLabelResponse saveFilesAndVolume(IndexSaveLabelRequest indexSaveLabelRequest, Long workerId, F_process f_process) {
 
         Files files = fileRepository.findOne(indexSaveLabelRequest.getF_id())
                 .orElseThrow(()->new FilesException("존재하지 않는 파일입니다."));      //file 찾아오기.
 
-        System.out.println("files = " + files.getF_process().getNext());
-
-        // 이미지 보정이 끝나지 않았으면 색인 및 검수 작업 불가능
-        if (files.getF_process().getNext().compareTo(F_process.INPUT) < 0)
+        // f_process(현재 작업)은 직전 단계를 끝내야 가능
+        if (files.getF_process().getNext().compareTo(f_process) < 0)
             throw new ProcessOrderException("아직 이전 단계의 공정이 끝나지 않았습니다.");
 
         int reqVolumeAmount = Integer.parseInt(indexSaveLabelRequest.getF_volumeamount());   //총 권호수 만큼 카운터 생성
-
-        IndexSaveLabelResponse indexSaveLabelResponse = new IndexSaveLabelResponse();
 
         // 색인 작업에서 최초로 철 정보를 저장할 경우
         if (files.getF_volumeSaved().compareTo("0") == 0) {
@@ -225,6 +221,7 @@ public class FileService {
                 volumeRepository.save(volume);
             }
         }
+        // 벌크 연산이 수행되었을 수 있기 때문에 영속성 컨텍스트 다시 형성
 
         // 권호수 수정시 달라진 volumeCount 확인
         int volumeCount = 0;
@@ -236,18 +233,22 @@ public class FileService {
             }
         }
 
-        //file 정보 업데이트
-        files = fileRepository.findOne(indexSaveLabelRequest.getF_id()).get();
-        files.updateFileIndex(indexSaveLabelRequest, volumeCount);
-        checkVolumeCount(files, workerId);
-
+        // response 위해 권들의 아이디 추출
         List<Long> result = volumes.stream()
                 .map(Volume::getId)
                 .collect(Collectors.toList());
 
+        //file 정보 업데이트
+        files = fileRepository.findOne(indexSaveLabelRequest.getF_id()).get();
+        files.updateFileIndex(indexSaveLabelRequest, volumeCount);
+
         //dto 값 세팅
-        indexSaveLabelResponse.setF_id(files.getF_id());
-        indexSaveLabelResponse.setV_id(result);
+        IndexSaveLabelResponse indexSaveLabelResponse = IndexSaveLabelResponse.createIndexSaveLabelResponse(result, files.getF_id());
+        if (checkVolumeCount(files, workerId)) {
+            indexSaveLabelResponse.setComplete(true);
+        } else {
+            indexSaveLabelResponse.setComplete(false);
+        }
         return indexSaveLabelResponse;
     }
 
@@ -256,7 +257,7 @@ public class FileService {
      * 작성자: 이승범
      * 작성내용: 철의 volumecount가 0이 되면 해당 철의 색인 or 검수 작업 완료
      */
-    public void checkVolumeCount(Files findFile, Long workerId) {
+    public boolean checkVolumeCount(Files findFile, Long workerId) {
         // 해당 철이 갖고있는 권의 작업이 모두 끝났을경우 해당 철 작업 완료 처리
         if (findFile.getF_volumecount().compareTo("0") == 0) {
             F_process f_process = findFile.getF_process() == F_process.INPUT ? F_process.CHECK : F_process.INPUT;
@@ -271,7 +272,9 @@ public class FileService {
             for (Volume volume : findVolumeList) {
                 volume.resetCount();
             }
+            return true;
         }
+        return false;
     }
 
     public List<RegisterStatusDTO> getRegistration() {

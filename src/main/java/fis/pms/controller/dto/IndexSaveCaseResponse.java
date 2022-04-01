@@ -7,9 +7,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class IndexSaveCaseResponse {
     private Long c_id;
-    private String err_code;
+    private boolean complete;   //색인 입력 or 검수 작업 완료 여부
+
+    public IndexSaveCaseResponse() {
+        this.complete = false;
+    }
 }
