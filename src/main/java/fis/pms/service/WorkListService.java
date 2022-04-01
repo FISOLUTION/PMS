@@ -4,6 +4,7 @@ import fis.pms.domain.Files;
 import fis.pms.domain.WorkList;
 import fis.pms.domain.Worker;
 import fis.pms.domain.fileEnum.F_process;
+import fis.pms.exception.WorkListException;
 import fis.pms.exception.WorkerException;
 import fis.pms.domain.WorkPlan;
 import fis.pms.domain.fileEnum.F_process;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +42,7 @@ public class WorkListService {
      */
     public OverallPerformanceDTO getOverallPerformance() {
         List<PerformanceDTO> dto = workListRepository.getPerformanceList();
+        if(dto == null) throw new WorkListException("작업내용이 존재 하지 않습니다.");
         return OverallPerformanceDTO.createOverall(dto);
     }
 
@@ -50,7 +53,9 @@ public class WorkListService {
      */
     public Map<String, PreparePlanDTO> prepareWithPlan(WorkPlan workPlan) {
         Map<String, PreparePlanDTO> map = new HashMap<>();
-        workListRepository.getPerformanceList().forEach(performanceDTO -> {
+        List<PerformanceDTO> dto = workListRepository.getPerformanceList();
+        if(dto == null) throw new WorkListException("작업내용이 존재 하지 않습니다.");
+        dto.forEach(performanceDTO -> {
             map.put(performanceDTO.getName(), PreparePlanDTO.create(performanceDTO));
         });
         workPlan.putInto(map);
