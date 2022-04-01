@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,11 +16,13 @@ public class WorkerRepository {
     private final EntityManager em;
 
     public Optional<Worker> findByNickname(String nickname) {
-        return Optional.ofNullable(
-                em.createQuery("select worker from Worker worker where worker.nickname =:nickname", Worker.class)
-                .setParameter("nickname", nickname)
-                .getResultList()
-                .get(0));
+        try {
+            return Optional.ofNullable(em.createQuery("select worker from Worker worker where worker.nickname =:nickname", Worker.class)
+                    .setParameter("nickname", nickname)
+                    .getSingleResult());
+        } catch (NoResultException noResultException) {
+            return Optional.ofNullable(null);
+        }
     }
 
     public Optional<Worker> findOne(Long id) {
