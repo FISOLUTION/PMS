@@ -7,7 +7,9 @@ import fis.pms.controller.dto.VolumesInfo;
 import fis.pms.domain.Cases;
 import fis.pms.domain.Files;
 import fis.pms.domain.Volume;
+import fis.pms.domain.fileEnum.F_process;
 import fis.pms.exception.FilesException;
+import fis.pms.exception.ProcessOrderException;
 import fis.pms.exception.VolumeException;
 import fis.pms.repository.CasesRepository;
 import fis.pms.repository.FileRepository;
@@ -62,10 +64,18 @@ public class VolumeService {
      * 작성자: 이승범
      * 작성내용: 해당 권에 속해있는 건들의 페이지 정보를 토대로 건들 생성
      */
-    public IndexSaveVolumeResponse saveCasesPages(IndexSaveVolumeRequest indexSaveVolumeRequest, Long workerId) {
+    public IndexSaveVolumeResponse saveCasesPages(IndexSaveVolumeRequest indexSaveVolumeRequest, Long workerId, F_process f_process) {
 
         Files findFiles = fileRepository.findOne(indexSaveVolumeRequest.getF_id())
                 .orElseThrow(()->new FilesException("존재하지 않는 파일입니다."));
+
+        // 색인 입력이 완료된 후에는 색인 입력 불가능. 검수로만 색인 수정 가능
+        if (findFiles.getF_process().compareTo(F_process.INPUT) >= 0 && f_process == F_process.INPUT) {
+            throw new ProcessOrderException("색인 입력이 완료된 철 입니다. 검수를 이용해 수정해 주세요");
+        }
+
+        if (findFiles.getF_process().getNext().compareTo(f_process) < 0)
+            throw new ProcessOrderException("아직 이전 단계의 공정이 끝나지 않았습니다.");
 
         Volume updateVolume = volumeRepository.findOne(indexSaveVolumeRequest.getV_id())
                 .orElseThrow(()->new VolumeException("존재하지 않는 권입니다."));
@@ -116,7 +126,11 @@ public class VolumeService {
                 }
             }
             updateVolume.updateCaseCount(casesList);
-            checkCaseCount(findFiles, updateVolume, workerId);
+
+            // 건 삭제시에 남은 건들의 작업이 완료된 경우 해당 권을 작업 완료 처리
+            if(checkCaseCount(findFiles, updateVolume, workerId))
+                indexSaveVolumeResponse.setComplete(true);
+
             result = casesList.stream().map(Cases::getId).collect(Collectors.toList());
         }
         updateVolume.updatePageSaved();
@@ -129,11 +143,13 @@ public class VolumeService {
      * 작성자: 이승범
      * 작성내용: 권의 casecount가 0이면 해당 권의 색인 or 검수 작업 완료
      */
-    public void checkCaseCount(Files findFile, Volume findVolume, Long workerId) {
+    public boolean checkCaseCount(Files findFile, Volume findVolume, Long workerId) {
         if (findVolume.getV_casecount().compareTo("0") == 0) {
             findFile.reduceVolumeCount();
-            fileService.checkVolumeCount(findFile, workerId);
+            if (fileService.checkVolumeCount(findFile, workerId))
+                return true;
         }
+        return false;
     }
 
 

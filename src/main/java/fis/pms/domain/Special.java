@@ -6,12 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-/*
- * 수정자: 한명수
- * 수정날짜: 2021/08/26
- * 수정내용: @Setter 추가
- */
-
 @Entity
 @Getter @Setter
 @AllArgsConstructor

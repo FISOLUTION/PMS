@@ -4,10 +4,10 @@ import fis.pms.domain.Files;
 import fis.pms.domain.WorkList;
 import fis.pms.domain.Worker;
 import fis.pms.domain.fileEnum.F_process;
+import fis.pms.exception.ProcessOrderException;
 import fis.pms.exception.WorkListException;
 import fis.pms.exception.WorkerException;
 import fis.pms.domain.WorkPlan;
-import fis.pms.domain.fileEnum.F_process;
 import fis.pms.repository.WorkListRepository;
 import fis.pms.repository.WorkerRepository;
 import fis.pms.repository.dto.PerformanceDTO;
@@ -16,12 +16,10 @@ import fis.pms.repository.dto.WorkListGroupByWorkerAndProcessDTO;
 import fis.pms.service.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,24 +35,22 @@ public class WorkListService {
     private final WorkerRepository workerRepository;
 
     /**
-     *
      * @return
      */
     public OverallPerformanceDTO getOverallPerformance() {
         List<PerformanceDTO> dto = workListRepository.getPerformanceList();
-        if(dto == null) throw new WorkListException("작업내용이 존재 하지 않습니다.");
+        if (dto == null) throw new WorkListException("작업내용이 존재 하지 않습니다.");
         return OverallPerformanceDTO.createOverall(dto);
     }
 
     /**
-     *
      * @param workPlan
      * @return
      */
     public Map<String, PreparePlanDTO> prepareWithPlan(WorkPlan workPlan) {
         Map<String, PreparePlanDTO> map = new HashMap<>();
         List<PerformanceDTO> dto = workListRepository.getPerformanceList();
-        if(dto == null) throw new WorkListException("작업내용이 존재 하지 않습니다.");
+        if (dto == null) throw new WorkListException("작업내용이 존재 하지 않습니다.");
         dto.forEach(performanceDTO -> {
             map.put(performanceDTO.getName(), PreparePlanDTO.create(performanceDTO));
         });
@@ -63,7 +59,6 @@ public class WorkListService {
     }
 
     /**
-     *
      * @param startDate
      * @param endDate
      * @return
@@ -72,7 +67,7 @@ public class WorkListService {
         Map<LocalDate, WorkListOverallGroupByDateDTO> map = new HashMap<>();
         workListRepository.findWorkListByDate(startDate, endDate)
                 .forEach(dto -> {
-                    if(!map.containsKey(dto.getDate())){
+                    if (!map.containsKey(dto.getDate())) {
                         map.put(dto.getDate(), new WorkListOverallGroupByDateDTO());
                     }
                     WorkListOverallGroupByDateDTO workListOverallGroupByDateDTO = map.get(dto.getDate());
@@ -86,7 +81,6 @@ public class WorkListService {
     }
 
     /**
-     *
      * @param date
      * @return
      */
@@ -112,7 +106,6 @@ public class WorkListService {
     }
 
     /**
-     *
      * @return
      */
     public Map<String, FileWorkListDTO> getFilesWorkList() {
@@ -133,26 +126,25 @@ public class WorkListService {
 
             resultList.put(temp.getLabelCode(), result);
         });
-
         return resultList;
     }
 
     public void reflectWorkList(Files file, Long workerId, F_process f_process) {
         // 이전에 끝냈던 작업을 다시 하는 경우
-        if (file.getF_process().compareTo(f_process) > 0) {
+        if (file.getF_process().compareTo(f_process) >= 0) {
             WorkList worklist = workListRepository.findByFileAndF_process(file, f_process);
             Worker worker = workerRepository.findOne(workerId)
                     .orElseThrow(() -> new WorkerException("존재하지 않는 작업자입니다."));
             worklist.updateWorkList(worker);
         }// 순치적 작업을 하는 경우
-        else if(file.getF_process().getNext() == f_process
-        ){
+        else if (file.getF_process().getNext() == f_process
+        ) {
             Worker worker = workerRepository.findOne(workerId)
                     .orElseThrow(() -> new WorkerException("존재하지 않는 사용자입니다."));
             WorkList workList = WorkList.createWorkList(file, worker, f_process);
             workListRepository.save(workList);
-        } else{
-            System.out.println("ASDASDSADSADASDSADASDASDSADASDASDASDSADASDASD");
+        } else {
+            throw new ProcessOrderException("아직 이전 단계의 작업을 완료하지 못했습니다.");
         }
     }
 }
