@@ -16,10 +16,9 @@ public class WorkerRepository {
     private final EntityManager em;
 
     public Optional<Worker> findByNickname(String nickname) {
-        try {
-            return Optional.ofNullable(em.createQuery("select worker from Worker worker where worker.nickname =:nickname", Worker.class)
-                    .setParameter("nickname", nickname)
-                    .getSingleResult());
+        try { return Optional.ofNullable(em.createQuery("select worker from Worker worker where worker.nickname =:nickname", Worker.class)
+                            .setParameter("nickname", nickname)
+                            .getSingleResult());
         } catch (NoResultException noResultException) {
             return Optional.ofNullable(null);
         }

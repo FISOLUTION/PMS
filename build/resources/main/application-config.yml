@@ -1,0 +1,4 @@
+image:
+  path:
+    origin: /home/origin/
+    modify: /home/modify/
