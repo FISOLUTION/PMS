@@ -3,10 +3,8 @@ package fis.pms.domain;
 import fis.pms.controller.dto.IndexSaveLabelRequest;
 import fis.pms.controller.dto.PreInfoFileUpdateInfo;
 import fis.pms.domain.fileEnum.*;
-import fis.pms.exception.FilesException;
 import fis.pms.service.dto.ExportInfo;
 import lombok.*;
-import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -14,7 +12,6 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -330,8 +327,9 @@ public class Files {
         }
     }
 
-    public void makePreInfo() {
+    public Files makePreInfo() {
         f_process = F_process.PREINFO;
+        return this;
     }
 
     public void completeScan() {

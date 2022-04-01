@@ -80,6 +80,11 @@ public class WorkListService {
         return map;
     }
 
+    /**
+     *
+     * @param date
+     * @return
+     */
     public Map<Long, WorkerPerformanceDTO> getWorkPerformanceWorker(LocalDate date) {
         Map<Long, WorkerPerformanceDTO> result = workerRepository.findAll().stream()
                 .map(WorkerPerformanceDTO::new)
@@ -101,6 +106,10 @@ public class WorkListService {
         return result;
     }
 
+    /**
+     *
+     * @return
+     */
     public Map<String, FileWorkListDTO> getFilesWorkList() {
         Map<String, List<WorkListGroupByFileDTO>> fileProcessMap = workListRepository.WorkListGroupByFile().stream()
                 .collect(Collectors.groupingBy(workListGroupByFileDTO -> workListGroupByFileDTO.getLabelCode()));
@@ -125,13 +134,14 @@ public class WorkListService {
 
     public void reflectWorkList(Files file, Long workerId, F_process f_process) {
         // 이전에 끝냈던 작업을 다시 하는 경우
-        if (file.getF_process().compareTo(f_process)>0) {
+        if (file.getF_process().compareTo(f_process) > 0) {
             WorkList worklist = workListRepository.findByFileAndF_process(file, f_process);
             Worker worker = workerRepository.findOne(workerId)
                     .orElseThrow(() -> new WorkerException("존재하지 않는 작업자입니다."));
             worklist.updateWorkList(worker);
         }// 순치적 작업을 하는 경우
-        else if(file.getF_process().getNext() == f_process){
+        else if(file.getF_process().getNext() == f_process
+        ){
             Worker worker = workerRepository.findOne(workerId)
                     .orElseThrow(() -> new WorkerException("존재하지 않는 사용자입니다."));
             WorkList workList = WorkList.createWorkList(file, worker, f_process);

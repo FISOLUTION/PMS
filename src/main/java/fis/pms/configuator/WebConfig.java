@@ -16,13 +16,13 @@ import java.util.List;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginCheckInterceptor())
-                .order(1)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/error", "/login", "/*.ico", "/worker/signup");
-    }
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(new LoginCheckInterceptor())
+//                .order(1)
+//                .addPathPatterns("/**")
+//                .excludePathPatterns("/error", "/login", "/*.ico", "/worker/signup");
+//    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry){
