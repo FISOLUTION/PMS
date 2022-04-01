@@ -290,17 +290,25 @@ public class Files {
     }
 
     public void reduceVolumeCount() {
-        this.f_volumecount = Integer.toString(Integer.valueOf(this.f_volumecount) - 1);
+        this.f_volumecount = Integer.toString(Integer.parseInt(this.f_volumecount) - 1);
     }
 
     public void updateProcess() {
-        if (F_process.IMGMODIFY.compareTo(this.f_process)<0) {
+        // 색인 입력 작업
+        if (this.f_process == F_process.IMGMODIFY) {
+
+            // 스캔 완료 철에 대해서는 색인 작업 완료 처리
             this.f_process = F_process.INPUT;
+
             LocalDate timestamp = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             this.f_complete = timestamp.format(formatter);
-        } else if (this.f_process == F_process.INPUT) {
+        } // 검수 작업
+        else if (this.f_process == F_process.INPUT) {
+
+            // 색인 입력 완료 철에 대해서는 검수 작업 완료 처리
             this.f_process = F_process.CHECK;
+
             LocalDate timestamp = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             this.f_check = timestamp.format(formatter);
@@ -318,13 +326,15 @@ public class Files {
 //        this.f_upload = date.toString();
 //    }
 
-    public void imageUpload(Long imageNum, String state) {
-        if (state.equals("origin")) {
+    public void originImageUpload(Long imagesNum) {
+        images = imagesNum;
+        if (this.f_process == F_process.EXPORT)
             f_process = F_process.SCAN;
-            images = imageNum;
-        } else if (state.equals("modify")) {
+    }
+
+    public void modifyImageUpload() {
+        if (this.f_process == F_process.SCAN)
             f_process = F_process.IMGMODIFY;
-        }
     }
 
     public Files makePreInfo() {
