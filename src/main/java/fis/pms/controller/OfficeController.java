@@ -82,7 +82,7 @@ public class OfficeController {
      * @param o_name
      * @return 기관 검색 결과
      */
-    @GetMapping("search/office")
+    @GetMapping("office/search")
     public Result searchOfficeByName(@RequestParam(required = false) String o_name) {
         List<Office> offices = officeService.findByName(o_name);
         return new Result(offices);
@@ -93,7 +93,7 @@ public class OfficeController {
      * @param o_code
      * @return 기관 검색 결과
      */
-    @GetMapping("search/office/{o_code}")
+    @GetMapping("office/search/{o_code}")
     public Result searchOfficeByCode(@PathVariable String o_code) {
         List<Office> offices = officeService.searchCode(o_code);
         return new Result(offices);

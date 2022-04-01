@@ -37,7 +37,11 @@ public class WorkListController {
     private final WorkListService workListService;
     private final WorkPlanService workPlanService;
 
-    @GetMapping("workList/prepare")
+    /**
+     * @implNote 전체 철들의 진행 상황과 계획을 비교합니다
+     * @return
+     */
+    @GetMapping("/workList/prepare")
     public Result preparePlanResult() {
         WorkPlan workPlan = workPlanService.findOne();
         return new Result(workListService.prepareWithPlan(workPlan));
@@ -48,17 +52,32 @@ public class WorkListController {
         return workListService.getOverallPerformance();
     }
 
+    /**
+     *
+     * @param startDate
+     * @param endDate
+     * @return 특정 기간동안 날짜별로 공정상황의 갯수를 구분합니다.
+     */
     @GetMapping("/workList/date")
     public Result findWorkListByDate(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                    @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate){
         return new Result(workListService.getWorkPerformancePeriod(startDate, endDate));
     }
 
+    /**
+     *
+     * @param date
+     * @return 작업자들의 작업량을 날짜별로 조회합니다
+     */
     @GetMapping("/workList/worker")
-    public Result findWorkListByWorker(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date){
+    public Result findWorkListByWorker(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date){
         return new Result(workListService.getWorkPerformanceWorker(date));
     }
 
+    /**
+     *
+     * @return 철별로 작업이 얼마나 완료 됐는지 표시합니다.
+     */
     @GetMapping("/workList/file")
     public Result findFileWorkList(){
         return new Result(workListService.getFilesWorkList());

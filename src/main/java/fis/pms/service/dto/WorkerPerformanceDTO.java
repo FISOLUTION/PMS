@@ -18,7 +18,7 @@ import java.util.Map;
 public class WorkerPerformanceDTO {
     private Long id;
     private String name;
-    private Map<F_process, WorkerWorkListDTO> work = new HashMap<>();
+    private Map<F_process, WorkerWorkListDTO> work;
 
     public WorkerPerformanceDTO(Worker worker){
         id = worker.getId();

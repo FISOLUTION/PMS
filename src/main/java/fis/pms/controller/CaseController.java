@@ -35,11 +35,11 @@ public class CaseController {
     }
 
     /**
-     *   작성날짜: 2022/03/29 1:41 PM
-     *   작성자: 이승범
-     *   작성내용: 건 검색 api
-     */
-    @GetMapping("/index/case")
+    *   작성날짜: 2022/04/01 2:09 PM
+    *   작성자: 이승범
+    *   작성내용: 건 검색 api
+    */
+    @GetMapping("/case/index")
     public List<IndexSearchCaseResponse> SearchIndexCase(@RequestParam(value = "docnum", required = false) String c_oldnum,
                                                          @RequestParam(value = "c_name", required = false) String c_title,
                                                          @RequestParam(value = "c_receiver", required = false) String c_receiver) {

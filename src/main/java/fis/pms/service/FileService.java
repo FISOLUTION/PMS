@@ -1,11 +1,13 @@
 package fis.pms.service;
 
+import fis.pms.configuator.argumentResolver.Login;
 import fis.pms.controller.dto.*;
 import fis.pms.domain.*;
 import fis.pms.domain.fileEnum.F_process;
 import fis.pms.exception.FilesException;
 import fis.pms.exception.OfficeException;
 import fis.pms.exception.ProcessOrderException;
+import fis.pms.exception.WorkerException;
 import fis.pms.repository.*;
 import fis.pms.repository.dto.RegisterStatusDTO;
 import fis.pms.repository.search.FindIndexDetailInfo;
@@ -31,7 +33,6 @@ public class FileService {
 
     private final FileRepository fileRepository;
     private final OfficeService officeService;
-    private final WorkListRepository workListRepository;
     private final VolumeRepository volumeRepository;
     private final CasesRepository casesRepository;
     private final WorkListService workListService;
@@ -65,17 +66,16 @@ public class FileService {
      * <p>
      * 2. 레이블 코드가 이미 존재하는 지에 대한 유효성 검사를 진행합니다.
      */
-    public Long preInfoFile(PreInfoFileInfo preInfoFileInfo) throws FilesException, OfficeException {
+    public Long preInfoFile(PreInfoFileInfo preInfoFileInfo, Long workerId) throws FilesException, OfficeException {
+
+        Worker worker = workerRepository.findOne(workerId).orElseThrow(()-> new WorkerException("해당 사용자 존재하지 않음"));
         Office office = officeService.findById(preInfoFileInfo.getO_code());
         if (!officeService.validateOffice(office.getO_code(), office.getO_name()))
             throw new OfficeException("해당 기관코드와 기관이름이 맞지 않습니다");
         // dto -> Entity
-        Files file = preInfoFileInfo.createFiles(office);
+        Files file = preInfoFileInfo.createFiles(office).makePreInfo();
+        WorkList.createWorkList(file, worker, file.getF_process());
 
-        // 철을 사전조사 했다고 등록시키는 과정
-        file.makePreInfo();
-        WorkList workList = WorkList.createWorkList(file, file.getF_process());
-        workListRepository.save(workList);
         return save(file);
     }
 
