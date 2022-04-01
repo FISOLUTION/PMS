@@ -202,6 +202,11 @@ public class FileService {
         if (files.getF_process().getNext().compareTo(f_process) < 0)
             throw new ProcessOrderException("아직 이전 단계의 공정이 끝나지 않았습니다.");
 
+        // 색인 입력이 완료된 후에는 색인 입력 불가능. 검수로만 색인 수정 가능
+        if (files.getF_process().compareTo(F_process.INPUT) >= 0 && f_process == F_process.INPUT) {
+            throw new ProcessOrderException("색인 입력이 완료된 철 입니다. 검수를 이용해 수정해 주세요");
+        }
+
         int reqVolumeAmount = Integer.parseInt(indexSaveLabelRequest.getF_volumeamount());   //총 권호수 만큼 카운터 생성
 
         // 색인 작업에서 최초로 철 정보를 저장할 경우
