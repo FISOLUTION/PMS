@@ -10,11 +10,11 @@ import static fis.pms.domain.QWorkList.*;
 public class WorkListQueryMethod {
 
     protected BooleanExpression dateGOE(LocalDate date){
-        return date == null ? workList.date.goe(date) : null;
+        return date != null ? workList.date.goe(date) : null;
     }
 
     protected BooleanExpression dateLOE(LocalDate date){
-        return date == null ? workList.date.loe(date) : null;
+        return date != null ? workList.date.loe(date) : null;
     }
 
 }

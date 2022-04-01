@@ -37,7 +37,7 @@ public class WorkPlanService {
     }
 
     public WorkPlan findOne(){
-        if(isEmpty()) throw new PlanException("");
+        if(isEmpty()) throw new PlanException("계획 작성하지 않았습니다");
         else return findAll().get(0);
     }
 
