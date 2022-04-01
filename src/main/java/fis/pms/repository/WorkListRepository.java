@@ -66,7 +66,7 @@ public class WorkListRepository extends WorkListQueryMethod {
                 .from(workList)
                 .leftJoin(process)
                 .on(process.f_process.eq(workList.f_process))
-                .where(dateGOE(startDate), dateLOE(startDate))
+                .where(dateGOE(startDate), dateLOE(endDate))
                 .groupBy(workList.date, workList.f_process)
                 .fetch();
     }
