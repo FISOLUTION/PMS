@@ -13,7 +13,7 @@ public enum F_process {
     SCAN("8"),              //스캔문서
     //SCAN_PAGE("9"),         //스캔도면
     IMGMODIFY("10"),        //이미지보정
-    IMG_CHECK("11"),        //이미지검수
+    //IMG_CHECK("11"),        //이미지검수
     INPUT("12"),            //색인입력
     CHECK("13"),            //색인검수
     //LOADING("14"),          //로딩
@@ -28,5 +28,9 @@ public enum F_process {
 
     public String getProcess() {
         return process;
+    }
+
+    public F_process getNext() {
+        return this.ordinal() < F_process.values().length - 1 ? F_process.values()[this.ordinal() + 1] : null;
     }
 }

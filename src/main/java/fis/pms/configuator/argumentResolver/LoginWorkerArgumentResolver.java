@@ -15,7 +15,7 @@ public class LoginWorkerArgumentResolver implements HandlerMethodArgumentResolve
     public boolean supportsParameter(MethodParameter parameter) {
 
         boolean hasLoginAnnotation = parameter.hasParameterAnnotation(Login.class);
-        boolean hasWorkerType = Worker.class.isAssignableFrom(parameter.getParameterType());
+        boolean hasWorkerType = Long.class.isAssignableFrom(parameter.getParameterType());
 
         return hasLoginAnnotation && hasWorkerType;
     }

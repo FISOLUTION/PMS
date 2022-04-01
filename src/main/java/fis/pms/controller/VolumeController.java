@@ -1,5 +1,6 @@
 package fis.pms.controller;
 
+import fis.pms.configuator.argumentResolver.Login;
 import fis.pms.controller.dto.IndexSaveVolumeRequest;
 import fis.pms.controller.dto.IndexSaveVolumeResponse;
 import fis.pms.controller.dto.VolumesInfo;
@@ -23,7 +24,7 @@ public class VolumeController {
     }
 
     @PostMapping("/volume/index")
-    public IndexSaveVolumeResponse indexSaveVolumeResponse(@RequestBody IndexSaveVolumeRequest indexSaveVolumeRequest) {
-        return volumeService.saveCasesPages(indexSaveVolumeRequest);
+    public IndexSaveVolumeResponse indexSaveVolumeResponse(@RequestBody IndexSaveVolumeRequest indexSaveVolumeRequest, @Login Long workerId) {
+        return volumeService.saveCasesPages(indexSaveVolumeRequest, workerId);
     }
 }

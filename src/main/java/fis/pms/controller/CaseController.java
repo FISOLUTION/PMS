@@ -1,5 +1,6 @@
 package fis.pms.controller;
 
+import fis.pms.configuator.argumentResolver.Login;
 import fis.pms.controller.dto.IndexSaveCaseRequest;
 import fis.pms.controller.dto.IndexSaveCaseResponse;
 import fis.pms.controller.dto.IndexSearchCaseResponse;
@@ -23,8 +24,8 @@ public class CaseController {
     *   작성내용: 건 색인 입력 api
     */
     @PatchMapping("/case/index")
-    public Long saveIndex(@RequestBody IndexSaveCaseRequest indexSaveCaseRequest) {
-        return caseService.saveCases(indexSaveCaseRequest).getId();
+    public Long saveIndex(@RequestBody IndexSaveCaseRequest indexSaveCaseRequest, @Login Long workerId) {
+        return caseService.saveCases(indexSaveCaseRequest, workerId).getId();
     }
 
     /**

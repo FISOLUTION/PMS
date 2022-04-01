@@ -37,7 +37,7 @@ public class WorkerRepository {
     }
 
     public List<Worker> findAll() {
-        return em.createQuery("select worker from Worker worker")
+        return em.createQuery("select worker from Worker worker", Worker.class)
                 .getResultList();
     }
 }

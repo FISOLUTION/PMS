@@ -70,7 +70,7 @@ public class WorkListController {
      * @return 작업자들의 작업량을 날짜별로 조회합니다
      */
     @GetMapping("/workList/worker")
-    public Result findWorkListByWorker(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date){
+    public Result findWorkListByWorker(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date){
         return new Result(workListService.getWorkPerformanceWorker(date));
     }
 

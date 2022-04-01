@@ -11,10 +11,10 @@ import javax.security.auth.login.LoginException;
 @RestControllerAdvice
 public class GlobalControllerAdvice {
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(LoginException.class)
     public ErrorResult loginError(LoginException loginException){
-        return new ErrorResult(400L, loginException.getMessage());
+        return new ErrorResult(401L, loginException.getMessage());
     }
 
 }
