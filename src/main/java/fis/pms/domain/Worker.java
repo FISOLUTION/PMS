@@ -1,5 +1,6 @@
 package fis.pms.domain;
 
+import fis.pms.controller.dto.WorkerFormRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ import java.util.List;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@Builder
 public class Worker {
     @Id @GeneratedValue
     @Column(name = "w_id")
@@ -39,32 +40,18 @@ public class Worker {
     @NotBlank
     private String w_name;
 
-    private String session_id;
-
-    //작업자 주민등록 번호
-    private String w_ssn;
-
     //작업자 주소
     private String w_address;
 
     //작업자 전화번호
     private String w_tel;
 
-    //작업자 은행 이름
-    private String w_bank;
-
-    //작업자 계좌번호
-    private String w_account;
-
-    //작업자 일 시작 날짜
-    private String w_sdate;
-
-    private String w_edate;
-
-    @OneToMany(mappedBy = "workerput")
-    private List<Cases> caseList_put = new ArrayList<>();
-
-    @OneToMany(mappedBy = "workercheck")
-    private List<Cases> caseList_check = new ArrayList<>();
-
+    public void updateWorker(WorkerFormRequest request) {
+        nickname = request.getNickname();
+        authority = request.getW_authority();
+        password = request.getPassword();
+        w_name = request.getW_name();
+        w_address = request.getW_address();
+        w_tel = request.getW_tel();
+    }
 }

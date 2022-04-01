@@ -1,15 +1,43 @@
 package fis.pms.repository;
 
 import fis.pms.domain.Worker;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import java.util.List;
+import java.util.Optional;
+
 @Repository
+@RequiredArgsConstructor
 public class WorkerRepository {
-    public Worker findnickname(String nickname) {
-        return null;
+
+    private final EntityManager em;
+
+    public Optional<Worker> findByNickname(String nickname) {
+        return Optional.ofNullable(
+                em.createQuery("select worker from Worker worker where worker.nickname =:nickname", Worker.class)
+                .setParameter("nickname", nickname)
+                .getResultList()
+                .get(0));
     }
 
-    public Worker findOne(Long workerId) {
-        return null;
+    public Optional<Worker> findOne(Long id) {
+        return Optional.ofNullable(em.find(Worker.class, id));
+    }
+
+    public void save(Worker worker) {
+        em.persist(worker);
+    }
+
+    public Long remove(Long w_id) {
+        em.createQuery("delete from Worker worker where worker.id =: w_id")
+            .executeUpdate();
+        return w_id;
+    }
+
+    public List<Worker> findAll() {
+        return em.createQuery("select worker from Worker worker", Worker.class)
+                .getResultList();
     }
 }

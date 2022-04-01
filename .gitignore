@@ -19,8 +19,9 @@
 *.tar.gz
 *.rar
 
-# bulid except
-/build
+
+/src/main/java/fis/pms/init
+/src/main/resources/application-config.yml
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*

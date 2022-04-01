@@ -1,5 +1,6 @@
 package fis.pms.controller.dto;
 
+import fis.pms.domain.Cases;
 import fis.pms.domain.caseEnum.C_kperiod;
 import fis.pms.domain.fileEnum.F_type;
 import lombok.AllArgsConstructor;
@@ -29,4 +30,22 @@ public class IndexSearchCaseResponse {
     private String c_departmentname;  // 생산기관명
     private F_type f_type;  // 기록물형태
     private String c_class;     // 등록구분
+
+    public static IndexSearchCaseResponse createIndexSearchCaseResponse(Cases cases){
+        IndexSearchCaseResponse indexSearchCaseResponse = new IndexSearchCaseResponse();
+        indexSearchCaseResponse.f_labelcode=cases.getFiles().getF_labelcode();
+        indexSearchCaseResponse.f_volumeamount=cases.getFiles().getF_volumeamount();
+        indexSearchCaseResponse.c_pdate=cases.getC_pdate();
+        indexSearchCaseResponse.c_dodate=cases.getC_dodate();
+        indexSearchCaseResponse.c_title=cases.getC_title();
+        indexSearchCaseResponse.c_spage=cases.getC_spage();
+        indexSearchCaseResponse.c_epage=cases.getC_epage();
+        indexSearchCaseResponse.c_oldnum=cases.getC_oldnum();
+        indexSearchCaseResponse.c_kperiod=cases.getC_kperiod();
+        indexSearchCaseResponse.o_code=cases.getFiles().getOffice().getO_code();
+        indexSearchCaseResponse.c_departmentname=cases.getC_departmentname();
+        indexSearchCaseResponse.f_type=cases.getFiles().getF_type();
+        indexSearchCaseResponse.c_class=cases.getC_class();
+        return indexSearchCaseResponse;
+    }
 }

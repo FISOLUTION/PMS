@@ -5,6 +5,7 @@ import fis.pms.domain.fileEnum.F_processConverter;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -18,6 +19,7 @@ public class Process {
     String id;
 
     @Convert(converter= F_processConverter.class)
+    @Column(unique = true)
     F_process f_process;
 
     public Process(F_process f_process) {

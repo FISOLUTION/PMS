@@ -1,5 +1,6 @@
 package fis.pms.controller.dto;
 
+import fis.pms.domain.Files;
 import fis.pms.domain.fileEnum.F_kmethod;
 import fis.pms.domain.fileEnum.F_kperiod;
 import fis.pms.domain.fileEnum.F_kplace;
@@ -32,4 +33,22 @@ public class IndexSearchLabelResponse {
     private F_kmethod f_kmethod;    // 보존방법
     private F_kplace f_kplace; // 보존장소
     private String f_manager;    // 업무담당자
+
+    public static IndexSearchLabelResponse createIndexSearchLabelResponse(Files file) {
+        IndexSearchLabelResponse indexSearchLabelResponse = new IndexSearchLabelResponse();
+        indexSearchLabelResponse.f_id = file.getF_id();
+        indexSearchLabelResponse.f_labelcode= file.getF_labelcode();
+        indexSearchLabelResponse.f_volumeamount= file.getF_volumeamount();
+        indexSearchLabelResponse.f_name = file.getF_name();
+        indexSearchLabelResponse.f_pyear= file.getF_pyear();
+        indexSearchLabelResponse.f_eyear= file.getF_eyear();
+        indexSearchLabelResponse.f_kperiod=file.getF_kperiod();
+        indexSearchLabelResponse.o_code=file.getOffice().getO_code();
+        indexSearchLabelResponse.o_name=file.getOffice().getO_name();
+        indexSearchLabelResponse.f_type=file.getF_type();
+        indexSearchLabelResponse.f_kmethod=file.getF_kmethod();
+        indexSearchLabelResponse.f_kplace=file.getF_kplace();
+        indexSearchLabelResponse.f_manager=file.getF_manager();
+        return indexSearchLabelResponse;
+    }
 }

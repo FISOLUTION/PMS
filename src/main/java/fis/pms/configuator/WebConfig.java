@@ -2,10 +2,12 @@ package fis.pms.configuator;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import fis.pms.configuator.argumentResolver.LoginWorkerArgumentResolver;
+import fis.pms.interceptor.LoginCheckInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.persistence.EntityManager;
@@ -17,9 +19,9 @@ public class WebConfig implements WebMvcConfigurer {
 //    @Override
 //    public void addInterceptors(InterceptorRegistry registry) {
 //        registry.addInterceptor(new LoginCheckInterceptor())
-//                .order(1);
+//                .order(1)
 //                .addPathPatterns("/**")
-//                .excludePathPatterns("/css/**", "/*.ico");
+//                .excludePathPatterns("/error", "/login", "/*.ico", "/worker/signup");
 //    }
 
     @Override
@@ -37,7 +39,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Bean
     JPAQueryFactory JpaQueryFactory(EntityManager em){
-        System.out.println("em ============================================== " + em);
         return new JPAQueryFactory(em);
     }
 }

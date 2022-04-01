@@ -7,7 +7,7 @@ import fis.pms.controller.dto.QCasesInfo;
 import fis.pms.domain.Cases;
 import fis.pms.domain.Files;
 import fis.pms.domain.QCases;
-import fis.pms.domain.QFiles;
+import fis.pms.repository.querymethod.CasesQueryMethod;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -36,8 +36,9 @@ public class CasesRepository extends CasesQueryMethod {
 
     QCases qCases = cases;
 
-    public void save(Cases cases) {
+    public Long save(Cases cases) {
         em.persist(cases);
+        return cases.getId();
     }
 
     public Cases findOne(Long id) {
@@ -51,7 +52,7 @@ public class CasesRepository extends CasesQueryMethod {
         return id;
     }
 
-    public List<Cases> findByOldNumTitleReceiver(String c_oldnum, String c_title, String c_receiver) {
+    public List<Cases> findByOldNumTitleReceiverWithFiles(String c_oldnum, String c_title, String c_receiver) {
         // 동적쿼리를 이용한 or 조건은 BooleanBuilder로만 가능
         BooleanBuilder builder = new BooleanBuilder();
         if(c_oldnum!=null){

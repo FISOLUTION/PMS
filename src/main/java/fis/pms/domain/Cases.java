@@ -13,33 +13,11 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * 수정자: 한명수
- * 수정날짜: 2021/08/26
- * 수정내용: @Setter 추가
- */
 @Entity
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cases {
-    /*
-     * 작성자: 한명수
-     * 작성날짜: 2021/08/31
-     * 작성내용: 생성자
-     */
-    public Cases(int caseNum, Volume volume, Files files, String c_spage, String c_epage, String c_page) {
-        this.c_first = "1";
-        this.volume = volume;
-        this.files = files;
-        this.c_spage = c_spage;
-        this.c_epage = c_epage;
-        this.c_page = c_page;
-        this.c_num = caseNum;
-        volume.getCaseList().add(this);
-        files.getCases().add(this);
-    }
-
     @Id @GeneratedValue
     @Column(name = "c_id")
     private Long id;
@@ -52,15 +30,6 @@ public class Cases {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_id")
     private Files files;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "w_put")
-    private Worker workerput;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "w_check")
-    private Worker workercheck;
-
 
     @OneToMany(mappedBy = "case1", cascade = CascadeType.REMOVE)
     private List<Special> specials = new ArrayList<>();
@@ -239,59 +208,41 @@ public class Cases {
     @Column(length = 2)
     private C_detailtype c_detailtype; //건 세부유형 2 (11.졸업대장, 21.생활기록부, 22.인사카드)
 
-    /*
-     * 작성자: 한명수
-     * 작성날짜: 2021/08/26
-     * 작성내용: 연관관계 메서드 setOffice
-     */
+
+    public Cases(int caseNum, Volume volume, Files files, String c_spage, String c_epage, String c_page) {
+        this.c_first = "1";
+        this.c_spage = c_spage;
+        this.c_epage = c_epage;
+        this.c_page = c_page;
+        this.c_num = caseNum;
+        mappingVolume(volume);
+        mappingFiles(files);
+    }
 
     //===연관 관계 메서드===//
-    public void setVolume(Volume volume) {
+    public void mappingVolume(Volume volume) {
         this.volume = volume;
         volume.getCaseList().add(this);
     }
 
-    public void setFiles(Files files) {
+    public void mappingFiles(Files files) {
         this.files = files;
         files.getCases().add(this);
     }
 
-    public void setWorkerput(Worker workerput) {
-        this.workerput = workerput;
-        workerput.getCaseList_put().add(this);
-    }
-
-    public void setWorkercheck(Worker workercheck) {
-        this.workercheck = workercheck;
-        workercheck.getCaseList_check().add(this);
-    }
-
-
-    /*
-     * 작성자: 한명수
-     * 작성날짜: 2021/08/31
-     * 작성내용: 생성 메서드
-     */
-    //=====생성 메서드=====//
     public static Cases createCases(int caseNum, Volume volume, Files files, String c_spage, String c_epage){
-        String c_page = Integer.toString(Integer.valueOf(c_epage) - Integer.valueOf(c_spage) + 1);
+        String c_page = Integer.toString(Integer.parseInt(c_epage) - Integer.parseInt(c_spage) + 1);
         Cases cases = new Cases(caseNum, volume, files, c_spage, c_epage, c_page);
         return cases;
     }
 
     public void updatePage(String c_spage, String c_epage) {
-        String c_page = Integer.toString(Integer.valueOf(c_epage)-Integer.valueOf(c_spage) + 1);
+        String c_page = Integer.toString(Integer.parseInt(c_epage)-Integer.parseInt(c_spage) + 1);
         this.c_spage = c_spage;
         this.c_epage = c_epage;
         this.c_page = c_page;
     }
 
-    /*
-     * 작성자: 한명수
-     * 작성날짜: 2021/09/01
-     * 작성내용: 수정 메서드
-     */
-    //=====수정 메서드=====//
     public Cases updateCases(IndexSaveCaseRequest indexSaveCaseRequest){
         this.c_spage = indexSaveCaseRequest.getC_spage();           // 첫 페이지
         this.c_epage = indexSaveCaseRequest.getC_epage();           // 끝 페이지
@@ -312,22 +263,9 @@ public class Cases {
         return this;
     }
 
-
-    /*
-     * 작성자: 한명수
-     * 작성날짜: 2021/09/01
-     * 작성내용: resetCount
-     */
-
     public void resetCount(){
         this.c_first = "1";
     }
-
-    /*
-     * 작성자: 한명수
-     * 작성날짜: 2021/09/01
-     * 작성내용: reduceFirst
-     */
 
     public void reduceFirst(){
         this.c_first = "0";
