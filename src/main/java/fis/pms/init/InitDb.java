@@ -10,15 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 
-
-
-
-/*
- * 작성자: 원보라
- * 작성날짜: 2021/08/25
- * 작성내용: InitDb
- */
-
 @Component
 @RequiredArgsConstructor
 public class InitDb {
@@ -174,7 +165,6 @@ public class InitDb {
             worker.setW_tel("fds");
             return worker;
         }
-
     }
 }
 
