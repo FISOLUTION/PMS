@@ -37,6 +37,7 @@ public class FileService {
     private final CasesRepository casesRepository;
     private final WorkListService workListService;
     private final WorkerRepository workerRepository;
+    private final VolumeService volumeService;
 
 
     /**
@@ -249,7 +250,7 @@ public class FileService {
 
         //dto 값 세팅
         IndexSaveLabelResponse indexSaveLabelResponse = IndexSaveLabelResponse.createIndexSaveLabelResponse(result, files.getF_id());
-        if (checkVolumeCount(files, workerId)) {
+        if (volumeService.checkVolumeCount(files, workerId)) {
             indexSaveLabelResponse.setComplete(true);
         } else {
             indexSaveLabelResponse.setComplete(false);
@@ -262,25 +263,25 @@ public class FileService {
      * 작성자: 이승범
      * 작성내용: 철의 volumecount가 0이 되면 해당 철의 색인 or 검수 작업 완료
      */
-    public boolean checkVolumeCount(Files findFile, Long workerId) {
-        // 해당 철이 갖고있는 권의 작업이 모두 끝났을경우 해당 철 작업 완료 처리
-        if (findFile.getF_volumecount().compareTo("0") == 0) {
-            F_process f_process = findFile.getF_process() == F_process.INPUT ? F_process.CHECK : F_process.INPUT;
-            workListService.reflectWorkList(findFile, workerId, f_process);
-            findFile.updateProcess();
-            List<Cases> findCasesList = casesRepository.findByFiles(findFile);
-
-            for (Cases cases : findCasesList) {
-                cases.resetCount();
-            }
-            List<Volume> findVolumeList = volumeRepository.findByFiles(findFile);
-            for (Volume volume : findVolumeList) {
-                volume.resetCount();
-            }
-            return true;
-        }
-        return false;
-    }
+//    public boolean checkVolumeCount(Files findFile, Long workerId) {
+//        // 해당 철이 갖고있는 권의 작업이 모두 끝났을경우 해당 철 작업 완료 처리
+//        if (findFile.getF_volumecount().compareTo("0") == 0) {
+//            F_process f_process = findFile.getF_process() == F_process.INPUT ? F_process.CHECK : F_process.INPUT;
+//            workListService.reflectWorkList(findFile, workerId, f_process);
+//            findFile.updateProcess();
+//            List<Cases> findCasesList = casesRepository.findByFiles(findFile);
+//
+//            for (Cases cases : findCasesList) {
+//                cases.resetCount();
+//            }
+//            List<Volume> findVolumeList = volumeRepository.findByFiles(findFile);
+//            for (Volume volume : findVolumeList) {
+//                volume.resetCount();
+//            }
+//            return true;
+//        }
+//        return false;
+//    }
 
     public List<RegisterStatusDTO> getRegistration() {
         return fileRepository.findRegistStatus();
