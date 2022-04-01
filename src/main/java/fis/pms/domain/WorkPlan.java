@@ -29,7 +29,7 @@ public class WorkPlan {
     @Column(name = "sc")
     private Long scan;
     private Long imgModify;
-    @Column(name = "in")
+    @Column(name = "inp")
     private Long input;
     @Column(name = "ch")
     private Long check;

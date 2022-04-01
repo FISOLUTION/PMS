@@ -20,6 +20,7 @@ public class OfficeRepository {
     }
 
     public Optional<Office> findOne(String code){
+        if(code == null) return Optional.ofNullable(null);
         return Optional.ofNullable(em.find(Office.class, code));
     }
 
