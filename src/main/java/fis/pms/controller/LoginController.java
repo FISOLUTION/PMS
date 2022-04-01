@@ -48,7 +48,7 @@ public class LoginController {
         }
     }
 
-    @GetMapping("/userinfo")
+    @GetMapping("/userInfo")
     public LoginResponse workerInfo(@Login Long workerId) {
         return loginService.workerInfo(workerId);
     }

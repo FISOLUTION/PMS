@@ -41,7 +41,7 @@ public class WorkListController {
      * @implNote 전체 철들의 진행 상황과 계획을 비교합니다
      * @return
      */
-    @GetMapping("workList/prepare")
+    @GetMapping("/workList/prepare")
     public Result preparePlanResult() {
         WorkPlan workPlan = workPlanService.findOne();
         return new Result(workListService.prepareWithPlan(workPlan));
