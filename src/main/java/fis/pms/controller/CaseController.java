@@ -33,7 +33,7 @@ public class CaseController {
     *   작성자: 이승범
     *   작성내용: 건 검색 api
     */
-    @GetMapping("/index/case")
+    @GetMapping("/case/index")
     public List<IndexSearchCaseResponse> SearchIndexCase(@RequestParam(value = "docnum", required = false) String c_oldnum,
                                                                  @RequestParam(value = "c_name", required = false) String c_title,
                                                                  @RequestParam(value = "c_receiver", required = false) String c_receiver) {

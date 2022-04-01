@@ -14,12 +14,12 @@ public class WorkPlanController {
 
     private final WorkPlanService workPlanService;
 
-    @PostMapping("workplan")
+    @PostMapping("/workPlan")
     public WorkPlan save(@RequestBody WorkPlan workPlan){
         return workPlanService.save(workPlan);
     }
 
-    @GetMapping("workplan")
+    @GetMapping("/workPlan")
     public WorkPlan get(){
         return workPlanService.findOne();
     }

@@ -211,7 +211,7 @@ public class FileController {
      * @return file 검색 결과 반환 (이름, 박스, 기관 코드, 시작년도, 철 이름으로 검색)
      * @throws OfficeException - 기관코드 없으면
      */
-    @GetMapping("/preInfo/file")
+    @GetMapping("/file/preInfo")
     public List<PreInfoFileSearchResponse> searchResponse(@ModelAttribute PreInfoFileSearchDTO searchDTO) throws OfficeException {
         return fileService.findPreInfoFile(searchDTO).stream()
                 .map(files -> PreInfoFileSearchResponse.createResponse(files))
@@ -227,7 +227,7 @@ public class FileController {
      * @throws OfficeException 기관에 대한 유효성 예외
      * @throws FilesException 레이블이 이미 존재하면 예외 발생
      */
-    @PostMapping("preinfo/excel")
+    @PostMapping("/file/preInfo/excel")
     public Result<List> excelUpdate(@RequestParam MultipartFile excelFile, @Login Long workerId) throws ExcelException, NoSuchMethodException {
         List<PreInfoFileInfo> preInfoFileInfoList = excelService.excelToJson(excelFile, ExcelUpdateDTO.class).stream()
                 .map(data -> new PreInfoFileInfo((ExcelUpdateDTO)data))
@@ -244,7 +244,7 @@ public class FileController {
      * @param response
      * @throws IOException
      */
-    @GetMapping("preinfo/excel")
+    @GetMapping("file/preInfo/excel")
     public void excelFile(HttpServletResponse response) throws IOException {
         List<Files> files = fileService.findAll();
         List<ExcelUpdateDTO> dataList = new ArrayList<>();
