@@ -9,11 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.List;
 
-/*
-* 수정자: 한명수
-* 수정날짜: 2021/08/26
-* 수정내용: @Setter 추가
- */
 @Entity
 @Getter @Setter
 @AllArgsConstructor
