@@ -44,7 +44,13 @@ public class GlobalControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(WorkListException.class)
-    public ErrorResult planError(WorkListException workListException){
+    public ErrorResult workListError(WorkListException workListException){
         return new ErrorResult(401L, workListException.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(WorkerException.class)
+    public ErrorResult workerError(WorkerException workerException){
+        return new ErrorResult(401L, workerException.getMessage());
     }
 }
