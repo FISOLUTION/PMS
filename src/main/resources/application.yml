@@ -1,16 +1,16 @@
 spring:
   datasource:
-    url: jdbc:mysql://3.38.19.119:3306/fis_gongjung?useUnicode=true&characterEncoding=utf8
-    username: fis_gongjung
-    password: Fiserver1207!
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:h2:tcp://localhost/~/fis_2021_gongjung
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
         #show_sql: true
