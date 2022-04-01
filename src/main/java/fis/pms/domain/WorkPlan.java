@@ -22,14 +22,18 @@ public class WorkPlan {
     @GeneratedValue
     private Long id;
 
+    @Column(name = "pre")
     private Long preInfo;
+    @Column(name = "ex")
     private Long export;
+    @Column(name = "sc")
     private Long scan;
     private Long imgModify;
-    @Column(name = "in")
+    @Column(name = "inp")
     private Long input;
     @Column(name = "ch")
     private Long check;
+    @Column(name = "up")
     private Long upload;
 
     public void putInto(Map<String, PreparePlanDTO> map) {

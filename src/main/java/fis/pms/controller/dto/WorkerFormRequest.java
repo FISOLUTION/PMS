@@ -18,7 +18,7 @@ public class WorkerFormRequest {
                 .authority(w_authority)
                 .nickname(nickname)
                 .w_name(w_name)
-                .password(w_tel)
+                .password(password)
                 .w_address(w_address)
                 .w_tel(w_tel)
                 .build();
