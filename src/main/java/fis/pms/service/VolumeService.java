@@ -33,7 +33,7 @@ public class VolumeService {
     private final VolumeRepository volumeRepository;
     private final CasesRepository casesRepository;
     private final FileRepository fileRepository;
-    private final FileService fileService;
+    private final WorkListService workListService;
 
     /**
      * 작성날짜: 2022/03/29 1:26 PM
@@ -146,11 +146,35 @@ public class VolumeService {
     public boolean checkCaseCount(Files findFile, Volume findVolume, Long workerId) {
         if (findVolume.getV_casecount().compareTo("0") == 0) {
             findFile.reduceVolumeCount();
-            if (fileService.checkVolumeCount(findFile, workerId))
+            if (checkVolumeCount(findFile, workerId))
                 return true;
         }
         return false;
     }
 
+    /**
+     * 작성날짜: 2022/03/29 1:54 PM
+     * 작성자: 이승범
+     * 작성내용: 철의 volumecount가 0이 되면 해당 철의 색인 or 검수 작업 완료
+     */
+    public boolean checkVolumeCount(Files findFile, Long workerId) {
+        // 해당 철이 갖고있는 권의 작업이 모두 끝났을경우 해당 철 작업 완료 처리
+        if (findFile.getF_volumecount().compareTo("0") == 0) {
+            F_process f_process = findFile.getF_process() == F_process.INPUT ? F_process.CHECK : F_process.INPUT;
+            workListService.reflectWorkList(findFile, workerId, f_process);
+            findFile.updateProcess();
+            List<Cases> findCasesList = casesRepository.findByFiles(findFile);
+
+            for (Cases cases : findCasesList) {
+                cases.resetCount();
+            }
+            List<Volume> findVolumeList = volumeRepository.findByFiles(findFile);
+            for (Volume volume : findVolumeList) {
+                volume.resetCount();
+            }
+            return true;
+        }
+        return false;
+    }
 
 }

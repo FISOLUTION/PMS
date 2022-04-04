@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -34,9 +35,9 @@ public class FileService {
     private final FileRepository fileRepository;
     private final OfficeService officeService;
     private final VolumeRepository volumeRepository;
-    private final CasesRepository casesRepository;
     private final WorkListService workListService;
     private final WorkerRepository workerRepository;
+    private final VolumeService volumeService;
 
 
     /**
@@ -249,37 +250,14 @@ public class FileService {
 
         //dto 값 세팅
         IndexSaveLabelResponse indexSaveLabelResponse = IndexSaveLabelResponse.createIndexSaveLabelResponse(result, files.getF_id());
-        if (checkVolumeCount(files, workerId)) {
+
+        // 권이 삭제되었을때 나머지 권들이 작업 완료되있으면 철 작업 완료처리
+        if (volumeService.checkVolumeCount(files, workerId)) {
             indexSaveLabelResponse.setComplete(true);
         } else {
             indexSaveLabelResponse.setComplete(false);
         }
         return indexSaveLabelResponse;
-    }
-
-    /**
-     * 작성날짜: 2022/03/29 1:54 PM
-     * 작성자: 이승범
-     * 작성내용: 철의 volumecount가 0이 되면 해당 철의 색인 or 검수 작업 완료
-     */
-    public boolean checkVolumeCount(Files findFile, Long workerId) {
-        // 해당 철이 갖고있는 권의 작업이 모두 끝났을경우 해당 철 작업 완료 처리
-        if (findFile.getF_volumecount().compareTo("0") == 0) {
-            F_process f_process = findFile.getF_process() == F_process.INPUT ? F_process.CHECK : F_process.INPUT;
-            workListService.reflectWorkList(findFile, workerId, f_process);
-            findFile.updateProcess();
-            List<Cases> findCasesList = casesRepository.findByFiles(findFile);
-
-            for (Cases cases : findCasesList) {
-                cases.resetCount();
-            }
-            List<Volume> findVolumeList = volumeRepository.findByFiles(findFile);
-            for (Volume volume : findVolumeList) {
-                volume.resetCount();
-            }
-            return true;
-        }
-        return false;
     }
 
     public List<RegisterStatusDTO> getRegistration() {
@@ -310,4 +288,14 @@ public class FileService {
         Files files = fileRepository.findOne(f_id).get();     //넘어온 file_id 를 이용하여 해당 file 찾음
         return fileRepository.remove(files);                  //해당 file을 삭제
     }
+
+    public void upload(){
+        List<Files> filesList = fileRepository.findAll();
+        filesList.stream().forEach(file -> {
+//            file.initForUpload();
+//            file.upload();
+        });
+
+    }
+
 }
