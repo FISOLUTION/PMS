@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.util.Arrays;
 
 @Data
@@ -16,6 +17,7 @@ import java.util.Arrays;
 @Builder
 public class WorkListOverallGroupByDateDTO {
 
+    private LocalDate date;
     private Long preInfo;
     private Long export;
     private Long scan;
@@ -31,6 +33,7 @@ public class WorkListOverallGroupByDateDTO {
      * @author 현승구
      */
     public void matchPerformanceProcess(WorkListGroupByDateDTO data){
+        date = data.getDate();
         String processName = data.getName();
         if(processName.equals("사전조사")){
             preInfo = data.getCount();
