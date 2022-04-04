@@ -140,7 +140,7 @@ public class ImageService {
     public ImagesMaxnumResponse imagesMaxNum() {
         List<Files> filesList = fileRepository.findAllWithImages();
         List<ImagesMaxnumResponse.ImagesNum> collect = filesList.stream()
-                .map(files -> new ImagesMaxnumResponse.ImagesNum(String.valueOf(files.getF_id()), files.getImages()))
+                .map(files -> new ImagesMaxnumResponse.ImagesNum(String.valueOf(files.getF_id()), files.getF_name(), files.getImages()))
                 .collect(Collectors.toList());
         return new ImagesMaxnumResponse(collect);
     }

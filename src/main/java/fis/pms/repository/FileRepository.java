@@ -54,11 +54,19 @@ public class FileRepository extends FileQueryMethods {
     }
 
    // 2022-03-02 이승범 : fetchJoin를 이용한 쿼리 최적화
-    public List<Files> findByOcodeBoxNumLabel(String o_code, String b_num, String f_labelcode){
+    public List<Files> findIndexInputByOcodeBoxNumLabel(String o_code, String b_num, String f_labelcode){
         return jpaQueryFactory
                 .selectFrom(files)
                 .join(files.office, office).fetchJoin()
-                .where(office.o_code.eq(o_code) ,fLabelCodeLike(f_labelcode), bNumLike(b_num))
+                .where(office.o_code.eq(o_code) ,fLabelCodeLike(f_labelcode), bNumLike(b_num), files.f_process.eq(F_process.IMGMODIFY))
+                .fetch();
+    }
+
+    public List<Files> findIndexCheckByOcodeBoxNumLabel(String o_code, String b_num, String f_labelcode) {
+        return jpaQueryFactory
+                .selectFrom(files)
+                .join(files.office, office).fetchJoin()
+                .where(office.o_code.eq(o_code) ,fLabelCodeLike(f_labelcode), bNumLike(b_num), files.f_process.eq(F_process.INPUT))
                 .fetch();
     }
 
@@ -82,12 +90,6 @@ public class FileRepository extends FileQueryMethods {
                 .fetch();
     }
 
-
-    /*
-     * 작성자: 원보라
-     * 작성날짜: 2021/08/24
-     * 작성내용: findAll,findByLabel
-     */
     public List<Files> findAll() {
         return em.createQuery("select f from Files f join fetch f.office ", Files.class)
                 .getResultList();
@@ -105,12 +107,6 @@ public class FileRepository extends FileQueryMethods {
                 .where(files.f_labelcode.eq(f_labelcode))
                 .fetchOne());
     }
-
-    /*
-     * 작성자: 원보라
-     * 작성날짜: 2021/08/26
-     * 작성내용: findByOcodeLabelFnamePyear
-     */
 
     public List<Files> preInfoSearch(Office office, String label, String name, String sYear, String bNum) {
         return jpaQueryFactory
