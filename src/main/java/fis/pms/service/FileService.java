@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -178,14 +179,27 @@ public class FileService {
      * 작성자: 이승범
      * 작성내용: 색인 작업할 철 목록 가져오기
      */
-    public List<Files> searchFilesByPreInfo(FindIndexPreinfo findIndexPreinfo) {
-        //Files 테이블에서 o_code, b_num, f_labelcode로 검색
-        List<Files> findList = fileRepository.findByOcodeBoxNumLabel(
+    public List<Files> searchIndexInputFilesByPreInfo(FindIndexPreinfo findIndexPreinfo) {
+        //Files 테이블에서 status가 imgmodify인 files중 o_code, b_num, f_labelcode로 검색
+        return fileRepository.findIndexInputByOcodeBoxNumLabel(
                 findIndexPreinfo.getO_code(),
                 findIndexPreinfo.getB_num(),
                 findIndexPreinfo.getF_labelcode()
         );
-        return findList;
+    }
+
+    /**
+    *   작성날짜: 2022/04/04 2:50 PM
+    *   작성자: 이승범
+    *   작성내용: 검수 작업할 철 목록 가져오기
+    */
+    public List<Files> searchIndexCeckFilesByPreInfo(FindIndexPreinfo findIndexPreinfo) {
+        // Files 테이블에서 status가 input인 files중 o_code, b_num, f_labelcode로 검색
+        return fileRepository.findIndexCheckByOcodeBoxNumLabel(
+                findIndexPreinfo.getO_code(),
+                findIndexPreinfo.getB_num(),
+                findIndexPreinfo.getF_labelcode()
+        );
     }
 
     /**
@@ -287,4 +301,14 @@ public class FileService {
         Files files = fileRepository.findOne(f_id).get();     //넘어온 file_id 를 이용하여 해당 file 찾음
         return fileRepository.remove(files);                  //해당 file을 삭제
     }
+
+    public void upload(){
+        List<Files> filesList = fileRepository.findAll();
+        filesList.stream().forEach(file -> {
+//            file.initForUpload();
+//            file.upload();
+        });
+
+    }
+
 }

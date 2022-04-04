@@ -40,8 +40,22 @@ public class VolumeService {
      * 작성자: 이승범
      * 작성내용: 해당 철의 권 정보들과 각 권들의 건 정보들 가져오기
      */
-    public List<VolumesInfo> getVolumesInfo(Long f_id) {
-        List<VolumesInfo> result = volumeRepository.findByFilesWithFiles(f_id);
+    public List<VolumesInfo> getInputVolumesInfo(Long f_id) {
+        List<VolumesInfo> result = volumeRepository.findInputByFilesWithFiles(f_id);
+        if(result.isEmpty()){
+            throw new FilesException("철이 존재하지 않거나 색인 입력 단계가 아닙니다.");
+        }
+        List<Long> volumeIds = toVolumeIds(result);
+        Map<Long, List<CasesInfo>> casesMap = casesRepository.findCasesMap(volumeIds);
+        result.forEach(volumesInfo -> volumesInfo.setCasesInfoList(casesMap.get(volumesInfo.getV_id())));
+        return result;
+    }
+
+    public List<VolumesInfo> getCheckVolumesInfo(Long f_id){
+        List<VolumesInfo> result = volumeRepository.findCheckByFilesWithFiles(f_id);
+        if(result.isEmpty()){
+            throw new FilesException("철이 존재하지 않거나 검수 단계가 아닙니다.");
+        }
         List<Long> volumeIds = toVolumeIds(result);
         Map<Long, List<CasesInfo>> casesMap = casesRepository.findCasesMap(volumeIds);
         result.forEach(volumesInfo -> volumesInfo.setCasesInfoList(casesMap.get(volumesInfo.getV_id())));
