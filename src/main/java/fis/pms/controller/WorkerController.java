@@ -1,6 +1,5 @@
 package fis.pms.controller;
 
-import fis.pms.configuator.argumentResolver.Login;
 import fis.pms.controller.dto.Result;
 import fis.pms.controller.dto.WorkerFormRequest;
 import fis.pms.controller.dto.WorkerFormResponse;

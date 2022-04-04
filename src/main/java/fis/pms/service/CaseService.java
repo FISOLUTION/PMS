@@ -30,10 +30,10 @@ public class CaseService {
     private final VolumeRepository volumeRepository;
 
     /**
-    *   작성날짜: 2022/03/29 1:39 PM
-    *   작성자: 이승범
-    *   작성내용: 건의 색인 정보 입력
-    */
+     * 작성날짜: 2022/03/29 1:39 PM
+     * 작성자: 이승범
+     * 작성내용: 건의 색인 정보 입력
+     */
     public IndexSaveCaseResponse saveCases(IndexSaveCaseRequest indexSaveCaseRequest, Long workerId, F_process f_process) {
         //건 테이블 저장
         //건 튜플 first 1인지 체크 후 그에따른 로직 실행
@@ -71,10 +71,10 @@ public class CaseService {
     }
 
     /**
-    *   작성날짜: 2022/03/29 1:40 PM
-    *   작성자: 이승범
-    *   작성내용: 건 검색 api
-    */
+     * 작성날짜: 2022/03/29 1:40 PM
+     * 작성자: 이승범
+     * 작성내용: 건 검색 api
+     */
     public List<Cases> searchCasesByCasesInfo(FindIndexCaseInfo findIndexCaseInfo) {
         return casesRepository.findByOldNumTitleReceiverWithFiles(
                 findIndexCaseInfo.getC_oldnum(), findIndexCaseInfo.getC_title(), findIndexCaseInfo.getC_receiver());
@@ -119,7 +119,7 @@ public class CaseService {
         return false;
     }
 
-    public void updateForUpload(){
+    public void updateForUpload() {
 
     }
 }
