@@ -311,4 +311,22 @@ public class FileService {
         Files files = fileRepository.findOne(f_id).get();     //넘어온 file_id 를 이용하여 해당 file 찾음
         return fileRepository.remove(files);                  //해당 file을 삭제
     }
+
+    public void Upload(){
+        // docu , detail, special, image
+        //fileRepository.findAll(); fetchALL
+        // 1 stream
+//        docu().detail().special();
+//        detail(); -=> case
+//        special()
+
+    }
+
+    public void docu(){
+//        file.도쿠파일 작성을 위한 setter(); => file.case.fjdskljdskl files.
+//        file.MKcolumn(); select distinct t from Team t join fetch Team.memberList as m
+        // file.case.setcasedjhfjf file.case.
+    }
+
+
 }
