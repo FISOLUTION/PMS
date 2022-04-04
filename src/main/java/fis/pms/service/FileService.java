@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +35,6 @@ public class FileService {
     private final FileRepository fileRepository;
     private final OfficeService officeService;
     private final VolumeRepository volumeRepository;
-    private final CasesRepository casesRepository;
     private final WorkListService workListService;
     private final WorkerRepository workerRepository;
     private final VolumeService volumeService;
@@ -179,14 +179,27 @@ public class FileService {
      * 작성자: 이승범
      * 작성내용: 색인 작업할 철 목록 가져오기
      */
-    public List<Files> searchFilesByPreInfo(FindIndexPreinfo findIndexPreinfo) {
-        //Files 테이블에서 o_code, b_num, f_labelcode로 검색
-        List<Files> findList = fileRepository.findByOcodeBoxNumLabel(
+    public List<Files> searchIndexInputFilesByPreInfo(FindIndexPreinfo findIndexPreinfo) {
+        //Files 테이블에서 status가 imgmodify인 files중 o_code, b_num, f_labelcode로 검색
+        return fileRepository.findIndexInputByOcodeBoxNumLabel(
                 findIndexPreinfo.getO_code(),
                 findIndexPreinfo.getB_num(),
                 findIndexPreinfo.getF_labelcode()
         );
-        return findList;
+    }
+
+    /**
+    *   작성날짜: 2022/04/04 2:50 PM
+    *   작성자: 이승범
+    *   작성내용: 검수 작업할 철 목록 가져오기
+    */
+    public List<Files> searchIndexCeckFilesByPreInfo(FindIndexPreinfo findIndexPreinfo) {
+        // Files 테이블에서 status가 input인 files중 o_code, b_num, f_labelcode로 검색
+        return fileRepository.findIndexCheckByOcodeBoxNumLabel(
+                findIndexPreinfo.getO_code(),
+                findIndexPreinfo.getB_num(),
+                findIndexPreinfo.getF_labelcode()
+        );
     }
 
     /**
@@ -250,6 +263,8 @@ public class FileService {
 
         //dto 값 세팅
         IndexSaveLabelResponse indexSaveLabelResponse = IndexSaveLabelResponse.createIndexSaveLabelResponse(result, files.getF_id());
+
+        // 권이 삭제되었을때 나머지 권들이 작업 완료되있으면 철 작업 완료처리
         if (volumeService.checkVolumeCount(files, workerId)) {
             indexSaveLabelResponse.setComplete(true);
         } else {
@@ -257,31 +272,6 @@ public class FileService {
         }
         return indexSaveLabelResponse;
     }
-
-    /**
-     * 작성날짜: 2022/03/29 1:54 PM
-     * 작성자: 이승범
-     * 작성내용: 철의 volumecount가 0이 되면 해당 철의 색인 or 검수 작업 완료
-     */
-//    public boolean checkVolumeCount(Files findFile, Long workerId) {
-//        // 해당 철이 갖고있는 권의 작업이 모두 끝났을경우 해당 철 작업 완료 처리
-//        if (findFile.getF_volumecount().compareTo("0") == 0) {
-//            F_process f_process = findFile.getF_process() == F_process.INPUT ? F_process.CHECK : F_process.INPUT;
-//            workListService.reflectWorkList(findFile, workerId, f_process);
-//            findFile.updateProcess();
-//            List<Cases> findCasesList = casesRepository.findByFiles(findFile);
-//
-//            for (Cases cases : findCasesList) {
-//                cases.resetCount();
-//            }
-//            List<Volume> findVolumeList = volumeRepository.findByFiles(findFile);
-//            for (Volume volume : findVolumeList) {
-//                volume.resetCount();
-//            }
-//            return true;
-//        }
-//        return false;
-//    }
 
     public List<RegisterStatusDTO> getRegistration() {
         return fileRepository.findRegistStatus();
@@ -312,21 +302,13 @@ public class FileService {
         return fileRepository.remove(files);                  //해당 file을 삭제
     }
 
-    public void Upload(){
-        // docu , detail, special, image
-        //fileRepository.findAll(); fetchALL
-        // 1 stream
-//        docu().detail().special();
-//        detail(); -=> case
-//        special()
+    public void upload(){
+        List<Files> filesList = fileRepository.findAll();
+        filesList.stream().forEach(file -> {
+//            file.initForUpload();
+//            file.upload();
+        });
 
     }
-
-    public void docu(){
-//        file.도쿠파일 작성을 위한 setter(); => file.case.fjdskljdskl files.
-//        file.MKcolumn(); select distinct t from Team t join fetch Team.memberList as m
-        // file.case.setcasedjhfjf file.case.
-    }
-
 
 }

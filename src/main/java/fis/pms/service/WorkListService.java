@@ -37,7 +37,7 @@ public class WorkListService {
     /**
      * @return
      */
-    public OverallPerformanceDTO getOverallPerformance() {
+    public List<PerformanceDTO> getOverallPerformance() {
         List<PerformanceDTO> dto = workListRepository.getPerformanceList();
         if (dto == null) throw new WorkListException("작업내용이 존재 하지 않습니다.");
         return OverallPerformanceDTO.createOverall(dto);
@@ -47,7 +47,7 @@ public class WorkListService {
      * @param workPlan
      * @return
      */
-    public Map<String, PreparePlanDTO> prepareWithPlan(WorkPlan workPlan) {
+    public List<PreparePlanDTO> prepareWithPlan(WorkPlan workPlan) {
         Map<String, PreparePlanDTO> map = new HashMap<>();
         List<PerformanceDTO> dto = workListRepository.getPerformanceList();
         if (dto == null) throw new WorkListException("작업내용이 존재 하지 않습니다.");
@@ -55,7 +55,7 @@ public class WorkListService {
             map.put(performanceDTO.getName(), PreparePlanDTO.create(performanceDTO));
         });
         workPlan.putInto(map);
-        return map;
+        return map.values().stream().collect(Collectors.toList());
     }
 
     /**
@@ -63,7 +63,7 @@ public class WorkListService {
      * @param endDate
      * @return
      */
-    public Map<LocalDate, WorkListOverallGroupByDateDTO> getWorkPerformancePeriod(LocalDate startDate, LocalDate endDate) {
+    public List<WorkListOverallGroupByDateDTO> getWorkPerformancePeriod(LocalDate startDate, LocalDate endDate) {
         Map<LocalDate, WorkListOverallGroupByDateDTO> map = new HashMap<>();
         workListRepository.findWorkListByDate(startDate, endDate)
                 .forEach(dto -> {
@@ -77,14 +77,14 @@ public class WorkListService {
         map.forEach((date, workListOverallGroupByDateDTO) -> {
             workListOverallGroupByDateDTO.makeNullCountToZero();
         });
-        return map;
+        return map.values().stream().collect(Collectors.toList());
     }
 
     /**
      * @param date
      * @return
      */
-    public Map<Long, WorkerPerformanceDTO> getWorkPerformanceWorker(LocalDate date) {
+    public List<WorkerPerformanceDTO> getWorkPerformanceWorker(LocalDate date) {
         Map<Long, WorkerPerformanceDTO> result = workerRepository.findAll().stream()
                 .map(WorkerPerformanceDTO::new)
                 .collect(Collectors.toMap(workerPerformanceDTO -> workerPerformanceDTO.getId(), workerPerformanceDTO -> workerPerformanceDTO));
@@ -102,13 +102,13 @@ public class WorkListService {
             workerPerformanceDTO.switchNullMapToDefault();
         });
 
-        return result;
+        return result.values().stream().collect(Collectors.toList());
     }
 
     /**
      * @return
      */
-    public Map<String, FileWorkListDTO> getFilesWorkList() {
+    public List<FileWorkListDTO> getFilesWorkList() {
         Map<String, List<WorkListGroupByFileDTO>> fileProcessMap = workListRepository.WorkListGroupByFile().stream()
                 .collect(Collectors.groupingBy(workListGroupByFileDTO -> workListGroupByFileDTO.getLabelCode()));
 
@@ -116,7 +116,7 @@ public class WorkListService {
 
         fileProcessMap.forEach((labelCode, workListGroupByFileDTOS) -> {
             WorkListGroupByFileDTO temp = workListGroupByFileDTOS.get(0);
-            FileWorkListDTO result = FileWorkListDTO.builder().fileName(temp.getFileName()).OfficeName(temp.getOfficeName()).build();
+            FileWorkListDTO result = FileWorkListDTO.builder().labelCode(temp.getLabelCode()).fileName(temp.getFileName()).OfficeName(temp.getOfficeName()).build();
 
             result.setFileWorkInfo(workListGroupByFileDTOS.stream().collect(Collectors.toMap(
                     workListGroupByFileDTO -> workListGroupByFileDTO.getProcess(),
@@ -126,7 +126,7 @@ public class WorkListService {
 
             resultList.put(temp.getLabelCode(), result);
         });
-        return resultList;
+        return resultList.values().stream().collect(Collectors.toList());
     }
 
     public void reflectWorkList(Files file, Long workerId, F_process f_process) {

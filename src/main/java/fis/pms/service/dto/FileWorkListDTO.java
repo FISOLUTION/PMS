@@ -14,6 +14,7 @@ import java.util.Map;
 @Builder
 public class FileWorkListDTO {
 
+    private String labelCode;
     private String fileName;
     private String OfficeName;
 

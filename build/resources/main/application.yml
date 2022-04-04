@@ -37,4 +37,4 @@ logging:
 server:
   servlet:
     session:
-      timeout: 3600
+      timeout: 360000000

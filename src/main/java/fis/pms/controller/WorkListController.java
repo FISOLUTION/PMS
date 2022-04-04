@@ -2,9 +2,9 @@ package fis.pms.controller;
 
 import fis.pms.controller.dto.Result;
 import fis.pms.domain.WorkPlan;
+import fis.pms.repository.dto.PerformanceDTO;
 import fis.pms.service.WorkListService;
 import fis.pms.service.WorkPlanService;
-import fis.pms.service.dto.OverallPerformanceDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,7 +49,7 @@ public class WorkListController {
     }
 
     @GetMapping("/workList/overall")
-    public OverallPerformanceDTO overall() {
+    public List<PerformanceDTO> overall() {
         return workListService.getOverallPerformance();
     }
 

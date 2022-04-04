@@ -328,6 +328,7 @@ public class Files {
 
     public void originImageUpload(Long imagesNum) {
         images = imagesNum;
+        this.f_scan = F_construct.YES;
         if (this.f_process == F_process.EXPORT)
             f_process = F_process.SCAN;
     }

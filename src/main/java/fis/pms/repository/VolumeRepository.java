@@ -7,6 +7,7 @@ import fis.pms.domain.Files;
 import fis.pms.domain.QFiles;
 import fis.pms.domain.QVolume;
 import fis.pms.domain.Volume;
+import fis.pms.domain.fileEnum.F_process;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -16,12 +17,6 @@ import java.util.Optional;
 
 import static fis.pms.domain.QFiles.files;
 import static fis.pms.domain.QVolume.volume;
-
-/*
- * 작성자 : 현승구
- * 작성일자 : 2021/08/23
- * 작성내용 : save, findOne, remove
- */
 
 @Repository
 @RequiredArgsConstructor
@@ -45,11 +40,6 @@ public class VolumeRepository {
         return Id;
     }
 
-    /*
-     * 작성자: 한명수
-     * 작성날짜: 2021/08/30
-     * 작성내용: findByFiles
-     */
     public List<Volume> findByFiles(Files files){
         return jpaQueryFactory
                 .selectFrom(volume)
@@ -71,11 +61,20 @@ public class VolumeRepository {
         em.clear();
     }
 
-    public List<VolumesInfo> findByFilesWithFiles(Long filesId) {
+    public List<VolumesInfo> findInputByFilesWithFiles(Long filesId) {
         return jpaQueryFactory
                 .select(new QVolumesInfo(volume.id, files.f_labelcode, volume.v_num, files.f_name, files.f_pyear, files.f_eyear, files.f_kperiod))
                 .from(volume)
                 .join(volume.files, files)
+                .where(files.f_id.eq(filesId), files.f_process.eq(F_process.IMGMODIFY))
+                .fetch();
+    }
+    public List<VolumesInfo> findCheckByFilesWithFiles(Long filesId) {
+        return jpaQueryFactory
+                .select(new QVolumesInfo(volume.id, files.f_labelcode, volume.v_num, files.f_name, files.f_pyear, files.f_eyear, files.f_kperiod))
+                .from(volume)
+                .join(volume.files, files)
+                .where(files.f_id.eq(filesId), files.f_process.eq(F_process.INPUT))
                 .fetch();
     }
 }
