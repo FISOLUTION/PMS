@@ -130,6 +130,7 @@ public class FileController {
     public List<IndexSearchResponse> searchIndexChekcByOffice(@PathVariable String o_code,
                                                               @RequestParam(value = "box", required = false) String f_bnum,
                                                               @RequestParam(value = "label", required = false) String f_labelcode) {
+
         FindIndexPreinfo findIndexPreinfo = FindIndexPreinfo.createFindIndexPreinfo(o_code, f_bnum, f_labelcode);
         return fileService.searchIndexCeckFilesByPreInfo(findIndexPreinfo).stream()
                 .map(IndexSearchResponse::createIndexSearchResponse)

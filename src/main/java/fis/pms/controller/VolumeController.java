@@ -19,9 +19,14 @@ public class VolumeController {
 
     private final VolumeService volumeService;
 
-    @GetMapping("/volume/index")
-    public List<VolumesInfo> getVolumesInfo(@RequestParam Long f_id) {
-        return volumeService.getVolumesInfo(f_id);
+    @GetMapping("/volume/index/input")
+    public List<VolumesInfo> getInputVolumesInfo(@RequestParam Long f_id) {
+        return volumeService.getInputVolumesInfo(f_id);
+    }
+
+    @GetMapping("/volume/index/check")
+    public List<VolumesInfo> getCheckVolumesInfo(@RequestParam Long f_id) {
+        return volumeService.getCheckVolumesInfo(f_id);
     }
 
     @PostMapping("/volume/index/input")

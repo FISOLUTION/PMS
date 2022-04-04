@@ -90,12 +90,6 @@ public class FileRepository extends FileQueryMethods {
                 .fetch();
     }
 
-
-    /*
-     * 작성자: 원보라
-     * 작성날짜: 2021/08/24
-     * 작성내용: findAll,findByLabel
-     */
     public List<Files> findAll() {
         return em.createQuery("select f from Files f join fetch f.office ", Files.class)
                 .getResultList();
@@ -113,12 +107,6 @@ public class FileRepository extends FileQueryMethods {
                 .where(files.f_labelcode.eq(f_labelcode))
                 .fetchOne());
     }
-
-    /*
-     * 작성자: 원보라
-     * 작성날짜: 2021/08/26
-     * 작성내용: findByOcodeLabelFnamePyear
-     */
 
     public List<Files> preInfoSearch(Office office, String label, String name, String sYear, String bNum) {
         return jpaQueryFactory

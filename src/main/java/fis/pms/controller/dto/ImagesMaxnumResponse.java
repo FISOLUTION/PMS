@@ -16,7 +16,8 @@ public class ImagesMaxnumResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     static public class ImagesNum{
-        private String label;
+        private String f_id;
+        private String f_name;
         private Long maxnum;
     }
 }
