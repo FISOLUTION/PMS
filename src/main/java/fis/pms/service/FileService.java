@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -312,21 +313,13 @@ public class FileService {
         return fileRepository.remove(files);                  //해당 file을 삭제
     }
 
-    public void Upload(){
-        // docu , detail, special, image
-        //fileRepository.findAll(); fetchALL
-        // 1 stream
-//        docu().detail().special();
-//        detail(); -=> case
-//        special()
+    public void upload(){
+        List<Files> filesList = fileRepository.findAll();
+        filesList.stream().forEach(file -> {
+//            file.initForUpload();
+//            file.upload();
+        });
 
     }
-
-    public void docu(){
-//        file.도쿠파일 작성을 위한 setter(); => file.case.fjdskljdskl files.
-//        file.MKcolumn(); select distinct t from Team t join fetch Team.memberList as m
-        // file.case.setcasedjhfjf file.case.
-    }
-
 
 }
