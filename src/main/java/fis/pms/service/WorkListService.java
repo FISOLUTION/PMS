@@ -37,7 +37,7 @@ public class WorkListService {
     /**
      * @return
      */
-    public OverallPerformanceDTO getOverallPerformance() {
+    public List<PerformanceDTO> getOverallPerformance() {
         List<PerformanceDTO> dto = workListRepository.getPerformanceList();
         if (dto == null) throw new WorkListException("작업내용이 존재 하지 않습니다.");
         return OverallPerformanceDTO.createOverall(dto);
