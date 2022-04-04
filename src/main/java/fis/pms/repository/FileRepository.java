@@ -54,11 +54,19 @@ public class FileRepository extends FileQueryMethods {
     }
 
    // 2022-03-02 이승범 : fetchJoin를 이용한 쿼리 최적화
-    public List<Files> findByOcodeBoxNumLabel(String o_code, String b_num, String f_labelcode){
+    public List<Files> findIndexInputByOcodeBoxNumLabel(String o_code, String b_num, String f_labelcode){
         return jpaQueryFactory
                 .selectFrom(files)
                 .join(files.office, office).fetchJoin()
-                .where(office.o_code.eq(o_code) ,fLabelCodeLike(f_labelcode), bNumLike(b_num))
+                .where(office.o_code.eq(o_code) ,fLabelCodeLike(f_labelcode), bNumLike(b_num), files.f_process.eq(F_process.IMGMODIFY))
+                .fetch();
+    }
+
+    public List<Files> findIndexCheckByOcodeBoxNumLabel(String o_code, String b_num, String f_labelcode) {
+        return jpaQueryFactory
+                .selectFrom(files)
+                .join(files.office, office).fetchJoin()
+                .where(office.o_code.eq(o_code) ,fLabelCodeLike(f_labelcode), bNumLike(b_num), files.f_process.eq(F_process.INPUT))
                 .fetch();
     }
 

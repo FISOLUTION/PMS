@@ -178,14 +178,27 @@ public class FileService {
      * 작성자: 이승범
      * 작성내용: 색인 작업할 철 목록 가져오기
      */
-    public List<Files> searchFilesByPreInfo(FindIndexPreinfo findIndexPreinfo) {
-        //Files 테이블에서 o_code, b_num, f_labelcode로 검색
-        List<Files> findList = fileRepository.findByOcodeBoxNumLabel(
+    public List<Files> searchIndexInputFilesByPreInfo(FindIndexPreinfo findIndexPreinfo) {
+        //Files 테이블에서 status가 imgmodify인 files중 o_code, b_num, f_labelcode로 검색
+        return fileRepository.findIndexInputByOcodeBoxNumLabel(
                 findIndexPreinfo.getO_code(),
                 findIndexPreinfo.getB_num(),
                 findIndexPreinfo.getF_labelcode()
         );
-        return findList;
+    }
+
+    /**
+    *   작성날짜: 2022/04/04 2:50 PM
+    *   작성자: 이승범
+    *   작성내용: 검수 작업할 철 목록 가져오기
+    */
+    public List<Files> searchIndexCeckFilesByPreInfo(FindIndexPreinfo findIndexPreinfo) {
+        // Files 테이블에서 status가 input인 files중 o_code, b_num, f_labelcode로 검색
+        return fileRepository.findIndexCheckByOcodeBoxNumLabel(
+                findIndexPreinfo.getO_code(),
+                findIndexPreinfo.getB_num(),
+                findIndexPreinfo.getF_labelcode()
+        );
     }
 
     /**

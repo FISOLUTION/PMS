@@ -110,22 +110,37 @@ public class FileController {
     *   작성자: 이승범
     *   작성내용: 색인 작업할(스캔이 끝난) 철 목록 불러오기
     */
-    @GetMapping("/file/index/{o_code}")
-    public List<IndexSearchResponse> searchIndexByOffice(@PathVariable String o_code,
+    @GetMapping("/file/index/input/{o_code}")
+    public List<IndexSearchResponse> searchIndexInputByOffice(@PathVariable String o_code,
                                                           @RequestParam(value = "box", required = false) String f_bnum,
                                                           @RequestParam(value = "label", required = false) String f_labelcode) {
 
         FindIndexPreinfo findIndexPreinfo = FindIndexPreinfo.createFindIndexPreinfo(o_code, f_bnum, f_labelcode);
-        return fileService.searchFilesByPreInfo(findIndexPreinfo).stream()
+        return fileService.searchIndexInputFilesByPreInfo(findIndexPreinfo).stream()
                 .map(IndexSearchResponse::createIndexSearchResponse)
                 .collect(Collectors.toList());
     }
 
     /**
-    *   작성날짜: 2022/03/29 1:13 PM
+    *   작성날짜: 2022/04/04 2:51 PM
     *   작성자: 이승범
-    *   작성내용: 철 색인 입력 작업
+    *   작성내용: 검수 작업할(색인 입력이 끝난) 철 목록 불러오기
     */
+    @GetMapping("/file/index/check/{o_code}")
+    public List<IndexSearchResponse> searchIndexChekcByOffice(@PathVariable String o_code,
+                                                              @RequestParam(value = "box", required = false) String f_bnum,
+                                                              @RequestParam(value = "label", required = false) String f_labelcode) {
+        FindIndexPreinfo findIndexPreinfo = FindIndexPreinfo.createFindIndexPreinfo(o_code, f_bnum, f_labelcode);
+        return fileService.searchIndexCeckFilesByPreInfo(findIndexPreinfo).stream()
+                .map(IndexSearchResponse::createIndexSearchResponse)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     *   작성날짜: 2022/03/29 1:13 PM
+     *   작성자: 이승범
+     *   작성내용: 철 색인 입력 작업
+     */
     @PostMapping("/file/index/input")
     public IndexSaveLabelResponse saveIndex(@RequestBody IndexSaveLabelRequest indexSaveLabelRequest, @Login Long workerId) {
         return fileService.saveFilesAndVolume(indexSaveLabelRequest, workerId, F_process.INPUT);
