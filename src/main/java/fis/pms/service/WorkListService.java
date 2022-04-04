@@ -116,7 +116,7 @@ public class WorkListService {
 
         fileProcessMap.forEach((labelCode, workListGroupByFileDTOS) -> {
             WorkListGroupByFileDTO temp = workListGroupByFileDTOS.get(0);
-            FileWorkListDTO result = FileWorkListDTO.builder().fileName(temp.getFileName()).OfficeName(temp.getOfficeName()).build();
+            FileWorkListDTO result = FileWorkListDTO.builder().labelCode(temp.getLabelCode()).fileName(temp.getFileName()).OfficeName(temp.getOfficeName()).build();
 
             result.setFileWorkInfo(workListGroupByFileDTOS.stream().collect(Collectors.toMap(
                     workListGroupByFileDTO -> workListGroupByFileDTO.getProcess(),

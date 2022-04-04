@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -287,4 +288,14 @@ public class FileService {
         Files files = fileRepository.findOne(f_id).get();     //넘어온 file_id 를 이용하여 해당 file 찾음
         return fileRepository.remove(files);                  //해당 file을 삭제
     }
+
+    public void upload(){
+        List<Files> filesList = fileRepository.findAll();
+        filesList.stream().forEach(file -> {
+//            file.initForUpload();
+//            file.upload();
+        });
+
+    }
+
 }
