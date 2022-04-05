@@ -12,7 +12,6 @@ import java.util.List;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class Worker {
     @Id @GeneratedValue
     @Column(name = "w_id")
@@ -40,6 +39,17 @@ public class Worker {
 
     //작업자 전화번호
     private String w_tel;
+
+    @Builder
+    public Worker(Long id, String nickname, Authority authority, String password, String w_name, String w_address, String w_tel) {
+        this.id = id;
+        this.nickname = nickname;
+        this.authority = authority;
+        this.password = password;
+        this.w_name = w_name;
+        this.w_address = w_address;
+        this.w_tel = w_tel;
+    }
 
     public void updateWorker(WorkerFormRequest request) {
         nickname = request.getNickname();
