@@ -16,6 +16,8 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
         // 세션이 유효한지 확인
         HttpSession session = request.getSession(false);
+        log.warn("session이 있나?  {}", session != null);
+        log.warn("session.getAttribute(loginid) = {}", session.getAttribute("loginId"));
         if (session == null || session.getAttribute("loginId") == null) {
             log.warn("미인증 사용자 요청");
             throw new LoginException("로그인이 되지않았습니다");
