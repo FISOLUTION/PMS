@@ -19,7 +19,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class Files {
 
     @Id
@@ -219,8 +218,8 @@ public class Files {
     private String f_typenum;   //분류번호 (뭔지 모름)
     //업로드 완료여부 미완료 0 완료 timestamp
 
-
-    public Files(String f_labelcode, Office office, String b_num, String f_name, String f_pyear, F_kperiod f_kperiod, F_kplace f_kplace, F_construct f_db, F_construct f_scan, F_type f_type, F_location f_location, String f_typenum) {
+    @Builder
+    public Files(String f_labelcode, Office office, String b_num, String f_name, String f_pyear, F_kperiod f_kperiod, F_kplace f_kplace, F_construct f_db, F_construct f_scan, F_type f_type, F_location f_location, String f_typenum, String f_volumeSaved) {
         this.f_labelcode = f_labelcode;
         this.office = office;
         this.b_num = b_num;
@@ -233,7 +232,7 @@ public class Files {
         this.f_type = f_type;
         this.f_location = f_location;
         this.f_typenum = f_typenum;
-        this.f_volumeSaved = "0";
+        this.f_volumeSaved = f_volumeSaved;
         this.f_process = F_process.PREINFO;
     }
 
