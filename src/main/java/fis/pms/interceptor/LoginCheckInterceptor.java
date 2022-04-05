@@ -7,6 +7,7 @@ import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
 
 @Slf4j
 public class LoginCheckInterceptor implements HandlerInterceptor {
@@ -16,6 +17,11 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
         // 세션이 유효한지 확인
         HttpSession session = request.getSession(false);
+        Arrays.stream(request.getCookies()).forEach(cookie -> {
+            log.warn("cookie {}", cookie.getValue());
+        });
+        log.warn("session이 있나?  {}", session != null);
+        log.warn("session.getAttribute(loginid) = {}", session.getAttribute("loginId"));
         if (session == null || session.getAttribute("loginId") == null) {
             log.warn("미인증 사용자 요청");
             throw new LoginException("로그인이 되지않았습니다");

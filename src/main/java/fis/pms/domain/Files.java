@@ -252,22 +252,6 @@ public class Files {
         this.f_typenum = dto.getF_typenum();           // 분류번호
     }
 
-    //@@@@@@@@@@@@@@@@@@@
-    public void updateFileinfo(Office office, String f_labelcode, String f_name, String f_pyear, F_kperiod f_kperiod, F_construct f_db, F_construct f_scan, String b_num, F_location f_location, F_kplace f_kplace, F_type f_type, String f_typenum) {
-        this.office = office;                 // 기관
-        this.f_labelcode = f_labelcode;       // 레이블
-        this.f_name = f_name;                 // 철이름
-        this.f_pyear = f_pyear;               // 생산년도
-        this.f_kperiod = f_kperiod;           // 보존기간
-        this.f_db = f_db;                     // 구축여부
-        this.f_scan = f_scan;                 // 스캔여부
-        this.b_num = b_num;                   // 박스번호
-        this.f_location = f_location;         // 위치(서가, 층, 열, 번)
-        this.f_kplace = f_kplace;             // 보존장소
-        this.f_type = f_type;                 // 문서종류
-        this.f_typenum = f_typenum;           // 분류번호
-    }
-
     public void exportFile(ExportInfo exportInfo) {
         this.b_num = exportInfo.getB_num();                   // 박스번호
         this.f_db = exportInfo.getF_db();                     // 구축여부
