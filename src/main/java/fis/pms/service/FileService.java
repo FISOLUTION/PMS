@@ -36,6 +36,7 @@ public class FileService {
     private final OfficeService officeService;
     private final VolumeRepository volumeRepository;
     private final WorkListService workListService;
+    private final WorkListRepository workListRepository;
     private final WorkerRepository workerRepository;
     private final VolumeService volumeService;
 
@@ -75,9 +76,11 @@ public class FileService {
             throw new OfficeException("해당 기관코드와 기관이름이 맞지 않습니다");
         // dto -> Entity
         Files file = preInfoFileInfo.createFiles(office).makePreInfo();
-        WorkList.createWorkList(file, worker, file.getF_process());
-
-        return save(file);
+        System.out.println("file.getF_labelcode() = " + file.getF_labelcode());
+        fileRepository.save(file);
+        WorkList workList = WorkList.createWorkList(file, worker, file.getF_process());
+        workListRepository.save(workList);
+        return file.getF_id();
     }
 
     /**
@@ -116,8 +119,11 @@ public class FileService {
     }
 
     public List<Files> findPreInfoFile(PreInfoFileSearchDTO searchDTO) throws OfficeException {
-        Office office = officeService.findById(searchDTO.getO_code());
-        return fileRepository.preInfoSearch(office, searchDTO.getF_labelcode(), searchDTO.getF_name(), searchDTO.getF_pyear(), searchDTO.getBNum());
+        if(searchDTO.getO_code() != null) {
+            Office office = officeService.findById(searchDTO.getO_code());
+            return fileRepository.preInfoSearch(office, searchDTO.getF_labelcode(), searchDTO.getF_name(), searchDTO.getF_pyear(), searchDTO.getBNum());
+        }
+        return fileRepository.preInfoSearch(null, searchDTO.getF_labelcode(), searchDTO.getF_name(), searchDTO.getF_pyear(), searchDTO.getBNum());
     }
 
     public List<Files> findAll() {

@@ -13,7 +13,6 @@ import java.util.List;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class Office {
     @Id
     @Column(length = 7, name = "o_code")
@@ -29,6 +28,13 @@ public class Office {
     private List<Files> fileList;
 
     public void updateOffice(String o_code, String o_name, String o_del) {
+        this.o_code = o_code;
+        this.o_name = o_name;
+        this.o_del = o_del;
+    }
+
+    @Builder
+    public Office(String o_code, String o_name, String o_del) {
         this.o_code = o_code;
         this.o_name = o_name;
         this.o_del = o_del;
