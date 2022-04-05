@@ -35,8 +35,9 @@ public class LoginController {
 
         // 세션이 있으면 해당 세션 반환, 없으면 신규 생성
         HttpSession session = request.getSession();
+        log.warn("session id {}", session.getId());
         session.setAttribute("loginId", worker.getId());
-
+        log.warn("session.getAttribute(loginId), {}", session.getAttribute("loginId"));
         return new LoginResponse(worker.getId(), worker.getW_name(), worker.getAuthority());
     }
 
