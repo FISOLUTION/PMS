@@ -291,5 +291,10 @@ public class FileController {
     }
 
 
+    @GetMapping("file/upload")
+    public void uploadFile(){
+
+    }
+
 }
 

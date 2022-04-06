@@ -22,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -81,6 +83,14 @@ public class FileService {
         WorkList workList = WorkList.createWorkList(file, worker, file.getF_process());
         workListRepository.save(workList);
         return file.getF_id();
+    }
+
+    public void updateInherCode(){
+        List<Files> filesList = fileRepository.findAll();
+        Map<String, List<Files>> fileGroup = filesList.stream().collect(Collectors.groupingBy(files -> files.getOffice().getO_code() + files.getF_pyear()));
+        fileGroup.forEach((s, files) -> {
+
+        });
     }
 
     /**
@@ -311,8 +321,8 @@ public class FileService {
     public void upload(){
         List<Files> filesList = fileRepository.findAll();
         filesList.stream().forEach(file -> {
-//            file.initForUpload();
-//            file.upload();
+            file.initForUpload()
+                    .upload();
         });
 
     }

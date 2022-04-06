@@ -95,6 +95,15 @@ public class FileRepository extends FileQueryMethods {
                 .getResultList();
     }
 
+    public List<Files> findAllWithOfficeCases(){
+        return em.createQuery("select f from Files f " +
+                        "join fetch f.office " +
+                        "join fetch f.cases " +
+                        "where f.f_process =:process ", Files.class)
+                .setParameter("process", F_process.CHECK)
+                .getResultList();
+    }
+
     public List<Files> findAllWithImages(){
         return em.createQuery("select f from Files f where f.images is not null", Files.class)
                 .getResultList();

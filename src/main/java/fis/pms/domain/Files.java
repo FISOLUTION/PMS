@@ -238,7 +238,7 @@ public class Files {
 
     //=======================수정 메서드==========================//
     public void preInfoUpdate(Office office, PreInfoFileUpdateInfo dto) {
-        this.office = office;                 // 기관
+        this.office = office;                           // 기관
         this.f_labelcode = dto.getF_labelcode();       // 레이블
         this.f_name = dto.getF_name();                 // 철이름
         this.f_pyear = dto.getF_pyear();               // 생산년도
@@ -328,5 +328,14 @@ public class Files {
 
     public void completeScan() {
         f_process = F_process.SCAN;
+    }
+
+    public Files initForUpload() {
+
+        return this;
+    }
+
+    public void upload() {
+
     }
 }
