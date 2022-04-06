@@ -1,14 +1,21 @@
 package fis.pms.domain;
 
+import fis.pms.controller.dto.DocuDto;
 import fis.pms.controller.dto.IndexSaveLabelRequest;
 import fis.pms.controller.dto.PreInfoFileUpdateInfo;
 import fis.pms.domain.fileEnum.*;
 import fis.pms.service.dto.ExportInfo;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -19,6 +26,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class Files {
 
     @Id
@@ -330,13 +338,30 @@ public class Files {
         f_process = F_process.SCAN;
     }
 
-    public Files initForUpload() {
-
-        return this;
-    }
-
-    public void upload() {
-
+    public DocuDto upload(String dataPath) throws IllegalAccessException, IOException {
+        log.info("시작");
+        log.info("dataPath= {}", dataPath);
+        DocuDto docuDto = new DocuDto(this);
+        Field[] fields = DocuDto.class.getDeclaredFields();
+        File docuFile = new File(dataPath + "DOCU.txt");
+        if(!docuFile.exists()) {
+            docuFile.createNewFile();
+            //이미 있다면 생성하지 않는다.
+        }
+        FileWriter fw = new FileWriter(docuFile, true);
+        for(Field field : fields){
+            field.setAccessible(true);
+            String target = (String) field.get(docuDto);
+            if(target == null) {
+                target = String.valueOf('\t');
+            }
+            fw.write(target + '\t');
+        }
+        fw.write('\n');
+        fw.flush();
+        fw.close();
+        log.info("끝");
+        return docuDto;
     }
 
     public Files updateInherCode(String inherCode) {

@@ -2,3 +2,7 @@ image:
   path:
     origin: /Users/seungbumlee/Desktop/fis/origin/
     modify: /Users/seungbumlee/Desktop/fis/modify/
+
+upload:
+  path:
+    /Users/hyeonseung-gu/Desktop/fis/upload/
