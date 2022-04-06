@@ -59,3 +59,4 @@ public class DocuDto {
         this.f_inheritance = files.getF_inheritance().getInheritance();
     }
 }
+

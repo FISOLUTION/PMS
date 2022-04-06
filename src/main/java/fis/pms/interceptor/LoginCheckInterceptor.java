@@ -1,6 +1,7 @@
 package fis.pms.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.security.auth.login.LoginException;
@@ -15,6 +16,10 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+        // options 허용
+        if(HttpMethod.OPTIONS.matches(request.getMethod())){
+            return true;
+        }
 
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("loginId") == null) {

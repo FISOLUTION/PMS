@@ -19,6 +19,7 @@
 *.rar
 *.DS_Store
 
+
 /src/main/java/fis/pms/init
 /src/main/resources/application-config.yml
 
