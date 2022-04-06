@@ -14,7 +14,7 @@ spring:
     properties:
       hibernate:
         #show_sql: true
-        format_sql: true
+        #format_sql: true
         default_batch_fetch_size: 100
 
   # 2022-02-25 이승범 : 이미지 파일 경로 저장을 위한 include
@@ -28,7 +28,7 @@ spring:
 
 logging:
   level:
-    org.hibernate.SQL: debug
+    #org.hibernate.SQL: debug
     org.hibernate.Type: trace
     #    org.apache.coyote.http11: debug
     #package fis_solution.PMproject.service.UploadService: debug

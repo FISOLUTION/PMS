@@ -338,4 +338,9 @@ public class Files {
     public void upload() {
 
     }
+
+    public Files updateInherCode(String inherCode) {
+        this.f_inherlabelcode = inherCode;
+        return this;
+    }
 }
