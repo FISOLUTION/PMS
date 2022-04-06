@@ -21,8 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -52,7 +51,7 @@ public class FileService {
     }
 
     public Long save(Files files) throws FilesException {
-        if (isEmpty(files.getF_labelcode())) throw new FilesException("중복된 레이블 코드가 있습니다");
+        if (!isEmpty(files.getF_labelcode())) throw new FilesException("중복된 레이블 코드가 있습니다");
         return fileRepository.save(files);
     }
 
@@ -76,11 +75,25 @@ public class FileService {
             throw new OfficeException("해당 기관코드와 기관이름이 맞지 않습니다");
         // dto -> Entity
         Files file = preInfoFileInfo.createFiles(office).makePreInfo();
-        System.out.println("file.getF_labelcode() = " + file.getF_labelcode());
-        fileRepository.save(file);
+        save(file);
         WorkList workList = WorkList.createWorkList(file, worker, file.getF_process());
         workListRepository.save(workList);
         return file.getF_id();
+    }
+
+    public void updateInherCode(){
+        List<Files> filesList = fileRepository.findAll();
+        Map<String, List<Files>> fileGroup = filesList.stream().collect(Collectors.groupingBy(files -> files.getOffice().getO_code() + files.getF_pyear()));
+        fileGroup.forEach((s, fList) -> {
+            Long num = fList.stream().filter(files -> files.getF_inherlabelcode() != null).count() + 1;
+            List<Files> targetList = fList.stream().filter(files -> files.getF_inherlabelcode() == null).collect(Collectors.toList());
+            Iterator<Files> it = targetList.iterator();
+            while(it.hasNext()){
+                Files target = it.next();
+                String InherCode = String.format("%06d" ,num++);
+                target.updateInherCode(InherCode);
+            }
+        });
     }
 
     /**
@@ -311,8 +324,8 @@ public class FileService {
     public void upload(){
         List<Files> filesList = fileRepository.findAll();
         filesList.stream().forEach(file -> {
-//            file.initForUpload();
-//            file.upload();
+            file.initForUpload()
+                    .upload();
         });
 
     }
