@@ -16,10 +16,12 @@ import fis.pms.service.dto.FindIndexPreinfo;
 import fis.pms.service.dto.PreInfoFileInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,6 +41,8 @@ public class FileService {
     private final WorkerRepository workerRepository;
     private final VolumeService volumeService;
 
+    @Value("${upload.path}")
+    private String dataPath;
 
     /**
      * @param labelCode 철의 고유한 값
@@ -324,10 +328,36 @@ public class FileService {
     public void upload(){
         List<Files> filesList = fileRepository.findAll();
         filesList.stream().forEach(file -> {
-            file.initForUpload()
-                    .upload();
+            try {
+                mkDirDataAndImages(file.getOffice().getO_code());
+                String filePath = dataPath + file.getOffice().getO_code() + "/DATA/";
+                file.upload(filePath);
+            } catch (IllegalAccessException e) {
+                log.info("파일 생성 도중에 reflection 오류로 인해 발생");
+                e.printStackTrace();
+            } catch (IOException e) {
+                log.info("파일 생성 도중에 IO 오류로 인해 발생");
+                e.printStackTrace();
+            }
         });
 
+    }
+
+    public void mkDirDataAndImages(String o_code){
+        File folder = new File(dataPath + o_code);
+        if(!folder.exists()){
+            folder.mkdir();
+        }
+
+        File datafolder = new File(dataPath + o_code + "/DATA");
+        if(!datafolder.exists()){
+            datafolder.mkdir();
+        }
+
+        File imagefolder = new File(dataPath + o_code + "/IMAGES");
+        if(!imagefolder.exists()){
+            imagefolder.mkdir();
+        }
     }
 
 }
