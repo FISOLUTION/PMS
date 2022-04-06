@@ -227,7 +227,7 @@ public class FileController {
         PreinfoFileDelResponse response = new PreinfoFileDelResponse();
         request.getF_id().stream().forEach(id -> {
             fileService.remove(id);
-            request.getF_id().add(id);
+            response.getF_id().add(id);
         });
         return response;
     }

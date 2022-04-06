@@ -119,7 +119,7 @@ public class FileService {
     }
 
     public List<Files> findPreInfoFile(PreInfoFileSearchDTO searchDTO) throws OfficeException {
-        if(searchDTO.getO_code() != null) {
+        if(searchDTO.getO_code() != null && searchDTO.getO_code() != "") {
             Office office = officeService.findById(searchDTO.getO_code());
             return fileRepository.preInfoSearch(office, searchDTO.getF_labelcode(), searchDTO.getF_name(), searchDTO.getF_pyear(), searchDTO.getBNum());
         }
