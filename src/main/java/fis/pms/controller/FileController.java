@@ -292,5 +292,11 @@ public class FileController {
         workbook.close();
     }
 
+
+    @GetMapping("/file/upload")
+    public void uploadFile(){
+
+    }
+
 }
 

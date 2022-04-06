@@ -330,4 +330,18 @@ public class Files {
         f_process = F_process.SCAN;
     }
 
+
+    public Files initForUpload() {
+
+        return this;
+    }
+
+    public void upload() {
+
+    }
+
+    public Files updateInherCode(String inherCode) {
+        this.f_inherlabelcode = inherCode;
+        return this;
+    }
 }
