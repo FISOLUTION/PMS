@@ -15,7 +15,6 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        // 세션이 유효한지 확인
 
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("loginId") == null) {
