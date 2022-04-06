@@ -130,7 +130,7 @@ public class FileQueryMethods {
     }
 
     protected BooleanExpression bNumLike(String b_num) {
-        if (b_num == null) {
+        if (b_num == null || b_num == "") {
             return null;
         }
         return files.b_num.eq(b_num);

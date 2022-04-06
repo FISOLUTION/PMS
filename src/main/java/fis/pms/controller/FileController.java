@@ -197,6 +197,7 @@ public class FileController {
     @PostMapping("/file/preInfo")
     public PreinfoFileSaveResponse joinPreInfo(@RequestBody @Validated PreInfoFileInfo preInfoFileInfo, @Login Long workerId) throws OfficeException, FilesException {
         Long id = fileService.preInfoFile(preInfoFileInfo, workerId);
+        fileService.updateInherCode();
         return new PreinfoFileSaveResponse(id);
     }
 
@@ -227,7 +228,7 @@ public class FileController {
         PreinfoFileDelResponse response = new PreinfoFileDelResponse();
         request.getF_id().stream().forEach(id -> {
             fileService.remove(id);
-            request.getF_id().add(id);
+            response.getF_id().add(id);
         });
         return response;
     }
@@ -262,6 +263,7 @@ public class FileController {
         preInfoFileInfoList.forEach(preInfoFileInfo -> {
             fileService.preInfoFile(preInfoFileInfo, workerId);
         });
+        fileService.updateInherCode();
 
         return new Result<>(preInfoFileInfoList);
     }
@@ -271,7 +273,7 @@ public class FileController {
      * @param response
      * @throws IOException
      */
-    @GetMapping("file/preInfo/excel")
+    @GetMapping("/file/preInfo/excel")
     public void excelFile(HttpServletResponse response) throws IOException {
         List<Files> files = fileService.findAll();
         List<ExcelUpdateDTO> dataList = new ArrayList<>();
