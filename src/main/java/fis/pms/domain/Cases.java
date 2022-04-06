@@ -133,7 +133,7 @@ public class Cases {
     private String c_oldnum; //구기록물 문서번호 30
 
     @Column(length = 200)
-    private String c_subtitle; //기타제목 200
+    private String c_subtitle; //기타제목 200무
 
     @Column(length = 40)
     private String c_approver; //결재권자 (직급) 40
