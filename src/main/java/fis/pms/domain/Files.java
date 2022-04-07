@@ -154,7 +154,7 @@ public class Files {
 
     //@NotBlank
     @Column(length = 6)
-    private String f_regnum;    //기록물등록건수
+    private String f_regnum;    //기록물등록건수건
 
     //@NotBlank
     @Column(length = 6)
@@ -299,10 +299,12 @@ public class Files {
 
             // 색인 입력 완료 철에 대해서는 검수 작업 완료 처리
             this.f_process = F_process.CHECK;
-
             LocalDate timestamp = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             this.f_check = timestamp.format(formatter);
+
+            this.cases.sort()
+            this.cases.forEach(c -> c.preUpload(this.getOffice().getO_code()));
         }
         this.resetCount();
     }

@@ -106,7 +106,6 @@ public class CaseService {
             workListService.reflectWorkList(findFile, workerId, f_process);
             findFile.updateProcess();
             List<Cases> findCasesList = casesRepository.findByFiles(findFile);
-
             for (Cases cases : findCasesList) {
                 cases.resetCount();
             }
@@ -120,6 +119,10 @@ public class CaseService {
     }
 
     public void updateForUpload() {
+
+    }
+
+    public void upload(Cases cases) {
 
     }
 }

@@ -40,6 +40,8 @@ public class FileService {
     private final WorkListRepository workListRepository;
     private final WorkerRepository workerRepository;
     private final VolumeService volumeService;
+    private final CaseService caseService;
+
 
     @Value("${upload.path}")
     private String dataPath;
@@ -244,6 +246,10 @@ public class FileService {
             throw new ProcessOrderException("색인 입력이 완료된 철 입니다. 검수를 이용해 수정해 주세요");
         }
 
+        if( files.getF_process().compareTo(F_process.CHECK) >= 0){
+            throw new ProcessOrderException("색인 검수까지 완료된 철 입니다. 색인 수정이 불가능합니다.");
+        }
+
         int reqVolumeAmount = Integer.parseInt(indexSaveLabelRequest.getF_volumeamount());   //총 권호수 만큼 카운터 생성
 
         // 색인 작업에서 최초로 철 정보를 저장할 경우
@@ -326,12 +332,13 @@ public class FileService {
     }
 
     public void upload(){
-        List<Files> filesList = fileRepository.findAll();
+        List<Files> filesList = fileRepository.findAllWithOfficeCases();
         filesList.stream().forEach(file -> {
             try {
                 mkDirDataAndImages(file.getOffice().getO_code());
                 String filePath = dataPath + file.getOffice().getO_code() + "/DATA/";
                 file.upload(filePath);
+
             } catch (IllegalAccessException e) {
                 log.info("파일 생성 도중에 reflection 오류로 인해 발생");
                 e.printStackTrace();
@@ -340,7 +347,6 @@ public class FileService {
                 e.printStackTrace();
             }
         });
-
     }
 
     public void mkDirDataAndImages(String o_code){

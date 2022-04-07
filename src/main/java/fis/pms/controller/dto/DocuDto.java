@@ -56,7 +56,6 @@ public class DocuDto {
         this.f_regnum = files.getF_regnum();
         this.f_page = files.getF_page();
         this.f_efilenum = files.getF_efilenum();
-        this.f_inheritance = files.getF_inheritance().getInheritance();
+        this.f_inheritance = "0";
     }
 }
-
