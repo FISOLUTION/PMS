@@ -1,12 +1,10 @@
 package fis.pms.controller.dto;
 
-import fis.pms.domain.caseEnum.*;
+import fis.pms.domain.Cases;
+import fis.pms.domain.Files;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
-import javax.persistence.Convert;
 
 @Data
 @NoArgsConstructor
@@ -50,5 +48,46 @@ public class DetailDto {
     private String c_summary; //건 내용요약 500
     private String c_format; //포맷 1 (1.문서, 2.오디오, 3.복합, 4.이미지(default), 5.비디오, 9.기타)
     private String c_formatetc; //포맷기타 20 (if c_format == 9)
-    private String c_storage;
+    private String c_storage; // 저장매체 2 (01, 02, 03, ...)
+
+    public static DetailDto createDetailDto(Cases cases) {
+        DetailDto dto = new DetailDto();
+        dto.o_code = cases.getFiles().getOffice().getO_code();
+        dto.o_name = cases.getFiles().getOffice().getO_name();
+        dto.c_class = cases.getC_class();
+        dto.c_pdate = cases.getC_pdate();
+        dto.c_pnum = cases.getC_pnum();
+        dto.c_oldnum = cases.getC_oldnum();
+        dto.c_attachnum = cases.getC_attachnum();
+        dto.c_title = cases.getC_title();
+        dto.c_subtitle = cases.getC_subtitle();
+        dto.c_page = cases.getC_page();
+        dto.c_approver = cases.getC_approver();
+        dto.c_reviewer = cases.getC_reviewer();
+        dto.c_helper = cases.getC_helper();
+        dto.c_drafter = cases.getC_drafter();
+        dto.c_signdate = cases.getC_signdate();
+        dto.c_dodate = cases.getC_dodate();
+        dto.c_receiver = cases.getC_receiver();
+        dto.c_distrinum = cases.getC_distrinum();
+        dto.c_pofficenum = cases.getC_pofficenum();
+        dto.c_attachamount = cases.getC_attachamount();
+        dto.c_attachetc = cases.getC_attachetc();
+        dto.c_lang = cases.getC_lang();
+        dto.c_edoc = cases.getC_edoc().getEdoc();
+        dto.c_groupnum = cases.getC_groupnum();
+        dto.c_specialdoc = cases.getC_specialdoc();
+        dto.c_openable = cases.getC_openable();
+        dto.c_hidden = cases.getC_hidden();
+        dto.c_opendate = cases.getC_opendate();
+        dto.c_kperiod = cases.getC_kperiod().getKperiod();
+        dto.c_videosummary = cases.getC_videosummary();
+        dto.c_type = cases.getC_type();
+        dto.c_newold = "2";
+        dto.c_modify = "0";
+        dto.c_companion = "0";
+        dto.c_summary = cases.getC_summary();
+        dto.c_formatetc = cases.getC_formatetc();
+        return dto;
+    }
 }

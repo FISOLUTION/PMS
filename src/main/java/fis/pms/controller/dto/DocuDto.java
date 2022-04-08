@@ -69,4 +69,3 @@ public class DocuDto {
         this.f_inheritance = "0";
     }
 }
-
