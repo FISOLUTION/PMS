@@ -294,6 +294,7 @@ public class Files {
             LocalDate timestamp = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             this.f_complete = timestamp.format(formatter);
+
         } // 검수 작업
         else if (this.f_process == F_process.INPUT) {
 
@@ -303,8 +304,6 @@ public class Files {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             this.f_check = timestamp.format(formatter);
 
-            this.cases.sort()
-            this.cases.forEach(c -> c.preUpload(this.getOffice().getO_code()));
         }
         this.resetCount();
     }

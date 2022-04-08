@@ -106,12 +106,20 @@ public class CasesRepository extends CasesQueryMethod {
                 .from(cases)
                 .where(cases.volume.id.in(volumeIds))
                 .fetch();
-        return casesInfoList.stream().collect(Collectors.groupingBy(casesInfo->casesInfo.getV_id()));
+        return casesInfoList.stream().collect(Collectors.groupingBy(CasesInfo::getV_id));
     }
 
     public List<Cases> findByVolume(Long v_id) {
         return em.createQuery("select c from Cases c where c.volume.id = :v_id", Cases.class)
                 .setParameter("v_id", v_id)
+                .getResultList();
+    }
+
+    public List<Cases> findAllWithFilesWithOffice() {
+        return em.createQuery("select c from Cases c " +
+                        "join fetch c.files f " +
+                        "join fetch f.office o " +
+                        "join fetch c.volume v", Cases.class)
                 .getResultList();
     }
 }

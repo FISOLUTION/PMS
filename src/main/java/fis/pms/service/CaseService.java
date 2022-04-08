@@ -13,10 +13,14 @@ import fis.pms.repository.VolumeRepository;
 import fis.pms.repository.search.FindIndexCaseInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,6 +32,9 @@ public class CaseService {
     private final CasesRepository casesRepository;
     private final WorkListService workListService;
     private final VolumeRepository volumeRepository;
+
+    @Value("${upload.path}")
+    private String dataPath;
 
     /**
      * 작성날짜: 2022/03/29 1:39 PM
@@ -118,11 +125,33 @@ public class CaseService {
         return false;
     }
 
-    public void updateForUpload() {
-
-    }
-
-    public void upload(Cases cases) {
-
+    public void upload() {
+        List<Cases> casesList = casesRepository.findAllWithFilesWithOffice();
+        Map<String, List<Cases>> mapForPnum = casesList.stream()
+                .collect(Collectors.groupingBy(c -> c.getFiles().getOffice().getO_code() + c.getC_pdate().substring(0, 4)));
+        Comparator<Cases> sortByC_pdate = (o1, o2) -> Integer.compare(0, o1.getC_pdate().compareTo(o2.getC_pdate()));
+        mapForPnum.forEach((key, caseList) -> {
+            caseList.sort(sortByC_pdate);
+            long it = 1L;
+            for (Cases cases : caseList) {
+                cases.updateBeforeUpload(it++);
+            }
+        });
+        Map<String, List<Cases>> mapForGroupNum = casesList.stream()
+                .collect(Collectors.groupingBy(Cases::getC_groupnum));
+        mapForGroupNum.forEach((key, caseList) -> {
+            caseList.sort(sortByC_pdate);
+            long it = 1L;
+            for (Cases cases : caseList)
+                cases.updateC_code(it);
+        });
+        casesList.forEach(c -> {
+            String filePath = dataPath + c.getFiles().getOffice().getO_code() + "/DATA/";
+            try {
+                c.upload(filePath);
+            } catch (IOException | IllegalAccessException e) {
+                log.warn("업로드 중 오류발생 : {}", e.getMessage());
+            }
+        });
     }
 }

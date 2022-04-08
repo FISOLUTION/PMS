@@ -40,7 +40,6 @@ public class FileService {
     private final WorkListRepository workListRepository;
     private final WorkerRepository workerRepository;
     private final VolumeService volumeService;
-    private final CaseService caseService;
 
 
     @Value("${upload.path}")

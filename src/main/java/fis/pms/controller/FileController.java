@@ -10,6 +10,7 @@ import fis.pms.exception.ExcelException;
 import fis.pms.exception.FilesException;
 import fis.pms.exception.OfficeException;
 import fis.pms.repository.search.FindIndexDetailInfo;
+import fis.pms.service.CaseService;
 import fis.pms.service.FileService;
 import fis.pms.service.dto.FindIndexPreinfo;
 import fis.pms.service.dto.PreInfoFileInfo;
@@ -37,6 +38,7 @@ public class FileController {
 
     private final FileService fileService;
     private final ExcelService excelService;
+    private final CaseService caseService;
 
     /**
      * @implNote 기관별 등록된 철의 갯수를 반환합니다. manage 작업할 때 쓰입니다
@@ -296,6 +298,7 @@ public class FileController {
     @GetMapping("/file/upload")
     public void uploadFile(){
         fileService.upload();
+        caseService.upload();
     }
 
 }

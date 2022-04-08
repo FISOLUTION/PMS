@@ -50,10 +50,10 @@ public class DetailDto {
     private String c_formatetc; //포맷기타 20 (if c_format == 9)
     private String c_storage; // 저장매체 2 (01, 02, 03, ...)
 
-    public static DetailDto createDetailDto(Cases cases, Files files) {
+    public static DetailDto createDetailDto(Cases cases) {
         DetailDto dto = new DetailDto();
-        dto.o_code = files.getOffice().getO_code();
-        dto.o_name = files.getOffice().getO_name();
+        dto.o_code = cases.getFiles().getOffice().getO_code();
+        dto.o_name = cases.getFiles().getOffice().getO_name();
         dto.c_class = cases.getC_class();
         dto.c_pdate = cases.getC_pdate();
         dto.c_pnum = cases.getC_pnum();
@@ -72,7 +72,6 @@ public class DetailDto {
         dto.c_distrinum = cases.getC_distrinum();
         dto.c_pofficenum = cases.getC_pofficenum();
         dto.c_attachamount = cases.getC_attachamount();
-        dto.c_attachtype = cases.getC_attachtype().getAttachtype();
         dto.c_attachetc = cases.getC_attachetc();
         dto.c_lang = cases.getC_lang();
         dto.c_edoc = cases.getC_edoc().getEdoc();
@@ -88,13 +87,7 @@ public class DetailDto {
         dto.c_modify = "0";
         dto.c_companion = "0";
         dto.c_summary = cases.getC_summary();
-        dto.c_format = cases.getC_format().getFormat();
         dto.c_formatetc = cases.getC_formatetc();
-        dto.c_storage = cases.getC_storage().getStorage();
         return dto;
-    }
-
-    public DetailDto(Cases cases, Files files) {
-
     }
 }

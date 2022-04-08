@@ -1,10 +1,13 @@
 package fis.pms.controller.dto;
 
+import fis.pms.domain.Cases;
 import fis.pms.domain.Files;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 
 @NoArgsConstructor
@@ -26,6 +29,7 @@ public class DocuDto {
     private String f_eyear; // 종료년도
     private String f_kperiod; //보존기간
     private String f_kmethod; //보존방법
+    private String f_place;
     private String f_placeenddate; // 비치 종결일자
     private String f_placereason; // 비치 사유
     private String f_manager; // 업무담당자
@@ -39,6 +43,11 @@ public class DocuDto {
     private String f_inherunitcode; //단위업무코드
 
     public DocuDto(Files files){
+        List<Cases> casesList = files.getCases();
+        Long pages = 0L;
+        for(Cases c : casesList){
+            pages += Long.parseLong(c.getC_page());
+        }
         this.o_code = files.getOffice().getO_code();
         this.o_name = files.getOffice().getO_name();
         this.f_unitcode = "99999999";
@@ -51,11 +60,12 @@ public class DocuDto {
         this.f_eyear = files.getF_eyear();
         this.f_kperiod = files.getF_kperiod().getKperiod();
         this.f_kmethod = files.getF_kmethod().getKmethod();
+        this.f_place = files.getF_kplace().getKplace();
         this.f_newold = files.getF_newold().getNewold();
-        this.f_modify = files.getF_modify().getModify();
-        this.f_regnum = files.getF_regnum();
-        this.f_page = files.getF_page();
-        this.f_efilenum = files.getF_efilenum();
+        this.f_modify = "0";
+        this.f_regnum = String.format("06d%",casesList.size());
+        this.f_page = String.format("06d%",pages);
+        this.f_efilenum = "000000";
         this.f_inheritance = "0";
     }
 }
