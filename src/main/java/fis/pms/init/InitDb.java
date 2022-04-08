@@ -4,13 +4,14 @@ import fis.pms.domain.*;
 import fis.pms.domain.Process;
 import fis.pms.domain.fileEnum.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 
-@Component
+//@Component
 @RequiredArgsConstructor
 public class InitDb {
 
@@ -22,9 +23,11 @@ public class InitDb {
     }
 
     @Component
-    @Transactional
+    @Transactional("mainTransactionManager")
     @RequiredArgsConstructor
     static class InitService {
+
+
         private final EntityManager em;
 
         public void dbInit() {

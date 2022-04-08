@@ -1,18 +1,34 @@
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/fis_2021_gongjung
+    jdbcUrl: jdbc:h2:tcp://localhost/~/fis_2021_gongjung
     username: sa
     password:
     driver-class-name: org.h2.Driver
+  second-datasource:
+    jdbcurl: jdbc:mysql://3.38.19.119:3306/fis_gongjung?useUnicode=true&characterEncoding=utf8
+    username: fis_gongjung
+    password: Fiserver1207!
+    driver-class-name: com.mysql.cj.jdbc.Driver
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     properties:
       hibernate:
+        dialect:  org.hibernate.dialect.H2Dialect
+        #show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 100
+
+  second-jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
         #show_sql: true
         format_sql: true
         default_batch_fetch_size: 100

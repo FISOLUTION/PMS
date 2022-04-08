@@ -1,18 +1,26 @@
 package fis.pms.domain;
 
+import fis.pms.controller.dto.DetailDto;
+import fis.pms.controller.dto.DocuDto;
 import fis.pms.controller.dto.IndexSaveCaseRequest;
 import fis.pms.domain.caseEnum.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Entity
 @Getter @Setter
 @AllArgsConstructor
@@ -253,7 +261,7 @@ public class Cases {
         this.c_departmentname = indexSaveCaseRequest.getC_departmentname();        // 부서명
         this.c_oldnum = indexSaveCaseRequest.getC_oldnum();         // 문서번호
         this.c_kperiod = indexSaveCaseRequest.getC_kperiod();       // 보존기간
-        this.c_title = indexSaveCaseRequest.getC_title();           // 건 제목
+        this.c_title = indexSaveCaseRequest.getC_title();           //  제목
         this.c_drafter = indexSaveCaseRequest.getC_drafter();       // 기안자
         this.c_approver = indexSaveCaseRequest.getC_approver();     // 결재권자
         this.c_receiver = indexSaveCaseRequest.getC_receiver();     // 수발신자
@@ -272,4 +280,37 @@ public class Cases {
     }
 
 
+    public void upload(String detailPath) throws IOException, IllegalAccessException {
+        log.info("시작");
+        log.info("dataPath= {}", detailPath);
+        DetailDto detailDto = DetailDto.createDetailDto(this);
+        Field[] fields = DetailDto.class.getDeclaredFields();
+        File detailFile = new File(detailPath + "DETAIL.txt");
+        if(!detailFile.exists())
+            detailFile.createNewFile();
+        FileWriter fw = new FileWriter(detailFile, true);
+        for(Field field : fields){
+            field.setAccessible(true);
+            String target = (String) field.get(detailDto);
+            if(target == null) {
+                target = String.valueOf('\t');
+            }
+            fw.write(target + '\t');
+        }
+        fw.write('\n');
+        fw.flush();
+        fw.close();
+        log.info("끝");
+    }
+
+    public void updateBeforeUpload(long aLong) {
+        this.c_pnum = String.valueOf(aLong);
+        this.c_groupnum = this.getFiles().getOffice().getO_code() + "99999999" +
+                this.c_pdate.substring(0,4) + this.getFiles().getF_inherlabelcode() +
+                this.getVolume().getV_num();
+    }
+
+    public void updateC_code(long it) {
+        this.c_code = String.valueOf(it);
+    }
 }

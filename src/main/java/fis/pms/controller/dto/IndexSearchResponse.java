@@ -47,7 +47,7 @@ public class IndexSearchResponse {
         indexSearchResponse.f_complete = files.getF_complete();
         indexSearchResponse.f_check = files.getF_check();
         indexSearchResponse.f_volumeamount = files.getF_volumeamount();
-        indexSearchResponse.f_type = files.getF_type();
+        indexSearchResponse.f_typenum = files.getF_typenum();
         indexSearchResponse.f_manager = files.getF_manager();
         indexSearchResponse.f_kperiod = files.getF_kperiod();
         indexSearchResponse.f_kmethod = files.getF_kmethod();
